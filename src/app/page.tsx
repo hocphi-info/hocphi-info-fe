@@ -8,8 +8,8 @@ export default function Home() {
           Tra cứu & so sánh học phí đại học
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400">
-          Ước lượng tổng chi phí học phí cả khoá theo trường và ngành —
-          minh bạch nguồn dữ liệu.
+          Ước lượng tổng chi phí học phí cả khoá theo trường và ngành — minh
+          bạch nguồn dữ liệu.
         </p>
       </div>
 
