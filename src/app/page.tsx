@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center gap-8 px-6 text-center">
+    <main className="mx-auto flex flex-1 max-w-3xl flex-col items-center justify-center gap-8 px-6 py-20 text-center">
       <div className="space-y-3">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
           Tra cứu & so sánh học phí đại học
