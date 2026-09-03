@@ -1,8 +1,68 @@
 @import "tailwindcss";
 
+/*
+  Palette "Xanh Tri Thức" (2026-09-03) — chủ đạo xanh dương #2A5DA8.
+  Cách hoạt động (learning note #21):
+    1. Định nghĩa biến màu 1 chỗ ở :root (light) và @media dark.
+    2. @theme inline map biến -> "màu Tailwind" nên viết được class như
+       bg-surface, text-ink, border-border, bg-accent, text-on-accent...
+  Giá trị dạng oklch(L C H).
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: oklch(0.972 0.005 253); /* soft bg */
+  --foreground: oklch(0.257 0.014 261); /* text */
+
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.955 0.009 253);
+  --border: oklch(0.868 0.014 255);
+  --rule: oklch(0.922 0.01 255);
+
+  --ink: oklch(0.257 0.014 261);
+  --ink-2: oklch(0.438 0.021 259);
+  --ink-3: oklch(0.582 0.02 257);
+
+  --accent: oklch(0.474 0.113 260); /* primary #2A5DA8 */
+  --accent-strong: oklch(0.383 0.099 262); /* primary dark */
+  --accent-ink: oklch(0.43 0.108 261);
+  --accent-bg: oklch(0.945 0.028 255);
+  --accent-border: oklch(0.82 0.055 258);
+  --on-accent: oklch(1 0 0); /* chữ/icon trên nền accent = TRẮNG */
+
+  --muted-bg: oklch(0.955 0.006 256);
+  --muted-ink: oklch(0.5 0.02 256);
+
+  --warn-bg: oklch(0.96 0.05 75);
+  --warn-ink: oklch(0.47 0.09 60);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.205 0.018 260);
+    --foreground: oklch(0.955 0.006 250);
+
+    --surface: oklch(0.262 0.02 259);
+    --surface-2: oklch(0.232 0.019 260);
+    --border: oklch(0.36 0.02 259);
+    --rule: oklch(0.32 0.02 259);
+
+    --ink: oklch(0.955 0.006 250);
+    --ink-2: oklch(0.815 0.014 252);
+    --ink-3: oklch(0.64 0.018 254);
+
+    --accent: oklch(0.585 0.128 258);
+    --accent-strong: oklch(0.69 0.11 255);
+    --accent-ink: oklch(0.79 0.095 252);
+    --accent-bg: oklch(0.3 0.04 259);
+    --accent-border: oklch(0.42 0.06 258);
+    --on-accent: oklch(0.16 0.02 260);
+
+    --muted-bg: oklch(0.29 0.015 258);
+    --muted-ink: oklch(0.72 0.015 256);
+
+    --warn-bg: oklch(0.32 0.05 70);
+    --warn-ink: oklch(0.85 0.08 80);
+  }
 }
 
 @theme inline {
@@ -10,17 +70,32 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-rule: var(--rule);
+
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-bg: var(--accent-bg);
+  --color-accent-border: var(--accent-border);
+  --color-on-accent: var(--on-accent);
+
+  --color-muted-bg: var(--muted-bg);
+  --color-muted-ink: var(--muted-ink);
+
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-ink: var(--warn-ink);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
