@@ -10,7 +10,7 @@ export default function SiteHeader() {
         <Link href="/" className="text-lg font-bold tracking-tight text-ink">
           hocphi<span className="text-accent">.info</span>
         </Link>
-        <div className="ml-auto w-full max-w-xs">
+        <div className="ml-auto hidden w-full max-w-xs sm:block">
           <input
             type="search"
             disabled
