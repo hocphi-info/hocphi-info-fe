@@ -154,34 +154,38 @@ export default function SchoolRangeChart({
         {!basisAll && <span>· Không tính hệ CLC / tiên tiến / quốc tế</span>}
       </div>
 
-      {/* a11y: same data as a table for screen readers (F11) */}
-      <table className="sr-only">
-        <caption>Khoảng học phí hệ đại trà theo trường</caption>
-        <thead>
-          <tr>
-            <th>Trường</th>
-            <th>Số ngành</th>
-            <th>Thấp nhất</th>
-            <th>Trung vị</th>
-            <th>Cao nhất</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map(({ school, stats }) => (
-            <tr key={school.slug}>
-              <td>{school.name}</td>
-              <td>{stats.nPrograms}</td>
-              <td>
-                {formatMillions(stats.minAmount)} ({stats.minMajorName})
-              </td>
-              <td>{formatMillions(stats.medianAmount)}</td>
-              <td>
-                {formatMillions(stats.maxAmount)} ({stats.maxMajorName})
-              </td>
+      {/* a11y: same data as a table for screen readers (F11). sr-only on a
+          wrapping div, not the <table>: a clipped table still lays out at its
+          intrinsic width and can push page scroll width. */}
+      <div className="sr-only">
+        <table>
+          <caption>Khoảng học phí hệ đại trà theo trường</caption>
+          <thead>
+            <tr>
+              <th>Trường</th>
+              <th>Số ngành</th>
+              <th>Thấp nhất</th>
+              <th>Trung vị</th>
+              <th>Cao nhất</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rows.map(({ school, stats }) => (
+              <tr key={school.slug}>
+                <td>{school.name}</td>
+                <td>{stats.nPrograms}</td>
+                <td>
+                  {formatMillions(stats.minAmount)} ({stats.minMajorName})
+                </td>
+                <td>{formatMillions(stats.medianAmount)}</td>
+                <td>
+                  {formatMillions(stats.maxAmount)} ({stats.maxMajorName})
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

@@ -112,28 +112,32 @@ export default function DistributionStrip({ rows }: { rows: MajorRow[] }) {
         </div>
       )}
 
-      {/* a11y: the same data as a table for screen readers (F11) */}
-      <table className="sr-only">
-        <caption>Phân bố học phí năm đầu hệ đại trà theo trường</caption>
-        <thead>
-          <tr>
-            <th>Trường</th>
-            <th>Ngành / Hệ</th>
-            <th>Học phí năm đầu</th>
-            <th>Tính vào trung vị</th>
-          </tr>
-        </thead>
-        <tbody>
-          {[...mainRows, ...outliers].map((r) => (
-            <tr key={r.program.id}>
-              <td>{r.school.name}</td>
-              <td>{r.major.name}</td>
-              <td>{formatMillions(r.year1.amountPerYear)}</td>
-              <td>{mainRows.includes(r) ? "Có" : "Không"}</td>
+      {/* a11y: the same data as a table for screen readers (F11). The sr-only
+          class goes on a wrapping div, not the <table>: a clipped <table> still
+          lays out at its intrinsic width and can push page scroll width. */}
+      <div className="sr-only">
+        <table>
+          <caption>Phân bố học phí năm đầu hệ đại trà theo trường</caption>
+          <thead>
+            <tr>
+              <th>Trường</th>
+              <th>Ngành / Hệ</th>
+              <th>Học phí năm đầu</th>
+              <th>Tính vào trung vị</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {[...mainRows, ...outliers].map((r) => (
+              <tr key={r.program.id}>
+                <td>{r.school.name}</td>
+                <td>{r.major.name}</td>
+                <td>{formatMillions(r.year1.amountPerYear)}</td>
+                <td>{mainRows.includes(r) ? "Có" : "Không"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
