@@ -2,8 +2,9 @@
 
 // Client Component — the interactive shell for S1 (/nganh). This is where "URL is
 // state" lives: it reads useSearchParams(), derives the visible rows with the
-// pure helpers from lib/filters, and passes them down. FilterPanel / SortControl
-// / FilterChips write the URL; this component reacts to it.
+// pure helpers from lib/filters, and passes them down. FilterPanel /
+// SortableHeader (inside the table) / FilterChips write the URL; this component
+// reacts to it.
 //
 // It receives the FULL row list once (fetched by the Server page) and never
 // re-fetches — filtering/sorting is all in-memory, so changing a filter is
@@ -21,13 +22,12 @@ import {
   describeMajorFilters,
   filterMajorRows,
   majorFilterChips,
-  MAJOR_SORT_LABELS,
   parseMajorFilters,
   sortMajorRows,
 } from "@/lib/filters";
 import FilterPanel from "@/components/FilterPanel";
 import FilterChips from "@/components/FilterChips";
-import SortControl from "@/components/SortControl";
+import QuickSearch from "@/components/QuickSearch";
 import ResultsSummary from "@/components/ResultsSummary";
 import EmptyResults from "@/components/EmptyResults";
 import DistributionStrip from "@/components/DistributionStrip";
@@ -48,22 +48,11 @@ export default function MajorResultsView({ rows }: { rows: MajorRow[] }) {
       <FilterPanel screen="nganh" />
 
       <section className="mt-4 min-w-0 lg:mt-0">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <ResultsSummary
-            count={visible.length}
-            noun="ngành – trường"
-            description={describeMajorFilters(filters)}
-          />
-          <div className="flex flex-wrap items-center gap-3">
-            <SortControl
-              labels={MAJOR_SORT_LABELS}
-              value={filters.sort}
-              dir={filters.dir}
-              defaultKey="year1"
-            />
-            <CompareCountButton />
-          </div>
-        </div>
+        <ResultsSummary
+          count={visible.length}
+          noun="ngành – trường"
+          description={describeMajorFilters(filters)}
+        />
 
         <div className="mt-3">
           <FilterChips chips={majorFilterChips(filters)} />
@@ -86,8 +75,20 @@ export default function MajorResultsView({ rows }: { rows: MajorRow[] }) {
             <div className="mt-4">
               <DistributionStrip rows={visible} />
             </div>
-            <div className="mt-4">
-              <MajorResultsTable rows={visible} />
+            {/* Toolbar sitting right on top of the table: quick search on the
+                left, "So sánh" on the right. */}
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+              <div className="w-full sm:max-w-xs">
+                <QuickSearch />
+              </div>
+              <CompareCountButton />
+            </div>
+            <div className="mt-3">
+              <MajorResultsTable
+                rows={visible}
+                sort={filters.sort}
+                dir={filters.dir}
+              />
             </div>
           </>
         )}

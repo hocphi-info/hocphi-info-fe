@@ -1,14 +1,27 @@
-import Link from "next/link";
 import type { MajorRow } from "@/types/domain";
+import type { MajorFilters } from "@/lib/filters";
 import { totalCourseCost } from "@/lib/derive";
 import { formatMillions } from "@/lib/format";
 import SchoolTypeBadge from "@/components/SchoolTypeBadge";
 import IncreaseBadge from "@/components/IncreaseBadge";
 import CompareCheckbox from "@/components/CompareCheckbox";
+import SortableHeader from "@/components/SortableHeader";
+import RowLink from "@/components/RowLink";
 
-// Server Component — renders the S1 result list. Desktop: a table. Mobile
-// (<lg): a stack of cards. Columns follow ../yeu-cau-san-pham.md §6/S1.
-// The chevron links to "#" for now; Week 4 points it at the detail route.
+// Server Component — renders the S1 result list. Desktop: a table wrapped in a
+// card so it reads as a table; the sortable column headers (SortableHeader) are
+// Client leaves. Mobile (<lg): a stack of cards, unchanged. Columns follow
+// ../yeu-cau-san-pham.md §6/S1.
+//
+// Row click: each <tr> is `relative` and RowLink paints an `after:inset-0`
+// overlay, so the whole row is the click target. The detail route (S3/S4) is
+// Week 4 — until then RowLink points at "#" with scroll={false}. Week 4: swap
+// RowLink's href for the real path (and add a hover treatment on <tr> here if
+// wanted).
+
+// The key that is NOT written to the URL (the default sort), passed to each
+// SortableHeader so it knows when to omit `sort` from the query string.
+const SORT_DEFAULT = "year1" as const;
 
 const TRACK_LABELS: Record<MajorRow["program"]["track"], string> = {
   dai_tra: "Đại trà",
@@ -25,75 +38,150 @@ function totalFor(row: MajorRow): string {
   });
 }
 
-export default function MajorResultsTable({ rows }: { rows: MajorRow[] }) {
+/** aria-sort value for a column header given the active sort + direction. */
+function ariaSort(
+  isActive: boolean,
+  dir: MajorFilters["dir"],
+): "ascending" | "descending" | "none" {
+  if (!isActive) return "none";
+  return dir === "asc" ? "ascending" : "descending";
+}
+
+export default function MajorResultsTable({
+  rows,
+  sort,
+  dir,
+}: {
+  rows: MajorRow[];
+  sort: MajorFilters["sort"];
+  dir: MajorFilters["dir"];
+}) {
   return (
     <>
-      {/* Desktop table */}
-      <table className="hidden w-full border-collapse text-base lg:table">
-        <thead>
-          <tr className="border-b border-border text-left text-ink-3">
-            <th className="w-8 py-2" />
-            <th className="py-2 font-medium">Trường</th>
-            <th className="py-2 font-medium">Ngành / Hệ</th>
-            <th className="w-28 py-2 text-right font-medium">Năm đầu</th>
-            <th className="w-20 py-2 text-center font-medium">Số năm</th>
-            <th className="w-32 py-2 text-right font-medium">
-              Tổng (ước lượng)
-            </th>
-            <th className="w-32 py-2 pl-4 font-medium">% Tăng/năm</th>
-            <th className="w-8 py-2" />
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.program.id} className="border-b border-rule align-top">
-              <td className="py-3">
-                <CompareCheckbox
-                  id={row.program.id}
-                  label={`${row.major.name} — ${row.school.shortName}`}
+      {/* Desktop table — wrapped in a card (border + surface + rounded) so it
+          reads as a table. `overflow-hidden` clips the square border-collapse
+          corners to the rounded wrapper. */}
+      <div className="hidden overflow-hidden rounded-xl border border-border bg-surface shadow-[0_1px_2px_oklch(0.28_0.03_260/0.06)] lg:block">
+        <table className="w-full border-collapse text-base">
+          <thead>
+            <tr className="border-b border-border bg-surface-2 text-left text-ink-3">
+              <th scope="col" className="w-8 py-2 pl-4" />
+              <th
+                scope="col"
+                aria-sort={ariaSort(sort === "name", dir)}
+                className="px-3 py-2 font-medium"
+              >
+                <SortableHeader
+                  sortKey="name"
+                  label="Trường"
+                  active={sort === "name"}
+                  dir={dir}
+                  defaultKey={SORT_DEFAULT}
                 />
-              </td>
-              <td className="py-3">
-                <div className="font-medium text-ink">{row.school.name}</div>
-                <div className="mt-0.5 flex items-center gap-2 text-ink-3">
-                  <span>{row.school.shortName}</span>
-                  <SchoolTypeBadge category={row.school.category} />
-                </div>
-              </td>
-              <td className="py-3">
-                <div className="text-ink">{row.major.name}</div>
-                <div className="text-ink-3">
-                  {TRACK_LABELS[row.program.track]}
-                </div>
-              </td>
-              <td className="py-3 text-right tabular-nums text-ink">
-                {formatMillions(row.year1.amountPerYear)}
-              </td>
-              <td className="py-3 text-center tabular-nums text-ink">
-                {row.major.standardYears} năm
-              </td>
-              <td className="py-3 text-right tabular-nums text-ink">
-                {totalFor(row)}
-              </td>
-              <td className="py-3 pl-4">
-                <IncreaseBadge
-                  pct={row.increase?.annualIncreasePct ?? null}
-                  source={row.increase?.increaseSource ?? null}
+              </th>
+              <th scope="col" className="px-3 py-2 font-medium">
+                Ngành / Hệ
+              </th>
+              <th
+                scope="col"
+                aria-sort={ariaSort(sort === "year1", dir)}
+                className="w-28 px-3 py-2 text-right font-medium"
+              >
+                <SortableHeader
+                  sortKey="year1"
+                  label="Năm đầu"
+                  active={sort === "year1"}
+                  dir={dir}
+                  defaultKey={SORT_DEFAULT}
+                  align="right"
                 />
-              </td>
-              <td className="py-3 text-right">
-                <Link
-                  href="#"
-                  aria-label={`Xem chi tiết ${row.major.name} — ${row.school.shortName}`}
-                  className="text-ink-3 hover:text-accent"
-                >
-                  ›
-                </Link>
-              </td>
+              </th>
+              <th
+                scope="col"
+                className="w-20 px-3 py-2 text-center font-medium"
+              >
+                Số năm
+              </th>
+              <th
+                scope="col"
+                aria-sort={ariaSort(sort === "total", dir)}
+                className="w-36 px-3 py-2 text-right font-medium"
+              >
+                <SortableHeader
+                  sortKey="total"
+                  label="Tổng (ước lượng)"
+                  active={sort === "total"}
+                  dir={dir}
+                  defaultKey={SORT_DEFAULT}
+                  align="right"
+                />
+              </th>
+              <th
+                scope="col"
+                aria-sort={ariaSort(sort === "increase", dir)}
+                className="w-32 px-3 py-2 font-medium"
+              >
+                <SortableHeader
+                  sortKey="increase"
+                  label="% Tăng/năm"
+                  active={sort === "increase"}
+                  dir={dir}
+                  defaultKey={SORT_DEFAULT}
+                />
+              </th>
+              <th scope="col" className="w-8 py-2 pr-4" />
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr
+                key={row.program.id}
+                className="relative border-b border-rule align-top last:border-b-0"
+              >
+                <td className="relative z-10 py-3 pl-4">
+                  <CompareCheckbox
+                    id={row.program.id}
+                    label={`${row.major.name} — ${row.school.shortName}`}
+                  />
+                </td>
+                <td className="px-3 py-3">
+                  <div className="font-medium text-ink">{row.school.name}</div>
+                  <div className="mt-0.5 flex items-center gap-2 text-ink-3">
+                    <span>{row.school.shortName}</span>
+                    <SchoolTypeBadge category={row.school.category} />
+                  </div>
+                </td>
+                <td className="px-3 py-3">
+                  <div className="text-ink">{row.major.name}</div>
+                  <div className="text-ink-3">
+                    {TRACK_LABELS[row.program.track]}
+                  </div>
+                </td>
+                <td className="px-3 py-3 text-right tabular-nums text-ink">
+                  {formatMillions(row.year1.amountPerYear)}
+                </td>
+                <td className="px-3 py-3 text-center tabular-nums text-ink">
+                  {row.major.standardYears}
+                </td>
+                <td className="px-3 py-3 text-right tabular-nums text-ink">
+                  {totalFor(row)}
+                </td>
+                <td className="px-3 py-3">
+                  <IncreaseBadge
+                    pct={row.increase?.annualIncreasePct ?? null}
+                    source={row.increase?.increaseSource ?? null}
+                  />
+                </td>
+                <td className="py-3 pr-4 text-right">
+                  <RowLink
+                    label={`${row.major.name} — ${row.school.shortName}`}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Mobile cards */}
       <ul className="space-y-3 lg:hidden">
