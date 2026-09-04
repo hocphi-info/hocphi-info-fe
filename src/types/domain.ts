@@ -35,6 +35,8 @@ export interface Major {
   /** Mã ngành cấp IV — không unique, có thể chưa có với ngành mới mở. */
   code: string | null;
   groupCode: MajorGroupCode;
+  /** Số năm chuẩn của khoá (bác sĩ 6, cử nhân 4). BE: majors.standard_years. */
+  standardYears: number;
   requiresPracticeLicense: boolean;
   /** Bắt buộc có khi requiresPracticeLicense = true. */
   practiceProfession: string | null;

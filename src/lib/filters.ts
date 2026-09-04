@@ -297,6 +297,7 @@ export function sortMajorRows(rows: MajorRow[], f: MajorFilters): MajorRow[] {
         return totalCourseCost(
           r.year1.amountPerYear,
           r.increase?.annualIncreasePct,
+          r.major.standardYears ?? 4,
         );
       case "increase":
         // rows with no published increase sort last regardless of direction

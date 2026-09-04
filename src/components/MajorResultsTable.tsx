@@ -19,7 +19,8 @@ const TRACK_LABELS: Record<MajorRow["program"]["track"], string> = {
 
 function totalFor(row: MajorRow): string {
   const pct = row.increase?.annualIncreasePct;
-  return formatMillions(totalCourseCost(row.year1.amountPerYear, pct), {
+  const years = row.major.standardYears ?? 4;
+  return formatMillions(totalCourseCost(row.year1.amountPerYear, pct, years), {
     approx: true,
   });
 }
@@ -35,6 +36,7 @@ export default function MajorResultsTable({ rows }: { rows: MajorRow[] }) {
             <th className="py-2 font-medium">Trường</th>
             <th className="py-2 font-medium">Ngành / Hệ</th>
             <th className="w-28 py-2 text-right font-medium">Năm đầu</th>
+            <th className="w-20 py-2 text-center font-medium">Số năm</th>
             <th className="w-32 py-2 text-right font-medium">
               Tổng (ước lượng)
             </th>
@@ -66,6 +68,9 @@ export default function MajorResultsTable({ rows }: { rows: MajorRow[] }) {
               </td>
               <td className="py-3 text-right tabular-nums text-ink">
                 {formatMillions(row.year1.amountPerYear)}
+              </td>
+              <td className="py-3 text-center tabular-nums text-ink">
+                {row.major.standardYears} năm
               </td>
               <td className="py-3 text-right tabular-nums text-ink">
                 {totalFor(row)}
@@ -119,7 +124,9 @@ export default function MajorResultsTable({ rows }: { rows: MajorRow[] }) {
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs text-ink-3">Tổng 4 năm</div>
+                    <div className="text-xs text-ink-3">
+                      Tổng {row.major.standardYears} năm
+                    </div>
                     <div className="tabular-nums text-ink">{totalFor(row)}</div>
                   </div>
                   <div className="ml-auto">
