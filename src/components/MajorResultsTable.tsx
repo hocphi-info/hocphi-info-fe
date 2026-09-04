@@ -34,13 +34,11 @@ export default function MajorResultsTable({ rows }: { rows: MajorRow[] }) {
             <th className="w-8 py-2" />
             <th className="py-2 font-medium">Trường</th>
             <th className="py-2 font-medium">Ngành / Hệ</th>
-            <th className="w-28 py-2 text-right font-medium">
-              Năm đầu (2026–27)
-            </th>
+            <th className="w-28 py-2 text-right font-medium">Năm đầu</th>
             <th className="w-32 py-2 text-right font-medium">
-              Tổng 4 năm (ước lượng)
+              Tổng (ước lượng)
             </th>
-            <th className="w-32 py-2 pl-4 font-medium">Tăng/năm</th>
+            <th className="w-32 py-2 pl-4 font-medium">% Tăng/năm</th>
             <th className="w-8 py-2" />
           </tr>
         </thead>
