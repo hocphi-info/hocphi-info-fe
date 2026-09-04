@@ -64,7 +64,7 @@ function Section({
 function CheckboxRow({ label }: { label: string }) {
   return (
     <label className="flex items-center gap-2 text-sm text-ink-2">
-      <input type="checkbox" className="size-4 accent-[var(--accent)]" />
+      <input type="checkbox" className="size-4 accent-accent" />
       {label}
     </label>
   );
@@ -109,7 +109,7 @@ function PanelBody({ screen }: { screen: "nganh" | "truong" }) {
               type="radio"
               name="range-basis"
               defaultChecked
-              className="size-4 accent-[var(--accent)]"
+              className="size-4 accent-accent"
             />
             Chỉ hệ đại trà
           </label>
@@ -117,7 +117,7 @@ function PanelBody({ screen }: { screen: "nganh" | "truong" }) {
             <input
               type="radio"
               name="range-basis"
-              className="size-4 accent-[var(--accent)]"
+              className="size-4 accent-accent"
             />
             Gồm cả CLC – tiên tiến
           </label>
@@ -144,7 +144,7 @@ function PanelBody({ screen }: { screen: "nganh" | "truong" }) {
           min={0}
           max={350}
           defaultValue={350}
-          className="w-full accent-[var(--accent)]"
+          className="w-full accent-accent"
         />
         <p className="text-xs text-ink-3">0 – 350 tr</p>
       </Section>
@@ -152,7 +152,7 @@ function PanelBody({ screen }: { screen: "nganh" | "truong" }) {
       {screen === "nganh" && (
         <Section title="Lộ trình tăng">
           <label className="flex items-center gap-2 text-sm text-ink-2">
-            <input type="checkbox" className="size-4 accent-[var(--accent)]" />
+            <input type="checkbox" className="size-4 accent-accent" />
             Chỉ trường công bố lộ trình
           </label>
         </Section>

@@ -1,13 +1,13 @@
-import { getSchoolRows } from "@/lib/mock-data";
+import { fetchSchoolRows } from "@/lib/api";
 import ViewModeToggle from "@/components/ViewModeToggle";
 import FilterPanel from "@/components/FilterPanel";
 import SortDropdown from "@/components/SortDropdown";
 import DismissibleCallout from "@/components/DismissibleCallout";
 import SchoolResultsTable from "@/components/SchoolResultsTable";
 
-// Server Component. Week 2: make `async` and `await fetchSchoolRows()`.
-export default function TruongPage() {
-  const rows = getSchoolRows();
+// Server Component. See app/nganh/page.tsx — same shape, different data source.
+export default async function TruongPage() {
+  const rows = await fetchSchoolRows();
 
   return (
     <main className="mx-auto w-full min-w-0 max-w-7xl flex-1 px-4 py-6">

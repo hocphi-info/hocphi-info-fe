@@ -1,8 +1,12 @@
-// Mock data for Week 1 — hard-coded arrays standing in for the API.
+// Mock data for Week 1–2 — hard-coded arrays standing in for the database.
+//
+// Server-only: from Week 2 on, only the Route Handlers in `src/app/api/*` import
+// this file (they run on the server and stand in for the real API). Do NOT import
+// it into a Client Component or into `page.tsx` — data belongs behind an endpoint.
 //
 // Every number here is ILLUSTRATIVE and unverified (see ../yeu-cau-san-pham.md).
-// Field names match the backend schema so Week 2 can replace `getMajorRows()` /
-// `getSchoolRows()` internals with `await fetch(...)` and nothing else changes.
+// Field names match the backend schema so Week 2 only swaps the data *source*
+// (mock arrays -> `await fetch(...)`) without changing any component.
 //
 // Coverage (plan R18): every school `category`; both cities; a major with
 // requiresPracticeLicense; both increase sources; one school with a single

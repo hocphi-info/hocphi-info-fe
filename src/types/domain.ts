@@ -95,3 +95,12 @@ export interface SchoolRow {
   school: School;
   stats: SchoolStats;
 }
+
+/** Một gợi ý của ô tìm nhanh (F13). Trả từ GET /api/search?q= — xem QuickSearch. */
+export interface SearchHit {
+  kind: "school" | "major";
+  slug: string;
+  name: string;
+  /** Chỉ có với trường (short_name). */
+  shortName?: string;
+}

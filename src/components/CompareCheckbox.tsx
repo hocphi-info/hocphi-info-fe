@@ -26,7 +26,7 @@ export default function CompareCheckbox({
       onChange={() => toggle(id)}
       aria-label={`Chọn để so sánh: ${label}`}
       title={disabled ? `Chỉ so sánh tối đa ${max} mục` : undefined}
-      className="size-4 accent-[var(--accent)] disabled:opacity-40"
+      className="size-4 accent-accent disabled:opacity-40"
     />
   );
 }
