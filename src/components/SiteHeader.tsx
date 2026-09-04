@@ -1,8 +1,10 @@
 import Link from "next/link";
 
-// Server Component (no "use client") — pure markup, no state or events.
-// The search box is a placeholder for F13 (typeahead), disabled for now so the
-// slot is visible without pretending to work.
+import QuickSearch from "@/components/QuickSearch";
+
+// Server Component (no "use client") — pure markup. It *renders* the QuickSearch
+// Client Component: a Server Component can contain a Client Component, but not the
+// other way round (a Client Component only receives Server ones via children/props).
 export default function SiteHeader() {
   return (
     <header className="border-b border-border bg-surface">
@@ -10,15 +12,7 @@ export default function SiteHeader() {
         <Link href="/" className="text-lg font-bold tracking-tight text-ink">
           hocphi<span className="text-accent">.info</span>
         </Link>
-        <div className="ml-auto hidden w-full max-w-xs sm:block">
-          <input
-            type="search"
-            disabled
-            placeholder="Tìm trường / ngành…"
-            aria-label="Tìm nhanh trường hoặc ngành (sắp có)"
-            className="w-full rounded-full border border-border bg-surface-2 px-4 py-1.5 text-sm text-ink-2 placeholder:text-ink-3"
-          />
-        </div>
+        <QuickSearch />
       </div>
     </header>
   );
