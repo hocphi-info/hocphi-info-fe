@@ -1,4 +1,4 @@
-import { getMajorRows } from "@/lib/mock-data";
+import { fetchMajorRows } from "@/lib/api";
 import ViewModeToggle from "@/components/ViewModeToggle";
 import FilterPanel from "@/components/FilterPanel";
 import SortDropdown from "@/components/SortDropdown";
@@ -7,11 +7,12 @@ import CompareTray from "@/components/CompareTray";
 import CompareCountButton from "@/components/CompareCountButton";
 import MajorResultsTable from "@/components/MajorResultsTable";
 
-// Server Component (no "use client"). Week 2: make this `async` and
-// `await fetchMajorRows()` — the rest of the tree stays the same because it only
-// receives plain data via props.
-export default function NganhPage() {
-  const rows = getMajorRows();
+// Server Component (no "use client"). The `async` function fetches on the server
+// and blocks rendering until the data arrives — Next shows loading.tsx meanwhile,
+// and a thrown error lands in error.tsx. Nothing below `return` changed from Week
+// 1: the component tree only receives plain data via props.
+export default async function NganhPage() {
+  const rows = await fetchMajorRows();
 
   return (
     <main className="mx-auto w-full min-w-0 max-w-7xl flex-1 px-4 py-6">
