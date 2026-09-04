@@ -18,11 +18,10 @@ học phí hàng năm. Không cần đăng nhập.
 
 - [hocphi-info-fe 🎓](#hocphi-info-fe-)
   - [I. Cách hoạt động](#i-cách-hoạt-động)
-  - [II. Vì sao viết thế này](#ii-vì-sao-viết-thế-này)
-  - [III. Công nghệ](#iii-công-nghệ)
-  - [IV. Cấu trúc dự án](#iv-cấu-trúc-dự-án)
-  - [V. Chạy thử](#v-chạy-thử)
-  - [VI. Lộ trình](#vi-lộ-trình)
+  - [II. Công nghệ](#iii-công-nghệ)
+  - [III. Cấu trúc dự án](#iv-cấu-trúc-dự-án)
+  - [IV. Chạy thử](#v-chạy-thử)
+  - [V. Lộ trình](#vi-lộ-trình)
 
 ## I. Cách hoạt động
 
@@ -58,34 +57,14 @@ Dữ liệu đi qua **Route Handler** (`src/app/api/*`) đóng vai backend tạm
 [`hocphi-info-be`](../hocphi-info-be) chạy thật, chỉ cần đặt `NEXT_PUBLIC_API_URL` là
 `src/lib/api.ts` gọi thẳng API đó — component không đổi.
 
-## II. Vì sao viết thế này
-
-**1. Đây là dự án học React/Next.js, không chỉ ship tính năng.** Chủ dự án có 4 năm Flutter,
-mới React/Next/TS. Lộ trình build bám theo [`docs/LEARNING_PATH.md`](docs/LEARNING_PATH.md) —
-mỗi "tuần" học một nhóm khái niệm khi thực sự cần dùng, có phần "học được gì" + sơ đồ đọc code.
-
-**2. Không kiến trúc đặt tên (không MVC/Clean Architecture).** Router theo file của Next.js
-_chính là_ tầng routing; phần còn lại là cấu trúc phẳng, colocated. App là đọc / lọc / hiển
-thị, không có business logic phức tạp — không thêm tầng repository/use-case/entity.
-
-**3. Bám sát schema backend từ đầu.** `src/types/domain.ts` phản chiếu
-[`hocphi-info-be/docs/schema.md`](../hocphi-info-be/docs/schema.md) (camelCase, enum = string
-union). Nhờ vậy việc "nối API thật" chỉ là đổi _nguồn_ dữ liệu, không đụng UI.
-
-**4. Bộ lọc & sắp xếp sống trên URL.** Dùng `searchParams` thay cho state cục bộ để mọi
-kết quả lọc đều chia sẻ được bằng link và không mất khi tải lại trang.
-
-**5. Công cụ tối giản.** Chỉ `useState`/`useReducer`/Context và `fetch` thuần — chưa thêm
-Redux/Zustand/React Query cho tới khi có nhu cầu thật.
-
-## III. Công nghệ
+## II. Công nghệ
 
 Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 (`@theme inline`) ·
 ESLint + Prettier + Husky · Recharts (từ Tuần 4)
 
 Bảng màu "Xanh Tri Thức" (token oklch trong `src/app/globals.css`), hỗ trợ light/dark.
 
-## IV. Cấu trúc dự án
+## III. Cấu trúc dự án
 
 ```
 src/
@@ -107,7 +86,7 @@ docs/                   # (git-ignore) LEARNING_PATH.md + brainstorms/ + plans/
 Component đặc thù một route mà không dùng lại thì để cạnh `page.tsx` (colocation), không ép
 đưa vào `components/`.
 
-## V. Chạy thử
+## IV. Chạy thử
 
 ```bash
 cp .env.example .env.local     # để trống NEXT_PUBLIC_API_URL -> dùng Route Handler nội bộ
@@ -128,7 +107,7 @@ npm run build
 > Node fetch phía server resolve `localhost` ra IPv6 `::1` gây `ECONNREFUSED`; `src/lib/api-base.ts`
 > tự ép `//localhost:` → `//127.0.0.1:`. Nếu đặt `NEXT_PUBLIC_API_URL`, dùng `127.0.0.1` thay `localhost`.
 
-## VI. Lộ trình
+## V. Lộ trình
 
 Xây theo [`docs/LEARNING_PATH.md`](docs/LEARNING_PATH.md), mỗi tuần một nhóm khái niệm:
 

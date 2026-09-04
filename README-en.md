@@ -21,10 +21,9 @@ cost** (4–6 years) based on the annual tuition-increase rate. No login require
 - [hocphi-info-fe 🎓](#hocphi-info-fe-)
   - [I. How it works](#i-how-it-works)
   - [II. Why it's built this way](#ii-why-its-built-this-way)
-  - [III. Tech stack](#iii-tech-stack)
-  - [IV. Project layout](#iv-project-layout)
-  - [V. Getting started](#v-getting-started)
-  - [VI. Roadmap](#vi-roadmap)
+  - [III. Project layout](#iv-project-layout)
+  - [IV. Getting started](#v-getting-started)
+  - [V. Roadmap](#vi-roadmap)
 
 ## I. How it works
 
@@ -61,35 +60,14 @@ Data flows through **Route Handlers** (`src/app/api/*`) that stand in for the re
 Once [`hocphi-info-be`](../hocphi-info-be) is live, just set `NEXT_PUBLIC_API_URL` and
 `src/lib/api.ts` calls that API directly — components don't change.
 
-## II. Why it's built this way
-
-**1. This is a React/Next.js learning project, not just feature delivery.** The owner has 4
-years of Flutter and is new to React/Next/TS. The build follows
-[`docs/LEARNING_PATH.md`](docs/LEARNING_PATH.md) — each "week" learns one cluster of concepts
-when it's actually needed, with a "what we learned" section and a diagram for reading the code.
-
-**2. No named architecture (no MVC/Clean Architecture).** Next.js's file-system router _is_
-the routing layer; the rest is a flat, colocated structure. The app is read / filter / display,
-not complex business logic — no repository/use-case/entity layers.
-
-**3. Mirrors the backend schema from day one.** `src/types/domain.ts` mirrors
-[`hocphi-info-be/docs/schema.md`](../hocphi-info-be/docs/schema.md) (camelCase, enums as string
-unions). So "connect the real API" is just swapping the data _source_, not touching the UI.
-
-**4. Filters & sort live in the URL.** Using `searchParams` instead of local state makes every
-filtered result shareable via link and survive a page reload.
-
-**5. Minimal tooling.** Only `useState`/`useReducer`/Context and plain `fetch` — no
-Redux/Zustand/React Query until there's a real need.
-
-## III. Tech stack
+## II. Tech stack
 
 Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 (`@theme inline`) ·
 ESLint + Prettier + Husky · Recharts (from Week 4)
 
 "Xanh Tri Thức" color palette (oklch tokens in `src/app/globals.css`), light/dark support.
 
-## IV. Project layout
+## III. Project layout
 
 ```
 src/
@@ -111,7 +89,7 @@ docs/                   # (git-ignored) LEARNING_PATH.md + brainstorms/ + plans/
 Route-specific components that aren't reused live next to their `page.tsx` (colocation)
 rather than being forced into `components/`.
 
-## V. Getting started
+## IV. Getting started
 
 ```bash
 cp .env.example .env.local     # leave NEXT_PUBLIC_API_URL empty -> use the internal Route Handler
@@ -133,7 +111,7 @@ npm run build
 > `src/lib/api-base.ts` rewrites `//localhost:` → `//127.0.0.1:`. If you set
 > `NEXT_PUBLIC_API_URL`, use `127.0.0.1` instead of `localhost`.
 
-## VI. Roadmap
+## V. Roadmap
 
 Built along [`docs/LEARNING_PATH.md`](docs/LEARNING_PATH.md), one concept cluster per week:
 
