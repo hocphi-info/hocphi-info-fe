@@ -129,14 +129,14 @@ export default function MajorResultsTable({
                   align="center"
                 />
               </th>
-              <th scope="col" className="w-8 py-2 pr-4" />
+              <th scope="col" className="w-12 py-2" />
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
               <tr
                 key={row.program.id}
-                className="border-b border-rule align-top last:border-b-0"
+                className="border-b border-rule align-middle last:border-b-0"
               >
                 <td className="py-3 pl-4">
                   <CompareCheckbox
@@ -172,7 +172,7 @@ export default function MajorResultsTable({
                     source={row.increase?.increaseSource ?? null}
                   />
                 </td>
-                <td className="py-3 pr-4 text-right">
+                <td className="w-12 p-0 text-right">
                   <RowLink
                     label={`${row.major.name} — ${row.school.shortName}`}
                   />

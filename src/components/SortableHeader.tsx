@@ -39,16 +39,32 @@ export default function SortableHeader<K extends string>({
 }) {
   const sp = useSearchParams();
 
+  const isDefaultCol = sortKey === defaultKey;
+
   function onClick() {
+    // Per-column 3-state cycle: (chưa sắp xếp) → tăng dần → giảm dần → (chưa
+    // sắp xếp). The 3rd click drops both `sort` and `dir`, so the list falls
+    // back to the app's default sort.
+    //
+    // The default column is always `active` (its key is the fallback sort), so it
+    // never sees the 1st-click branch: it just toggles tăng ⇄ giảm, and the
+    // "clear" branch returns it to its resting tăng-dần state.
     let params = new URLSearchParams(sp.toString());
-    if (active) {
-      // Toggle direction: asc -> desc -> (drop dir, back to the asc default).
-      params = setOne(params, "dir", dir === "asc" ? "desc" : null);
+
+    if (!active) {
+      // 1st click on this column → tăng dần (drop `dir`; asc is the default)
+      params = setOne(params, "sort", isDefaultCol ? null : sortKey);
+      params = setOne(params, "dir", null);
+    } else if (dir === "asc") {
+      // 2nd click → giảm dần
+      params = setOne(params, "sort", isDefaultCol ? null : sortKey);
+      params = setOne(params, "dir", "desc");
     } else {
-      // Switch column: set sort (omit if it's the default), reset to asc.
-      params = setOne(params, "sort", sortKey === defaultKey ? null : sortKey);
+      // 3rd click (đang giảm dần) → bỏ sắp xếp, quay về sort mặc định
+      params = setOne(params, "sort", null);
       params = setOne(params, "dir", null);
     }
+
     writeParams(params, "push");
   }
 
@@ -59,17 +75,19 @@ export default function SortableHeader<K extends string>({
         ? "justify-center"
         : "justify-start";
 
+  const hint = !active
+    ? "bấm để sắp xếp tăng dần"
+    : dir === "asc"
+      ? "đang tăng dần — bấm để sắp xếp giảm dần"
+      : isDefaultCol
+        ? "đang giảm dần — bấm để sắp xếp tăng dần"
+        : "đang giảm dần — bấm để bỏ sắp xếp";
+
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={
-        active
-          ? dir === "asc"
-            ? `Sắp xếp theo ${label} — đang tăng dần, bấm để giảm dần`
-            : `Sắp xếp theo ${label} — đang giảm dần, bấm để tăng dần`
-          : `Sắp xếp theo ${label}`
-      }
+      aria-label={`Sắp xếp theo ${label}; ${hint}`}
       className={`group flex w-full items-center gap-1 font-medium text-ink-3 ${justify}`}
     >
       <span>{label}</span>

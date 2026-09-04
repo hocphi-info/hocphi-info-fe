@@ -6,9 +6,10 @@ import SortableHeader from "@/components/SortableHeader";
 import RowLink from "@/components/RowLink";
 
 // Server Component — S2 result list, matching the S1 table redesign: a card
-// wrapper, sortable column headers (SortableHeader — Client leaves), whole-row
-// click via RowLink. Columns follow ../yeu-cau-san-pham.md §6/S2. A school with a
-// single major shows one number + a "mới có 1 ngành" note.
+// wrapper, sortable column headers (SortableHeader — Client leaves). Only the
+// chevron (RowLink) in the last cell opens the detail route, not the whole <tr>,
+// so row text stays selectable/copyable. Columns follow ../yeu-cau-san-pham.md
+// §6/S2. A school with a single major shows one number + a "mới có 1 ngành" note.
 
 const SORT_DEFAULT = "min" as const;
 
@@ -110,7 +111,7 @@ export default function SchoolResultsTable({
               <th scope="col" className="w-24 px-3 py-2 font-medium">
                 Tăng/năm
               </th>
-              <th scope="col" className="w-8 py-2 pr-4" />
+              <th scope="col" className="w-12 py-2" />
             </tr>
           </thead>
           <tbody>
@@ -119,7 +120,7 @@ export default function SchoolResultsTable({
               return (
                 <tr
                   key={school.slug}
-                  className="relative border-b border-rule align-top last:border-b-0"
+                  className="border-b border-rule align-middle last:border-b-0"
                 >
                   <td className="py-3 pl-4 pr-3">
                     <div className="font-medium text-ink">{school.name}</div>
@@ -163,7 +164,7 @@ export default function SchoolResultsTable({
                       {stats.increaseSummary}
                     </span>
                   </td>
-                  <td className="py-3 pr-4 text-right">
+                  <td className="w-12 p-0 text-right">
                     <RowLink label={school.shortName} />
                   </td>
                 </tr>

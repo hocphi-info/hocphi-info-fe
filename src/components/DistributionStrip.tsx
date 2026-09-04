@@ -67,7 +67,7 @@ export default function DistributionStrip({ rows }: { rows: MajorRow[] }) {
 
       {mainRows.length > 0 && (
         <div className="relative mx-1.5 h-14" aria-hidden>
-          <div className="absolute inset-x-0 top-[34px] h-0.5 bg-rule" />
+          <div className="absolute inset-x-0 top-8.5 h-0.5 bg-rule" />
           {/* median tick */}
           <div
             className="absolute top-1.5 bottom-2 w-0.5 bg-accent-strong"
@@ -87,10 +87,10 @@ export default function DistributionStrip({ rows }: { rows: MajorRow[] }) {
               title={`${r.school.shortName} · ${formatMillions(r.year1.amountPerYear)}`}
             />
           ))}
-          <div className="absolute top-[44px] left-0 text-[11px] text-ink-3 tabular-nums">
+          <div className="absolute top-11 left-0 text-[11px] text-ink-3 tabular-nums">
             {formatMillions(lo)}
           </div>
-          <div className="absolute top-[44px] right-0 text-[11px] text-ink-3 tabular-nums">
+          <div className="absolute top-11 right-0 text-[11px] text-ink-3 tabular-nums">
             {formatMillions(hi)}
           </div>
         </div>
