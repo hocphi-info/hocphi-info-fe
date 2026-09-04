@@ -29,7 +29,7 @@ export default function MajorResultsTable({ rows }: { rows: MajorRow[] }) {
   return (
     <>
       {/* Desktop table */}
-      <table className="hidden w-full border-collapse text-sm lg:table">
+      <table className="hidden w-full border-collapse text-base lg:table">
         <thead>
           <tr className="border-b border-border text-left text-ink-3">
             <th className="w-8 py-2" />
@@ -109,22 +109,22 @@ export default function MajorResultsTable({ rows }: { rows: MajorRow[] }) {
               />
               <div className="min-w-0 flex-1">
                 <div className="font-medium text-ink">{row.school.name}</div>
-                <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-ink-3">
+                <div className="mt-0.5 flex flex-wrap items-center gap-2 text-sm text-ink-3">
                   <span>{row.school.shortName}</span>
                   <SchoolTypeBadge category={row.school.category} />
                 </div>
-                <div className="mt-1 text-sm text-ink-2">
+                <div className="mt-1 text-base text-ink-2">
                   {row.major.name} · {TRACK_LABELS[row.program.track]}
                 </div>
                 <div className="mt-2 flex items-end gap-6">
                   <div>
-                    <div className="text-xs text-ink-3">Năm đầu</div>
+                    <div className="text-sm text-ink-3">Năm đầu</div>
                     <div className="tabular-nums text-ink">
                       {formatMillions(row.year1.amountPerYear)}
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs text-ink-3">
+                    <div className="text-sm text-ink-3">
                       Tổng {row.major.standardYears} năm
                     </div>
                     <div className="tabular-nums text-ink">{totalFor(row)}</div>

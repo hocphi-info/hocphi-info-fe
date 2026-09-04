@@ -18,7 +18,7 @@ export default function ResultsSummary({
       <p className="font-medium text-ink">
         {count} {noun} phù hợp
       </p>
-      <p className="text-sm text-ink-3">{description}</p>
+      <p className="text-base text-ink-3">{description}</p>
     </div>
   );
 }

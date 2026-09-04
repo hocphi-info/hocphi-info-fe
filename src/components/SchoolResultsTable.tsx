@@ -17,7 +17,7 @@ function RangeCell({
   return (
     <div>
       <div className="tabular-nums text-ink">{formatMillions(amount)}</div>
-      <div className="text-xs text-ink-3">{majorName}</div>
+      <div className="text-sm text-ink-3">{majorName}</div>
     </div>
   );
 }
@@ -26,7 +26,7 @@ export default function SchoolResultsTable({ rows }: { rows: SchoolRow[] }) {
   return (
     <>
       {/* Desktop table */}
-      <table className="hidden w-full border-collapse text-sm lg:table">
+      <table className="hidden w-full border-collapse text-base lg:table">
         <thead>
           <tr className="border-b border-border text-left text-ink-3">
             <th className="py-2 pr-3 font-medium">Trường</th>
@@ -59,7 +59,7 @@ export default function SchoolResultsTable({ rows }: { rows: SchoolRow[] }) {
                       {formatMillions(stats.minAmount)}
                     </span>{" "}
                     · {stats.minMajorName}
-                    <div className="text-xs text-ink-3">mới có 1 ngành</div>
+                    <div className="text-sm text-ink-3">mới có 1 ngành</div>
                   </td>
                 ) : (
                   <>
@@ -110,7 +110,7 @@ export default function SchoolResultsTable({ rows }: { rows: SchoolRow[] }) {
               className="rounded-lg border border-border bg-surface p-3"
             >
               <div className="font-medium text-ink">{school.name}</div>
-              <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-ink-3">
+              <div className="mt-0.5 flex flex-wrap items-center gap-2 text-sm text-ink-3">
                 <span>{school.shortName}</span>
                 <SchoolTypeBadge category={school.category} />
                 <span>· {stats.nPrograms} ngành</span>
@@ -122,7 +122,7 @@ export default function SchoolResultsTable({ rows }: { rows: SchoolRow[] }) {
                       stats.maxAmount,
                     )}`}
               </div>
-              <div className="text-xs text-ink-3">
+              <div className="text-sm text-ink-3">
                 {single
                   ? `mới có 1 ngành · ${stats.minMajorName}`
                   : `Trung vị ${formatMillions(stats.medianAmount)} · tăng ${
