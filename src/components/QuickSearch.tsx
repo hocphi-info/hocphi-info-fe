@@ -16,6 +16,10 @@ const DEBOUNCE_MS = 250;
 //
 // Flutter analogy: initState + setState, with the useEffect cleanup playing the
 // role of dispose().
+//
+// Placement: it lives in the results toolbar just above the table (see
+// MajorResultsView), not in SiteHeader — it belongs with the page it searches.
+// The parent wraps it in a width-constrained <div>; this component just fills it.
 export default function QuickSearch() {
   const [query, setQuery] = useState("");
   // Results are tagged with the query they came from, so a stale response (or a
@@ -57,7 +61,7 @@ export default function QuickSearch() {
   const fresh = data?.q === trimmed ? data.hits : null;
 
   return (
-    <div className="relative ml-auto hidden w-full max-w-xs sm:block">
+    <div className="relative w-full">
       <input
         type="search"
         value={query}

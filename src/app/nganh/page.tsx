@@ -1,17 +1,24 @@
+import { Suspense } from "react";
 import { fetchMajorRows } from "@/lib/api";
 import ViewModeToggle from "@/components/ViewModeToggle";
-import FilterPanel from "@/components/FilterPanel";
-import SortDropdown from "@/components/SortDropdown";
-import DismissibleCallout from "@/components/DismissibleCallout";
 import CompareTray from "@/components/CompareTray";
-import CompareCountButton from "@/components/CompareCountButton";
-import MajorResultsTable from "@/components/MajorResultsTable";
+import MajorResultsView from "@/components/MajorResultsView";
+import ResultsSkeleton from "@/components/ResultsSkeleton";
 
-// Server Component (no "use client"). The `async` function fetches on the server
-// and blocks rendering until the data arrives — Next shows loading.tsx meanwhile,
-// and a thrown error lands in error.tsx. Nothing below `return` changed from Week
-// 1: the component tree only receives plain data via props.
-export default async function NganhPage() {
+// Server Component. It fetches the FULL row list (as in Week 2) and hands it to
+// the client MajorResultsView, which does all filtering/sorting from the URL.
+//
+// Why `await searchParams` even though we don't read a value here: touching it
+// opts the route into dynamic rendering, so useSearchParams() inside
+// MajorResultsView resolves to the real query during SSR — the first paint is
+// already filtered, not an empty list that fills in after hydration (R2).
+//
+// Why <Suspense>: useSearchParams() makes its subtree client-render up to the
+// nearest Suspense boundary during prerender. Without one, `next build` fails
+// ("Missing Suspense boundary with useSearchParams") — and `next dev` does NOT
+// warn, so the build is the real gate.
+export default async function NganhPage({ searchParams }: PageProps<"/nganh">) {
+  await searchParams;
   const rows = await fetchMajorRows();
 
   return (
@@ -24,46 +31,9 @@ export default async function NganhPage() {
       </div>
 
       <CompareTray>
-        <div className="mt-6 min-w-0 lg:grid lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
-          <FilterPanel screen="nganh" />
-
-          <section className="mt-4 min-w-0 lg:mt-0">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="font-medium text-ink">
-                  {rows.length} ngành – trường phù hợp
-                </p>
-                <p className="text-sm text-ink-3">
-                  Bộ lọc: tất cả thành phố · tất cả nhóm ngành
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <SortDropdown />
-                <CompareCountButton />
-              </div>
-            </div>
-
-            <div className="mt-3">
-              <DismissibleCallout title="Vì sao dùng trung vị theo hệ?">
-                Học phí các hệ đào tạo (đại trà, chất lượng cao, tiên tiến, quốc
-                tế) chênh nhau 3–5 lần. Gộp chung sẽ ra một con số vô nghĩa, nên
-                mọi phép trung vị đều tính riêng trong từng hệ.
-              </DismissibleCallout>
-            </div>
-
-            <div className="mt-4">
-              <MajorResultsTable rows={rows} />
-            </div>
-
-            <button
-              type="button"
-              disabled
-              className="mt-4 w-full rounded-lg border border-border py-2 text-sm text-ink-3"
-            >
-              Xem thêm kết quả
-            </button>
-          </section>
-        </div>
+        <Suspense fallback={<ResultsSkeleton />}>
+          <MajorResultsView rows={rows} />
+        </Suspense>
       </CompareTray>
     </main>
   );
