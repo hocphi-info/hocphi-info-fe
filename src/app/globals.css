@@ -34,6 +34,17 @@
 
   --warn-bg: oklch(0.96 0.05 75);
   --warn-ink: oklch(0.47 0.09 60);
+
+  /* Tag loại trường — 4 tông chỉ để phân loại, không hàm ý tốt/xấu.
+     Nhãn chữ vẫn luôn hiện nên màu không phải kênh thông tin duy nhất. */
+  --tag-red-bg: oklch(0.945 0.035 25);
+  --tag-red-ink: oklch(0.455 0.15 27);
+  --tag-amber-bg: oklch(0.955 0.05 80);
+  --tag-amber-ink: oklch(0.47 0.09 65);
+  --tag-green-bg: oklch(0.945 0.05 158);
+  --tag-green-ink: oklch(0.43 0.11 160);
+  --tag-blue-bg: oklch(0.945 0.028 255);
+  --tag-blue-ink: oklch(0.43 0.108 261);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -62,6 +73,15 @@
 
     --warn-bg: oklch(0.32 0.05 70);
     --warn-ink: oklch(0.85 0.08 80);
+
+    --tag-red-bg: oklch(0.32 0.06 27);
+    --tag-red-ink: oklch(0.84 0.1 30);
+    --tag-amber-bg: oklch(0.32 0.05 72);
+    --tag-amber-ink: oklch(0.86 0.08 82);
+    --tag-green-bg: oklch(0.31 0.05 158);
+    --tag-green-ink: oklch(0.84 0.09 160);
+    --tag-blue-bg: oklch(0.3 0.04 259);
+    --tag-blue-ink: oklch(0.79 0.095 252);
   }
 }
 
@@ -92,6 +112,15 @@
 
   --color-warn-bg: var(--warn-bg);
   --color-warn-ink: var(--warn-ink);
+
+  --color-tag-red-bg: var(--tag-red-bg);
+  --color-tag-red-ink: var(--tag-red-ink);
+  --color-tag-amber-bg: var(--tag-amber-bg);
+  --color-tag-amber-ink: var(--tag-amber-ink);
+  --color-tag-green-bg: var(--tag-green-bg);
+  --color-tag-green-ink: var(--tag-green-ink);
+  --color-tag-blue-bg: var(--tag-blue-bg);
+  --color-tag-blue-ink: var(--tag-blue-ink);
 }
 
 body {
