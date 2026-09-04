@@ -9,7 +9,7 @@ const LABELS: Record<SchoolCategory, string> = {
   cong_lap: "Công lập",
   cong_lap_tu_chu: "Công lập tự chủ",
   tu_thuc: "Tư thục",
-  tu_thuc_von_nuoc_ngoai: "Tư thục · 100% vốn nước ngoài",
+  tu_thuc_von_nuoc_ngoai: "Vốn nước ngoài",
 };
 
 const TONE: Record<SchoolCategory, string> = {

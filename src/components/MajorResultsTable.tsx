@@ -13,11 +13,10 @@ import RowLink from "@/components/RowLink";
 // Client leaves. Mobile (<lg): a stack of cards, unchanged. Columns follow
 // ../yeu-cau-san-pham.md §6/S1.
 //
-// Row click: each <tr> is `relative` and RowLink paints an `after:inset-0`
-// overlay, so the whole row is the click target. The detail route (S3/S4) is
-// Week 4 — until then RowLink points at "#" with scroll={false}. Week 4: swap
-// RowLink's href for the real path (and add a hover treatment on <tr> here if
-// wanted).
+// Row click: only the chevron (RowLink) in the last cell is the click target —
+// the row itself is not clickable, so its text stays selectable/copyable. The
+// detail route (S3/S4) is Week 4 — until then RowLink points at "#" with
+// scroll={false}. Week 4: swap RowLink's href for the real path.
 
 // The key that is NOT written to the URL (the default sort), passed to each
 // SortableHeader so it knows when to omit `sort` from the query string.
@@ -85,7 +84,7 @@ export default function MajorResultsTable({
               <th
                 scope="col"
                 aria-sort={ariaSort(sort === "year1", dir)}
-                className="w-28 px-3 py-2 text-right font-medium"
+                className="w-28 px-3 py-2 text-center font-medium"
               >
                 <SortableHeader
                   sortKey="year1"
@@ -93,7 +92,7 @@ export default function MajorResultsTable({
                   active={sort === "year1"}
                   dir={dir}
                   defaultKey={SORT_DEFAULT}
-                  align="right"
+                  align="center"
                 />
               </th>
               <th
@@ -105,7 +104,7 @@ export default function MajorResultsTable({
               <th
                 scope="col"
                 aria-sort={ariaSort(sort === "total", dir)}
-                className="w-36 px-3 py-2 text-right font-medium"
+                className="w-36 px-3 py-2 text-center font-medium"
               >
                 <SortableHeader
                   sortKey="total"
@@ -113,20 +112,21 @@ export default function MajorResultsTable({
                   active={sort === "total"}
                   dir={dir}
                   defaultKey={SORT_DEFAULT}
-                  align="right"
+                  align="center"
                 />
               </th>
               <th
                 scope="col"
                 aria-sort={ariaSort(sort === "increase", dir)}
-                className="w-32 px-3 py-2 font-medium"
+                className="w-32 px-3 py-2 text-center font-medium"
               >
                 <SortableHeader
                   sortKey="increase"
-                  label="% Tăng/năm"
+                  label="% tăng/năm"
                   active={sort === "increase"}
                   dir={dir}
                   defaultKey={SORT_DEFAULT}
+                  align="center"
                 />
               </th>
               <th scope="col" className="w-8 py-2 pr-4" />
@@ -136,9 +136,9 @@ export default function MajorResultsTable({
             {rows.map((row) => (
               <tr
                 key={row.program.id}
-                className="relative border-b border-rule align-top last:border-b-0"
+                className="border-b border-rule align-top last:border-b-0"
               >
-                <td className="relative z-10 py-3 pl-4">
+                <td className="py-3 pl-4">
                   <CompareCheckbox
                     id={row.program.id}
                     label={`${row.major.name} — ${row.school.shortName}`}
@@ -157,16 +157,16 @@ export default function MajorResultsTable({
                     {TRACK_LABELS[row.program.track]}
                   </div>
                 </td>
-                <td className="px-3 py-3 text-right tabular-nums text-ink">
+                <td className="px-3 py-3 text-center tabular-nums text-ink">
                   {formatMillions(row.year1.amountPerYear)}
                 </td>
                 <td className="px-3 py-3 text-center tabular-nums text-ink">
                   {row.major.standardYears}
                 </td>
-                <td className="px-3 py-3 text-right tabular-nums text-ink">
+                <td className="px-3 py-3 text-center tabular-nums text-ink">
                   {totalFor(row)}
                 </td>
-                <td className="px-3 py-3">
+                <td className="px-3 py-3 text-center">
                   <IncreaseBadge
                     pct={row.increase?.annualIncreasePct ?? null}
                     source={row.increase?.increaseSource ?? null}
