@@ -1,24 +1,19 @@
-import { headers } from "next/headers";
-
-// Base URL for our internal API calls.
+// Base URL for our API calls, read once at module load — not per request.
 //
-// A `fetch` running inside a Server Component executes on the server, which has no
-// implicit "current origin" like the browser does — so the URL must be absolute.
-// Week 2: use NEXT_PUBLIC_API_URL if set, otherwise reconstruct the origin from the
-// incoming request headers.
+// A `fetch` inside a Server Component runs on the server, which has no implicit
+// "current origin" like the browser, so the URL must be absolute. We get that
+// origin from NEXT_PUBLIC_API_URL, which every environment sets:
+//   - .env.local      -> http://127.0.0.1:3000  (dev server serves the Route Handlers)
+//   - .env.production  -> the real API domain
+// When the Go backend lands (roadmap B4), only that value changes — no code here.
 //
-// When the Go backend lands (roadmap B4): set NEXT_PUBLIC_API_URL=http://localhost:8080
-// in .env.local and every `fetch` in src/lib/api.ts points at it — no code change.
-export async function apiBase(): Promise<string> {
-  const fromEnv = process.env.NEXT_PUBLIC_API_URL;
-  if (fromEnv) return fromEnv.replace(/\/$/, "");
-
-  const h = await headers(); // async in Next 16
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "127.0.0.1:3000";
-  const proto = h.get("x-forwarded-proto") ?? "http";
-
-  // Node's fetch resolves "localhost" to IPv6 ::1 first, but the dev server only
-  // listens on IPv4 — so a server-side fetch to http://localhost:3000 fails with
-  // ECONNREFUSED. Force IPv4 for the loopback host.
-  return `${proto}://${host}`.replace("//localhost:", "//127.0.0.1:");
+// Because it's a plain constant, callers use `API_BASE` directly with no `await`.
+// A missing value is a config error we want to fail loudly on at startup.
+const raw = process.env.NEXT_PUBLIC_API_URL;
+if (!raw) {
+  throw new Error(
+    "NEXT_PUBLIC_API_URL is not set. Copy .env.example to .env.local (see src/lib/api-base.ts).",
+  );
 }
+
+export const API_BASE = raw.replace(/\/$/, "");
