@@ -31,7 +31,7 @@ export default function IncreaseBadge({
     <span
       className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium tabular-nums ${tone}`}
     >
-      +{pct}%{published ? "" : " ước lượng"}
+      +{pct}%{published ? "" : " ƯL"}
     </span>
   );
 }
