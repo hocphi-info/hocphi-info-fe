@@ -1,36 +1,144 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<p align="right">
+  <a href="README-en.md"><img src="https://flagcdn.com/20x15/gb.png" width="20" height="15" alt="Cờ Anh"> English</a>
+  &nbsp;|&nbsp;
+  <a href="README.md"><img src="https://flagcdn.com/20x15/vn.png" width="20" height="15" alt="Cờ Việt Nam"> Tiếng Việt</a>
+</p>
 
-## Getting Started
+# hocphi-info-fe 🎓
 
-First, run the development server:
+**Giao diện web tra cứu & so sánh học phí đại học Việt Nam — theo từng ngành, từng trường.**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Xem học phí một ngành–trường quy về `đồng/năm`, tách theo hệ đào tạo (đại trà / chất lượng
+cao / tiên tiến / quốc tế), và ước lượng **tổng chi phí cả khoá** (4–6 năm) dựa trên % tăng
+học phí hàng năm. Không cần đăng nhập.
+
+> ⚠️ **Lưu ý**: các con số hiện đang chạy trên **dữ liệu minh hoạ** (`src/lib/mock-data.ts`),
+> chưa phải học phí thật — backend ([`hocphi-info-be`](../hocphi-info-be)) chưa nối. Đây cũng
+> là một **dự án học React/Next.js**: chủ dự án nền Flutter, vừa build sản phẩm vừa học.
+
+- [hocphi-info-fe 🎓](#hocphi-info-fe-)
+  - [I. Cách hoạt động](#i-cách-hoạt-động)
+  - [II. Vì sao viết thế này](#ii-vì-sao-viết-thế-này)
+  - [III. Công nghệ](#iii-công-nghệ)
+  - [IV. Cấu trúc dự án](#iv-cấu-trúc-dự-án)
+  - [V. Chạy thử](#v-chạy-thử)
+  - [VI. Lộ trình](#vi-lộ-trình)
+
+## I. Cách hoạt động
+
+```mermaid
+flowchart TD
+    URL["URL: /nganh?city=HCM&group=CNTT&sort=year1<br/>— bộ lọc & sắp xếp lưu thẳng trên URL (chia sẻ được link)"] --> SC
+
+    subgraph SERVER["Server Components — Next.js App Router"]
+        SC["nganh/page.tsx · truong/page.tsx (async)"] --> API["Route Handlers<br/>src/app/api/{nganh,truong,search}"]
+        API --> MOCK[("src/lib/mock-data.ts<br/>dữ liệu minh hoạ, server-only")]
+    end
+
+    SC --> CC
+
+    subgraph CLIENT["Client Components — \"use client\""]
+        CC["MajorResultsView / SchoolResultsView<br/>lọc + sắp xếp theo searchParams"]
+        QS["QuickSearch (F13)<br/>debounce 250ms → GET /api/search"]
+        CT["CompareTray (Context)<br/>chọn 2–3 mục để so sánh (F8)"]
+    end
+
+    CC --> OUT["Bảng desktop + thẻ mobile<br/>S1 theo ngành · S2 theo trường<br/>light / dark"]
+
+    ENV["NEXT_PUBLIC_API_URL"] -.->|"khi backend sẵn sàng: fetch thẳng vào đó,<br/>bỏ qua Route Handler"| API
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Trang chủ dẫn tới hai màn hình tra cứu:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **`/nganh` (S1)** — danh sách chương trình theo ngành: học phí năm đầu, % tăng, hệ đào tạo,
+  loại trường; lọc theo thành phố / nhóm ngành / hệ, sắp xếp theo cột, tất cả phản ánh trên URL.
+- **`/truong` (S2)** — gom theo trường: khoảng Min–Max, trung vị học phí hệ đại trà, số ngành.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Dữ liệu đi qua **Route Handler** (`src/app/api/*`) đóng vai backend tạm thời. Khi
+[`hocphi-info-be`](../hocphi-info-be) chạy thật, chỉ cần đặt `NEXT_PUBLIC_API_URL` là
+`src/lib/api.ts` gọi thẳng API đó — component không đổi.
 
-## Learn More
+## II. Vì sao viết thế này
 
-To learn more about Next.js, take a look at the following resources:
+**1. Đây là dự án học React/Next.js, không chỉ ship tính năng.** Chủ dự án có 4 năm Flutter,
+mới React/Next/TS. Lộ trình build bám theo [`docs/LEARNING_PATH.md`](docs/LEARNING_PATH.md) —
+mỗi "tuần" học một nhóm khái niệm khi thực sự cần dùng, có phần "học được gì" + sơ đồ đọc code.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**2. Không kiến trúc đặt tên (không MVC/Clean Architecture).** Router theo file của Next.js
+_chính là_ tầng routing; phần còn lại là cấu trúc phẳng, colocated. App là đọc / lọc / hiển
+thị, không có business logic phức tạp — không thêm tầng repository/use-case/entity.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**3. Bám sát schema backend từ đầu.** `src/types/domain.ts` phản chiếu
+[`hocphi-info-be/docs/schema.md`](../hocphi-info-be/docs/schema.md) (camelCase, enum = string
+union). Nhờ vậy việc "nối API thật" chỉ là đổi _nguồn_ dữ liệu, không đụng UI.
 
-## Deploy on Vercel
+**4. Bộ lọc & sắp xếp sống trên URL.** Dùng `searchParams` thay cho state cục bộ để mọi
+kết quả lọc đều chia sẻ được bằng link và không mất khi tải lại trang.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**5. Công cụ tối giản.** Chỉ `useState`/`useReducer`/Context và `fetch` thuần — chưa thêm
+Redux/Zustand/React Query cho tới khi có nhu cầu thật.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## III. Công nghệ
+
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 (`@theme inline`) ·
+ESLint + Prettier + Husky · Recharts (từ Tuần 4)
+
+Bảng màu "Xanh Tri Thức" (token oklch trong `src/app/globals.css`), hỗ trợ light/dark.
+
+## IV. Cấu trúc dự án
+
+```
+src/
+  app/
+    page.tsx            # "/" — trang chủ
+    layout.tsx          # khung chung: SiteHeader + SiteFooter
+    globals.css         # token Tailwind 4 + bảng màu
+    nganh/              # "/nganh" (S1) — page + loading.tsx + error.tsx
+    truong/             # "/truong" (S2) — page + loading.tsx + error.tsx
+    api/                # Route Handlers: nganh · truong · search (backend tạm thời)
+  components/           # UI tái dùng: FilterPanel, SortableHeader, QuickSearch,
+                        # CompareTray, *ResultsTable/View, *Badge, charts…
+  lib/                  # api.ts, api-base.ts, filters.ts, url.ts, derive.ts,
+                        # format.ts, mock-data.ts (server-only)
+  types/domain.ts       # kiểu dùng chung, khớp schema backend
+docs/                   # (git-ignore) LEARNING_PATH.md + brainstorms/ + plans/
+```
+
+Component đặc thù một route mà không dùng lại thì để cạnh `page.tsx` (colocation), không ép
+đưa vào `components/`.
+
+## V. Chạy thử
+
+```bash
+cp .env.example .env.local     # để trống NEXT_PUBLIC_API_URL -> dùng Route Handler nội bộ
+npm install
+npm run dev                    # http://localhost:3000
+```
+
+Mở `/nganh` hoặc `/truong` để xem hai màn hình tra cứu (đang chạy dữ liệu minh hoạ).
+
+Kiểm thử:
+
+```bash
+npm run lint
+npm run format
+npm run build
+```
+
+> Node fetch phía server resolve `localhost` ra IPv6 `::1` gây `ECONNREFUSED`; `src/lib/api-base.ts`
+> tự ép `//localhost:` → `//127.0.0.1:`. Nếu đặt `NEXT_PUBLIC_API_URL`, dùng `127.0.0.1` thay `localhost`.
+
+## VI. Lộ trình
+
+Xây theo [`docs/LEARNING_PATH.md`](docs/LEARNING_PATH.md), mỗi tuần một nhóm khái niệm:
+
+- [x] **Tuần 1** — route tĩnh + component, dữ liệu giả (`/nganh`, `/truong`)
+- [x] **Tuần 2** — Route Handlers + `fetch`/async, Server vs Client Components, `loading`/`error`
+- [x] **Tuần 3** — bộ lọc & sắp xếp + URL state (`searchParams`), tìm nhanh (F13), tinh chỉnh bảng
+- [ ] **Tuần 4** — trang chi tiết ngành–trường (S3/S4), dynamic routes, biểu đồ Recharts (F11)
+- [ ] **Tuần 5+** — so sánh 2–3 mục (F8), ước lượng tổng chi phí (F9), trang phụ (F14 phương
+      pháp, F15 dữ liệu & nguồn, F17 báo lỗi)
+- [ ] Nối [`hocphi-info-be`](../hocphi-info-be) thật · deploy · người dùng thử
+
+Bối cảnh sản phẩm: [`../y-tuong-hoc-phi-dai-hoc.md`](../y-tuong-hoc-phi-dai-hoc.md) ·
+đặc tả tính năng: `../yeu-cau-san-pham.md`.
