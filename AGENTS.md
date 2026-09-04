@@ -28,11 +28,14 @@ repository/use-case/entity layers — the app is read/filter/display, not comple
 
 ```
 src/
-├── app/                    # Routes — Next.js file-system routing, one folder per URL segment
-│   ├── page.tsx            # "/"
-│   ├── layout.tsx          # shared shell (header/footer go here)
-│   ├── nganh/page.tsx      # "/nganh"
-│   └── truong/page.tsx     # "/truong"
+├── app/
+│   ├── page.tsx                  # "/"
+│   ├── layout.tsx                # shared shell (header/footer go here)
+│   ├── nganh/{page,loading,error}.tsx   # "/nganh" (S1) — Server Component page + boundaries
+│   ├── truong/{page,loading,error}.tsx  # "/truong" (S2)
+│   └── api/{nganh,truong,search}/route.ts  # Route Handlers standing in for the backend —
+│       reads mock-data.ts, returns the same JSON shape the real API will. `lib/api.ts` is
+│       the only thing that changes when the FastAPI backend (hocphi-info-be) is wired up.
 ├── components/             # Reusable UI (Button, FilterPanel, Chart, …). Not route-specific.
 ├── lib/                    # API calls + data transforms. Flat, no repository/service layering.
 ├── types/                  # Shared TypeScript types (Truong, Nganh, HocPhi, …)
@@ -48,6 +51,13 @@ Route-specific components that aren't reused elsewhere can live next to their `p
   global-state need shows up (e.g. the comparison tray, F8).
 - Data fetching: plain `fetch`, no React Query/SWR yet — add only when caching/refetch pain
   is actually felt.
+- Filter/sort state lives in the URL query string, not React state (`lib/url.ts` +
+  `lib/filters.ts`). Write params with `window.history.pushState`/`replaceState`
+  (`lib/url.ts`'s `writeParams`), **not** `router.push()` — the data is already on the
+  client, so a filter click should not trigger a server round-trip. `lib/filters.ts`
+  functions are pure (no React import) so the same filter/sort logic runs on the server
+  (first render in `page.tsx`, for correct SSR HTML) and on the client (every change after
+  that) — keep new filter/sort logic in that shape rather than inlining it in a component.
 - Path alias `@/*` → `./src/*` (already configured in `tsconfig.json`).
 - Env vars: `NEXT_PUBLIC_API_URL` for the backend base URL (see `.env.local` / `.env.production`).
 
