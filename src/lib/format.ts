@@ -38,3 +38,9 @@ export function formatMillions(
 export function formatPercent(pct: number): string {
   return `+${pct}%/năm`;
 }
+
+/** Nhãn cơ sở đào tạo cho `program.campus` (BE: `null` = cơ sở chính).
+ * "Khánh Hòa" -> "Phân hiệu Khánh Hòa"; `null` -> "Cơ sở chính". */
+export function campusLabel(campus: string | null): string {
+  return campus ? `Phân hiệu ${campus}` : "Cơ sở chính";
+}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { fetchProgramDetail } from "@/lib/api";
-import { formatMillions, TRACK_LABELS } from "@/lib/format";
+import { campusLabel, formatMillions, TRACK_LABELS } from "@/lib/format";
 import TuitionTrendChart from "@/components/TuitionTrendChart";
 import SourceBlock from "@/components/SourceBlock";
 import SchoolLogo from "@/components/SchoolLogo";
@@ -15,6 +15,12 @@ export default async function ProgramDetailPage({
 }: PageProps<"/nganh/[truong]/[nganh]">) {
   const { truong, nganh } = await params;
   const detail = await fetchProgramDetail(truong, nganh);
+
+  // Ngành này có chương trình ở nhiều cơ sở (vd TDTU Du lịch: cơ sở chính +
+  // Phân hiệu Khánh Hòa)? Nếu có thì gắn nhãn cơ sở lên MỌI section — kể cả
+  // "Cơ sở chính" — để tương phản rõ; ngành 1 cơ sở thì heading giữ nguyên.
+  const hasMultipleCampuses =
+    new Set(detail.programs.map((p) => p.program.campus)).size > 1;
 
   return (
     <main className="mx-auto w-full min-w-0 max-w-4xl flex-1 px-4 py-6">
@@ -38,9 +44,26 @@ export default async function ProgramDetailPage({
       <div className="mt-6 space-y-8">
         {detail.programs.map((p) => (
           <section key={p.program.id} className="space-y-4">
-            <h2 className="text-lg font-semibold text-ink">
-              {TRACK_LABELS[p.program.track]}
-            </h2>
+            <div>
+              <h2 className="text-lg font-semibold text-ink">
+                {TRACK_LABELS[p.program.track]}
+                {/* Cùng (trường, ngành, hệ) có thể có nhiều cơ sở với học phí
+                    khác nhau — nêu rõ cơ sở để không nhầm giá phân hiệu là giá
+                    chung. BE sắp cơ sở chính lên trước (campus NULLS FIRST). */}
+                {hasMultipleCampuses && (
+                  <span className="text-ink-3">
+                    {" · "}
+                    {campusLabel(p.program.campus)}
+                  </span>
+                )}
+              </h2>
+              {p.program.displayName &&
+                p.program.displayName !== detail.major.name && (
+                  <p className="mt-0.5 text-sm text-ink-3">
+                    {p.program.displayName}
+                  </p>
+                )}
+            </div>
 
             <div className="overflow-hidden rounded-xl border border-border bg-surface">
               <table className="w-full border-collapse text-sm">

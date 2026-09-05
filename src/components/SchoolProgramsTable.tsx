@@ -1,5 +1,5 @@
 import type { SchoolProgramRow } from "@/types/domain";
-import { formatMillions, TRACK_LABELS } from "@/lib/format";
+import { campusLabel, formatMillions, TRACK_LABELS } from "@/lib/format";
 import RowLink from "@/components/RowLink";
 
 // Bảng danh sách ngành của 1 trường (F7) — không sort/lọc/so sánh (khác
@@ -13,6 +13,10 @@ export default function SchoolProgramsTable({
   schoolSlug: string;
   rows: SchoolProgramRow[];
 }) {
+  // Chỉ hiện cột "Cơ sở" khi trường này thực sự có chương trình ở phân hiệu —
+  // các trường 1 cơ sở giữ nguyên bảng cũ, không mọc thêm cột trống.
+  const showCampus = rows.some((r) => r.program.campus !== null);
+
   return (
     <>
       <div className="hidden overflow-hidden rounded-xl border border-border bg-surface shadow-[0_1px_2px_oklch(0.28_0.03_260/0.06)] lg:block">
@@ -25,6 +29,11 @@ export default function SchoolProgramsTable({
               <th scope="col" className="px-3 py-2 font-medium">
                 Hệ
               </th>
+              {showCampus && (
+                <th scope="col" className="px-3 py-2 font-medium">
+                  Cơ sở
+                </th>
+              )}
               <th
                 scope="col"
                 className="w-28 px-3 py-2 text-center font-medium"
@@ -40,10 +49,17 @@ export default function SchoolProgramsTable({
                 key={row.program.id}
                 className="border-b border-rule align-middle last:border-b-0"
               >
-                <td className="px-4 py-3 text-ink">{row.major.name}</td>
+                <td className="px-4 py-3 text-ink">
+                  {row.program.displayName ?? row.major.name}
+                </td>
                 <td className="px-3 py-3 text-ink-3">
                   {TRACK_LABELS[row.program.track]}
                 </td>
+                {showCampus && (
+                  <td className="px-3 py-3 text-ink-3">
+                    {campusLabel(row.program.campus)}
+                  </td>
+                )}
                 <td className="px-3 py-3 text-center tabular-nums text-ink">
                   {formatMillions(row.year1.amountPerYear)}
                 </td>
@@ -67,9 +83,12 @@ export default function SchoolProgramsTable({
           >
             <div className="flex items-start justify-between gap-2">
               <div>
-                <div className="font-medium text-ink">{row.major.name}</div>
+                <div className="font-medium text-ink">
+                  {row.program.displayName ?? row.major.name}
+                </div>
                 <div className="text-sm text-ink-3">
                   {TRACK_LABELS[row.program.track]}
+                  {showCampus && ` · ${campusLabel(row.program.campus)}`}
                 </div>
               </div>
               <div className="text-right tabular-nums text-ink">

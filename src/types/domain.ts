@@ -54,6 +54,12 @@ export interface Program {
   majorSlug: string;
   track: Track;
   language: ProgramLanguage;
+  /** `null` = cơ sở chính. Chuỗi tên cơ sở (vd "Khánh Hòa") khi là phân hiệu /
+   * cơ sở khác — học phí có thể khác cơ sở chính (BE: programs.campus). */
+  campus: string | null;
+  /** Tên hiển thị riêng của chương trình khi khác `major.name` dùng chung
+   * (vd chuyên ngành). `null` → dùng `major.name`. BE: programs.display_name. */
+  displayName: string | null;
 }
 
 /** Tài liệu gốc của 1 mức học phí (F12) — chỉ Năm 1 (bản ghi thật) có nguồn;
