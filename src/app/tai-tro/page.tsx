@@ -214,7 +214,7 @@ function PaymentCard({
         </span>
       </div>
 
-      <div className="mx-auto mt-4 w-full max-w-[260px] overflow-hidden rounded-xl border border-rule">
+      <div className="mx-auto mt-4 w-full max-w-65 overflow-hidden rounded-xl border border-rule">
         {/* unoptimized: a QR must stay pixel-crisp and the source is already
             small — the Image optimizer only adds a lossy re-encode here. */}
         <Image

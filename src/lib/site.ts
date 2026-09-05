@@ -11,10 +11,52 @@ export const SITE_NAME = "hocphi.info";
 export const SITE_TAGLINE =
   "Tra cứu & so sánh học phí đại học Việt Nam theo ngành – trường, kèm ước lượng tổng chi phí cả khoá 4–5 năm.";
 
+/** Địa chỉ nhận mọi email từ site: liên hệ, báo lỗi, báo số liệu sai. */
+export const CONTACT_EMAIL = "nvbien.contact@gmail.com";
+
+/** `mailto:` tới CONTACT_EMAIL, kèm subject để phân loại thư đến. */
+export function mailtoUrl(subject?: string): string {
+  return subject
+    ? `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}`
+    : `mailto:${CONTACT_EMAIL}`;
+}
+
 /** Absolute URL helper for canonical / OG / JSON-LD. `path` starts with "/". */
 export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString();
 }
+
+/** Footer social row — thứ tự khớp ../mockup/Footer.preview.html. `icon` map
+ *  sang inline SVG trong SiteFooter. Gmail là mailto: tới CONTACT_EMAIL, các
+ *  link còn lại mở tab mới. */
+export const SOCIAL_LINKS: {
+  label: string;
+  href: string;
+  icon: "facebook" | "instagram" | "threads" | "linkedin" | "github" | "gmail";
+}[] = [
+  {
+    label: "Facebook",
+    href: "https://facebook.com/hocphi.info",
+    icon: "facebook",
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/hocphi.info",
+    icon: "instagram",
+  },
+  {
+    label: "Threads",
+    href: "https://www.threads.com/@hocphi.info",
+    icon: "threads",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/hocphi-info",
+    icon: "linkedin",
+  },
+  { label: "GitHub", href: "https://github.com/hocphi-info", icon: "github" },
+  { label: "Email", href: mailtoUrl(), icon: "gmail" },
+];
 
 /** Primary nav — label + route. `usePathname()` in SiteNav marks the active one. */
 export const NAV_LINKS = [
@@ -43,7 +85,10 @@ export const FOOTER_COLUMNS: {
     links: [
       { label: "Phương pháp luận", href: "/phuong-phap" },
       { label: "Dữ liệu & nguồn", href: "/du-lieu" },
-      { label: "Báo số liệu chưa đúng", href: "/du-lieu" },
+      {
+        label: "Báo số liệu chưa đúng",
+        href: mailtoUrl("[hocphi.info] Báo số liệu chưa đúng"),
+      },
     ],
   },
   {
@@ -51,7 +96,7 @@ export const FOOTER_COLUMNS: {
     links: [
       { label: "Tài trợ dự án", href: "/tai-tro" },
       // { label: "Giới thiệu", href: null },
-      // { label: "Liên hệ", href: null },
+      { label: "Liên hệ", href: mailtoUrl("[hocphi.info] Liên hệ") },
     ],
   },
 ];
