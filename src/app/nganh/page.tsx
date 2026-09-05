@@ -30,11 +30,10 @@ export default async function NganhPage({ searchParams }: PageProps<"/nganh">) {
         <ViewModeToggle current="nganh" />
       </div>
 
-      <CompareTray>
-        <Suspense fallback={<ResultsSkeleton />}>
-          <MajorResultsView rows={rows} />
-        </Suspense>
-      </CompareTray>
+      <Suspense fallback={<ResultsSkeleton />}>
+        <MajorResultsView rows={rows} />
+      </Suspense>
+      <CompareTray />
     </main>
   );
 }

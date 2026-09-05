@@ -48,6 +48,25 @@ export async function fetchProgramDetail(
   return res.json();
 }
 
+/** Biến thể của `fetchProgramDetail` cho trang so sánh (F8, Tuần 5): trả
+ * `null` thay vì gọi `notFound()` khi lỗi/404. Khác trang F6 (1 mục lỗi = cả
+ * trang 404), trang so sánh có thể có 2-3 mục — 1 mục lỗi không được làm
+ * sập cả trang, các mục còn lại vẫn phải render được. */
+export async function fetchProgramDetailSafe(
+  schoolSlug: string,
+  majorSlug: string,
+): Promise<ProgramDetailResponse | null> {
+  try {
+    const res = await fetch(
+      `${API_BASE}/api/schools/${schoolSlug}/majors/${majorSlug}`,
+    );
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
 /** Chi tiết 1 trường (F7) — hồ sơ + toàn bộ ngành đã có dữ liệu + Min-Max
  * theo hệ. 404 khi trường không tồn tại hoặc chưa có chương trình nào đã seed. */
 export async function fetchSchoolDetail(
