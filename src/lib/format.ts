@@ -1,8 +1,18 @@
+import type { Track } from "@/types/domain";
+
 // Number formatting helpers, following the display rules in
 // ../yeu-cau-san-pham.md §2.1:
 //   - money is shown in "triệu đồng" (millions), decimal comma, thousands dot (VN style)
 //   - estimated numbers get a "≈" prefix
 //   - percentage increase reads "+8%/năm"
+
+/** Nhãn tiếng Việt cho hệ đào tạo — dùng chung ở bảng S1 và trang chi tiết trường (F7). */
+export const TRACK_LABELS: Record<Track, string> = {
+  dai_tra: "Đại trà",
+  chat_luong_cao: "Chất lượng cao",
+  tien_tien: "Tiên tiến",
+  quoc_te: "Quốc tế / liên kết",
+};
 
 /**
  * 33_000_000  -> "33,0 tr"

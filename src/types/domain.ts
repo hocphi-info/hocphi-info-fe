@@ -21,6 +21,9 @@ export type IncreaseSource = "published_roadmap" | "default_estimate";
 
 export type Confidence = "verified" | "published_unverified" | "estimated";
 
+export type SourceDocType =
+  "de_an_tuyen_sinh" | "thong_bao_hoc_phi" | "quy_dinh_nghe" | "khac";
+
 export interface School {
   slug: string;
   name: string;
@@ -50,6 +53,14 @@ export interface Program {
   language: ProgramLanguage;
 }
 
+/** Tài liệu gốc của 1 mức học phí (F12) — chỉ Năm 1 (bản ghi thật) có nguồn;
+ * các năm dự phóng là số tính, không có `Source` riêng. */
+export interface Source {
+  url: string;
+  docType: SourceDocType;
+  publishedDate: string | null;
+}
+
 export interface TuitionRecord {
   programId: string;
   /** "YYYY-YYYY", ví dụ "2026-2027". */
@@ -59,6 +70,8 @@ export interface TuitionRecord {
   /** false = số trường công bố (Năm 1); true = dự phóng (Năm 2..N). */
   isProjected: boolean;
   confidence: Confidence;
+  /** null = chưa có nguồn cụ thể trong DB (xem SourceBlock cho cách hiện). */
+  source: Source | null;
 }
 
 export interface ProgramIncrease {
@@ -105,4 +118,58 @@ export interface SearchHit {
   name: string;
   /** Chỉ có với trường (short_name). */
   shortName?: string;
+}
+
+// --- Tuần 4: trang chi tiết ngành-trường (F6) + trang chi tiết trường (F7) ---
+
+/** 1 năm trong bảng học phí tính luỹ tiến — số TÍNH, không phải TuitionRecord
+ * thật (không có `confidence`/`source`). */
+export interface YearlyAmount {
+  academicYear: string;
+  amountPerYear: number;
+  isProjected: boolean;
+}
+
+/** 1 hệ đào tạo (track/language) trong trang chi tiết ngành-trường (F6).
+ * Trả từ GET /api/schools/{school}/majors/{major}. */
+export interface ProgramDetail {
+  program: Program;
+  year1: TuitionRecord;
+  increase: ProgramIncrease | null;
+  yearlyAmounts: YearlyAmount[];
+  totalCourse: number;
+  /** Bằng totalCourse cho tới khi post_grad_requirements có dữ liệu thật. */
+  totalWithLicense: number;
+}
+
+export interface ProgramDetailResponse {
+  school: School;
+  major: Major;
+  programs: ProgramDetail[];
+}
+
+/** 1 hàng / hệ đào tạo trong trang chi tiết trường (F7) — Min-Max theo hệ,
+ * không phải theo ngành. */
+export interface SchoolTrackStat {
+  track: Track;
+  nPrograms: number;
+  minAmount: number;
+  minMajorName: string;
+  medianAmount: number;
+  maxAmount: number;
+  maxMajorName: string;
+}
+
+/** 1 dòng trong bảng danh sách ngành của 1 trường (F7). `year1.source` luôn
+ * null ở đây — F12 chỉ hiện ở trang F6, không lặp lại ở F7. */
+export interface SchoolProgramRow {
+  program: Program;
+  major: Major;
+  year1: TuitionRecord;
+}
+
+export interface SchoolDetailResponse {
+  school: School;
+  trackStats: SchoolTrackStat[];
+  programs: SchoolProgramRow[];
 }
