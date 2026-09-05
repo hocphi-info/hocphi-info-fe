@@ -39,7 +39,7 @@ const FAQ = [
   },
   {
     q: "Hiện có bao nhiêu trường, khi nào có thêm?",
-    a: "Giai đoạn pilot tập trung 50 trường ở TP.HCM và Hà Nội, chọn cả trường công top đầu, trường công tự chủ tài chính và trường tư để dữ liệu đủ độ trải cho việc tính trung vị. Danh sách mở rộng sau khi có phản hồi từ người dùng thật.",
+    a: "Giai đoạn đầu tập trung 50 trường top đầu ở TP.HCM và Hà Nội. Danh sách mở rộng sau khi có phản hồi từ người dùng thật.",
   },
   {
     q: "Số liệu trên hocphi.info có phải tư vấn tài chính không?",
@@ -71,7 +71,7 @@ const FEATURES = [
     eyebrow: "Tra cứu",
     title:
       "Theo ngành để chọn trường — hoặc theo trường để thấy khoảng học phí",
-    body: "Cùng một trường, ngành rẻ nhất và ngành đắt nhất có thể chênh nhau 3–5 lần. Trang “theo trường” hiển thị khoảng Min – Max thay vì một con số trung bình vô nghĩa.",
+    body: "Cùng một trường, ngành rẻ nhất và ngành đắt nhất có thể chênh nhau 3–5 lần.",
     points: [
       "Biểu đồ khoảng thấp nhất – cao nhất + trung vị hệ đại trà của từng trường",
       "Bộ lọc theo thành phố, nhóm ngành, hệ đào tạo, loại trường",
@@ -161,14 +161,14 @@ export default function Home() {
           Dự án dữ liệu mở · Mùa tuyển sinh 2026
         </p>
         <h1 className="mx-auto mt-3 max-w-3xl text-balance text-4xl font-bold tracking-tight text-ink sm:text-5xl">
-          Học phí đại học, tính đủ cho cả khoá
+          Học phí đại học/cao đẳng
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-pretty text-base leading-relaxed text-ink-2 sm:text-lg">
-          Tra cứu &amp; so sánh học phí{" "}
-          <strong className="text-ink">theo từng ngành – trường</strong>, trung
-          vị tách riêng theo hệ đào tạo, kèm ước lượng{" "}
-          <strong className="text-ink">tổng chi phí cả khoá 4–5 năm</strong>{" "}
-          theo lộ trình tăng của từng trường.
+          Tra cứu &amp; so sánh học phí theo từng ngành của{" "}
+          <strong className="text-ink">hơn 50 trường</strong>, trung vị tách
+          riêng theo hệ đào tạo, kèm ước lượng{" "}
+          <strong className="text-ink">tổng chi phí toàn khoá</strong> theo lộ
+          trình tăng của từng trường.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
@@ -184,11 +184,6 @@ export default function Home() {
             Tra cứu theo trường
           </Link>
         </div>
-        <p className="mt-5 text-xs text-ink-3">
-          <strong className="text-ink-2">50 trường pilot</strong> TP.HCM &amp;
-          Hà Nội · 6 nhóm ngành hot 2026 · nguồn: đề án tuyển sinh, đối chiếu
-          tay
-        </p>
 
         <BrowserFrame
           url="hocphi.info/nganh/cong-nghe-thong-tin"
@@ -207,12 +202,12 @@ export default function Home() {
       <section className="border-y border-border bg-surface-2">
         <div className="mx-auto max-w-5xl px-4 py-14">
           <h2 className="max-w-xl text-2xl font-bold tracking-tight text-ink">
-            Con số phụ huynh thật sự cần thì chưa ai đưa ra tử tế
+            Số tiền mà các bậc cha mẹ nến biết !
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-2">
-            Việt Nam chưa có nguồn dữ liệu chuẩn hoá kiểu IPEDS (Mỹ). Mỗi trường
-            công bố học phí riêng lẻ trong đề án tuyển sinh dạng PDF — và đây là
-            ba khoảng trống lớn nhất:
+            Việt Nam chưa có nguồn dữ liệu chuẩn hoá. Mỗi trường công bố học phí
+            riêng lẻ trong đề án tuyển sinh với vô vàn định dạng khác nhau. Ví
+            dụ:
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
@@ -221,11 +216,11 @@ export default function Home() {
                 body: "Báo chí chỉ đưa mức chung chung “tuỳ ngành”. Không tra được ngành cụ thể ở trường cụ thể là bao nhiêu.",
               },
               {
-                head: "đồng/tháng · đồng/tín chỉ",
+                head: "đồng/tháng, đồng/tín chỉ",
                 body: "Đơn vị tính mỗi trường một kiểu, không quy về cùng một mốc để đặt cạnh nhau được.",
               },
               {
-                head: "? tr cho cả khoá",
+                head: "X triệu cho cả khoá",
                 body: "Không ai cộng dồn 4–5 năm kèm lộ trình tăng học phí — dù đây mới là con số để lập kế hoạch tài chính.",
               },
             ].map((c) => (
@@ -319,7 +314,7 @@ export default function Home() {
           </h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              ["50", "trường pilot TP.HCM & Hà Nội"],
+              ["50", "trường TP.HCM & Hà Nội"],
               ["6", "nhóm ngành hot mùa 2026"],
               ["1", "nguồn chuẩn: đề án tuyển sinh"],
               ["đ/năm", "mọi đơn vị quy về cùng một mốc"],
@@ -363,13 +358,13 @@ export default function Home() {
               Dùng ở mọi nơi
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-ink">
-              Chế độ tối &amp; bố cục điện thoại
+              Dark mode &amp; smartphone
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-2">
               Phụ huynh tra cứu trên điện thoại giữa mùa tuyển sinh, tư vấn viên
-              chiếu trên màn hình lớn. Bảng chuyển thành thẻ trên mobile, bộ lọc
-              gấp gọn, thanh so sánh cố định dưới màn hình. Chế độ tối theo cài
-              đặt hệ thống của máy.
+              chiếu trên màn hình lớn. Bảng biểu chuyển thành card trên mobile.
+              Bộ lọc gấp gọn, thanh so sánh cố định dưới màn hình. Chế độ tối
+              theo cài đặt của hệ thống.
             </p>
           </div>
           <BrowserFrame url="hocphi.info · dark">

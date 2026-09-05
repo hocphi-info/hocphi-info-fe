@@ -19,7 +19,7 @@ export function absoluteUrl(path: string): string {
 /** Primary nav — label + route. `usePathname()` in SiteNav marks the active one. */
 export const NAV_LINKS = [
   { label: "Tra cứu", href: "/nganh" },
-  { label: "So sánh", href: "/so-sanh" },
+  // { label: "So sánh", href: "/so-sanh" },
   { label: "Phương pháp", href: "/phuong-phap" },
   { label: "Dữ liệu & nguồn", href: "/du-lieu" },
 ] as const;
@@ -35,7 +35,7 @@ export const FOOTER_COLUMNS: {
     links: [
       { label: "Học phí theo ngành", href: "/nganh" },
       { label: "Học phí theo trường", href: "/truong" },
-      { label: "So sánh", href: "/so-sanh" },
+      // { label: "So sánh", href: "/so-sanh" },
     ],
   },
   {
@@ -50,8 +50,8 @@ export const FOOTER_COLUMNS: {
     title: "Dự án",
     links: [
       { label: "Tài trợ dự án", href: "/tai-tro" },
-      { label: "Giới thiệu", href: null },
-      { label: "Liên hệ", href: null },
+      // { label: "Giới thiệu", href: null },
+      // { label: "Liên hệ", href: null },
     ],
   },
 ];

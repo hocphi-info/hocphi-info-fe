@@ -288,13 +288,13 @@ export default function DataPage() {
           Đã có gì, lấy từ đâu, cập nhật khi nào
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-2">
-          Giai đoạn pilot tập trung 50 trường ở TP.HCM và Hà Nội, chọn cả trường
+          Giai đoạn đầu tập trung 50 trường ở TP.HCM và Hà Nội, chọn cả trường
           công top đầu (học phí thấp), trường công tự chủ tài chính (trung bình
           – cao) và trường tư (cao) để dữ liệu đủ độ trải cho việc tính trung
           vị.
         </p>
         <p className="mt-3 text-xs text-ink-3">
-          Ảnh chụp dữ liệu: {SNAPSHOT_DATE} · dữ liệu khoá tuyển sinh 2026
+          Ngày cập nhập: {SNAPSHOT_DATE}
         </p>
       </div>
 
@@ -323,8 +323,8 @@ export default function DataPage() {
           <Callout>
             Độ phủ mở rộng theo từng đợt, không phải “đủ 50 trường” ngay. Ưu
             tiên các trường có đề án tuyển sinh công bố sớm và rõ tới từng
-            ngành. Trường có số “0 ngành” thường vì học phí chỉ nằm trên web
-            động, không có bản tĩnh để trích dẫn.
+            ngành. Trường có số “0 ngành” thường vì học phí chỉ nằm trên dynamic
+            web, không có bản tĩnh để trích xuất.
           </Callout>
         </div>
       </section>
@@ -348,7 +348,7 @@ export default function DataPage() {
           trong hàng đợi. “Số ngành” là số chương trình đã đối chiếu và công bố.
         </p>
         <div className="mt-4 overflow-x-auto rounded-xl border border-border">
-          <table className="w-full min-w-[720px] text-sm">
+          <table className="w-full min-w-180 text-sm">
             <thead>
               <tr>
                 <th className={th}>Trường</th>
@@ -399,7 +399,7 @@ export default function DataPage() {
           2026.
         </p>
         <div className="mt-4 overflow-x-auto rounded-xl border border-border">
-          <table className="w-full min-w-[560px] text-sm">
+          <table className="w-full min-w-140 text-sm">
             <thead>
               <tr>
                 <th className={th}>Nhóm ngành</th>
@@ -426,7 +426,7 @@ export default function DataPage() {
           Thay đổi gần đây
         </h2>
         <div className="mt-4 overflow-x-auto rounded-xl border border-border">
-          <table className="w-full min-w-[480px] text-sm">
+          <table className="w-full min-w-120 text-sm">
             <thead>
               <tr>
                 <th className={`${th} w-24`}>Ngày</th>
