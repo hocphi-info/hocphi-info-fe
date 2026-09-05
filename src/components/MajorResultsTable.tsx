@@ -167,6 +167,7 @@ export default function MajorResultsTable({
                 </td>
                 <td className="w-12 p-0 text-right">
                   <RowLink
+                    href={`/nganh/${row.school.slug}/${row.major.slug}`}
                     label={`${row.major.name} — ${row.school.shortName}`}
                   />
                 </td>

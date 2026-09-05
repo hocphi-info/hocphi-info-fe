@@ -6,14 +6,18 @@ import Link from "next/link";
 // target is ~48×44px instead of just the glyph — easier to click without
 // making the row clickable. `hover:bg-surface-2` marks it as a button.
 //
-// Week 4: the detail route (S3/S4) does not exist yet, so `href` is "#". We pass
-// `scroll={false}` so a stray click does not jump the page to the top. When the
-// route lands, change `href` to the real path.
-export default function RowLink({ label }: { label: string }) {
+// Week 4: `href` now points at a real detail route (F6/F7) — see the call
+// sites in MajorResultsTable/SchoolResultsTable/SchoolProgramsTable.
+export default function RowLink({
+  href,
+  label,
+}: {
+  href: string;
+  label: string;
+}) {
   return (
     <Link
-      href="#"
-      scroll={false}
+      href={href}
       aria-label={`Xem chi tiết ${label}`}
       className="flex items-center justify-center px-4 py-3 text-2xl leading-none text-ink-3 hover:bg-surface-2 hover:text-accent"
     >

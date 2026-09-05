@@ -60,7 +60,11 @@ export default function TuitionTrendChart({
                 fontSize: 12,
               }}
             />
-            <Bar dataKey="trieu" radius={[4, 4, 0, 0]}>
+            <Bar
+              dataKey="trieu"
+              radius={[4, 4, 0, 0]}
+              isAnimationActive={false}
+            >
               {data.map((d) => (
                 <Cell
                   key={d.academicYear}

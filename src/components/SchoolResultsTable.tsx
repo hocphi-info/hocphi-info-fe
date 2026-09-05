@@ -165,7 +165,10 @@ export default function SchoolResultsTable({
                     </span>
                   </td>
                   <td className="w-12 p-0 text-right">
-                    <RowLink label={school.shortName} />
+                    <RowLink
+                      href={`/truong/${school.slug}`}
+                      label={school.shortName}
+                    />
                   </td>
                 </tr>
               );
