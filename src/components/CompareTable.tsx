@@ -45,7 +45,7 @@ export default function CompareTable({
   return (
     <div className="overflow-x-auto rounded-xl border border-border bg-surface">
       <div
-        className="grid min-w-[560px]"
+        className="grid min-w-140"
         style={{
           gridTemplateColumns: `180px repeat(${items.length}, minmax(0, 1fr))`,
         }}
@@ -57,7 +57,7 @@ export default function CompareTable({
             key={item.id}
             className="flex items-start justify-between gap-2 border-b border-l border-border bg-surface-2 px-3 py-2"
           >
-            <div className="flex min-w-0 items-start gap-2">
+            <div className="flex min-w-0 items-center gap-2">
               <SchoolLogo
                 logoUrl={item.schoolLogoUrl}
                 name={item.schoolName}
