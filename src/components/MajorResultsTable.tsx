@@ -1,7 +1,7 @@
 import type { MajorRow } from "@/types/domain";
 import type { MajorFilters } from "@/lib/filters";
 import { totalCourseCost } from "@/lib/derive";
-import { formatMillions } from "@/lib/format";
+import { formatMillions, TRACK_LABELS } from "@/lib/format";
 import SchoolTypeBadge from "@/components/SchoolTypeBadge";
 import IncreaseBadge from "@/components/IncreaseBadge";
 import CompareCheckbox from "@/components/CompareCheckbox";
@@ -21,13 +21,6 @@ import RowLink from "@/components/RowLink";
 // The key that is NOT written to the URL (the default sort), passed to each
 // SortableHeader so it knows when to omit `sort` from the query string.
 const SORT_DEFAULT = "year1" as const;
-
-const TRACK_LABELS: Record<MajorRow["program"]["track"], string> = {
-  dai_tra: "Đại trà",
-  chat_luong_cao: "Chất lượng cao",
-  tien_tien: "Tiên tiến",
-  quoc_te: "Quốc tế / liên kết",
-};
 
 function totalFor(row: MajorRow): string {
   const pct = row.increase?.annualIncreasePct;
