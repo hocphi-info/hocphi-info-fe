@@ -23,6 +23,7 @@ import type {
   Track,
 } from "@/types/domain";
 import { schoolTuitionStats, totalCourseCost } from "@/lib/derive";
+import { normalize } from "@/lib/text";
 
 // --- Allowed values (used to reject junk query params defensively) ----------
 
@@ -107,9 +108,13 @@ export interface MajorFilters {
   maxMillions: number | null;
   /** "Chỉ trường công bố lộ trình tăng". */
   roadmapOnly: boolean;
-  /** Set by QuickSearch (F13) picking a school hit — narrows to that one school. */
+  /** Ô "Tìm nhanh" (F13) — chuỗi tự do, lọc bảng theo tên trường / tên viết
+   * tắt / tên ngành (bỏ dấu). `null` = ô trống. */
+  q: string | null;
+  /** Deep-link cũ: `?school=<slug>` khoá bảng về đúng 1 trường (QuickSearch
+   * bản dropdown trước đây ghi param này; giữ để link cũ vẫn chạy). */
   schoolSlug: string | null;
-  /** Set by QuickSearch (F13) picking a major hit — narrows to that one major. */
+  /** Deep-link cũ: `?major=<slug>` khoá bảng về đúng 1 ngành. */
   majorSlug: string | null;
   sort: MajorSortKey;
   dir: SortDir;
@@ -166,6 +171,7 @@ export function parseMajorFilters(sp: ParamsInput): MajorFilters {
     categories: clean(getAll(sp, "cat"), CATEGORIES),
     maxMillions: parseMax(getOne(sp, "max")),
     roadmapOnly: getOne(sp, "roadmap") === "1",
+    q: (getOne(sp, "q") ?? "").trim() || null,
     schoolSlug: getOne(sp, "school"),
     majorSlug: getOne(sp, "major"),
     sort: clean([getOne(sp, "sort") ?? ""], MAJOR_SORT_KEYS)[0] ?? "year1",
@@ -195,6 +201,7 @@ export function serializeMajorFilters(f: MajorFilters): URLSearchParams {
   f.categories.forEach((v) => p.append("cat", v));
   if (f.maxMillions != null) p.set("max", String(f.maxMillions));
   if (f.roadmapOnly) p.set("roadmap", "1");
+  if (f.q) p.set("q", f.q);
   if (f.schoolSlug) p.set("school", f.schoolSlug);
   if (f.majorSlug) p.set("major", f.majorSlug);
   if (f.sort !== "year1") p.set("sort", f.sort);
@@ -219,6 +226,10 @@ export function serializeSchoolFilters(f: SchoolFilters): URLSearchParams {
 const MILLION = 1_000_000;
 
 export function filterMajorRows(rows: MajorRow[], f: MajorFilters): MajorRow[] {
+  // Ô "Tìm nhanh": khớp chuỗi con trên (tên trường + tên viết tắt + tên ngành),
+  // đã bỏ dấu. Chuẩn hoá 1 lần ở đây thay vì mỗi hàng.
+  const needle = f.q ? normalize(f.q) : "";
+
   return rows.filter((r) => {
     if (f.cities.length && !f.cities.includes(r.school.cityCode)) return false;
     if (f.groups.length && !f.groups.includes(r.major.groupCode)) return false;
@@ -231,6 +242,13 @@ export function filterMajorRows(rows: MajorRow[], f: MajorFilters): MajorRow[] {
     )
       return false;
     if (f.roadmapOnly && r.increase?.increaseSource !== "published_roadmap")
+      return false;
+    if (
+      needle &&
+      !normalize(
+        `${r.school.name} ${r.school.shortName ?? ""} ${r.major.name}`,
+      ).includes(needle)
+    )
       return false;
     if (f.schoolSlug && r.school.slug !== f.schoolSlug) return false;
     if (f.majorSlug && r.major.slug !== f.majorSlug) return false;
@@ -375,6 +393,7 @@ export function describeMajorFilters(f: MajorFilters): string {
     parts.push(`Loại trường: ${joinLabels(f.categories, CATEGORY_LABELS)}`);
   if (f.maxMillions != null) parts.push(`Học phí ≤ ${f.maxMillions} tr/năm`);
   if (f.roadmapOnly) parts.push("chỉ trường công bố lộ trình");
+  if (f.q) parts.push(`tìm "${f.q}"`);
   if (f.schoolSlug) parts.push("đang xem 1 trường (từ tìm nhanh)");
   if (f.majorSlug) parts.push("đang xem 1 ngành (từ tìm nhanh)");
   return parts.length ? parts.join(" · ") : "Bộ lọc: tất cả";
@@ -430,6 +449,7 @@ export function majorFilterChips(
     chips.push({ label: `≤ ${f.maxMillions} tr`, param: "max" });
   if (f.roadmapOnly)
     chips.push({ label: "Có lộ trình tăng", param: "roadmap" });
+  if (f.q) chips.push({ label: `Tìm: ${f.q}`, param: "q" });
   if (f.schoolSlug) {
     const name = rows?.find((r) => r.school.slug === f.schoolSlug)?.school.name;
     chips.push({
@@ -489,6 +509,7 @@ export function schoolParamsToMajor(sp: ParamsInput): URLSearchParams {
     categories: f.categories,
     maxMillions: f.maxMillions,
     roadmapOnly: false,
+    q: null,
     schoolSlug: null,
     majorSlug: null,
     sort: f.sort === "name" ? "name" : "year1",

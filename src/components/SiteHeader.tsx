@@ -13,7 +13,6 @@ import Logo from "@/components/Logo";
 // usePathname() to compute `active`.
 const NAV_TABS = [
   { label: "Tra cứu", href: "/nganh" as const, active: true },
-  { label: "So sánh", href: "/so-sanh" as const, active: false },
   { label: "Phương pháp", href: null, active: false },
   { label: "Dữ liệu & nguồn", href: null, active: false },
 ];

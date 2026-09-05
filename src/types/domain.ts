@@ -114,14 +114,8 @@ export interface SchoolRow {
   stats: SchoolStats;
 }
 
-/** Một gợi ý của ô tìm nhanh (F13). Trả từ GET /api/search?q= — xem QuickSearch. */
-export interface SearchHit {
-  kind: "school" | "major";
-  slug: string;
-  name: string;
-  /** Chỉ có với trường (short_name). */
-  shortName?: string;
-}
+// Ô "Tìm nhanh" (F13) không còn kiểu riêng: nó chỉ ghi `?q=` vào URL và
+// MajorResultsView lọc `MajorRow[]` sẵn có theo tên (xem lib/filters.ts).
 
 // --- Tuần 4: trang chi tiết ngành-trường (F6) + trang chi tiết trường (F7) ---
 
