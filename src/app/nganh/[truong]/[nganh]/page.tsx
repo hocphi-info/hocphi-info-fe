@@ -3,6 +3,7 @@ import { fetchProgramDetail } from "@/lib/api";
 import { formatMillions, TRACK_LABELS } from "@/lib/format";
 import TuitionTrendChart from "@/components/TuitionTrendChart";
 import SourceBlock from "@/components/SourceBlock";
+import SchoolLogo from "@/components/SchoolLogo";
 import PostGradCostBlock from "@/components/PostGradCostBlock";
 
 // Server Component — F6, S3. `fetchProgramDetail` (lib/api.ts) already calls
@@ -17,12 +18,19 @@ export default async function ProgramDetailPage({
 
   return (
     <main className="mx-auto w-full min-w-0 max-w-4xl flex-1 px-4 py-6">
-      <Link
-        href={`/truong/${detail.school.slug}`}
-        className="text-sm text-ink-3 hover:text-accent hover:underline"
-      >
-        {detail.school.name}
-      </Link>
+      <div className="flex items-center gap-2">
+        <SchoolLogo
+          logoUrl={detail.school.logoUrl}
+          name={detail.school.name}
+          shortName={detail.school.shortName}
+        />
+        <Link
+          href={`/truong/${detail.school.slug}`}
+          className="text-sm text-ink-3 hover:text-accent hover:underline"
+        >
+          {detail.school.name}
+        </Link>
+      </div>
       <h1 className="text-2xl font-bold tracking-tight text-ink">
         {detail.major.name}
       </h1>

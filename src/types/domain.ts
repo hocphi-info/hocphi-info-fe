@@ -30,6 +30,9 @@ export interface School {
   shortName: string;
   cityCode: CityCode;
   category: SchoolCategory;
+  /** URL logo trường (BE: schools.logo_url). null = chưa có → SchoolLogo hiện
+   * chữ viết tắt. Ảnh có thể vuông / chữ nhật dọc / chữ nhật ngang. */
+  logoUrl: string | null;
 }
 
 export interface Major {

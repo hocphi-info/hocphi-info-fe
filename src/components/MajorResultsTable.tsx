@@ -3,6 +3,7 @@ import type { MajorFilters } from "@/lib/filters";
 import { totalCourseCost } from "@/lib/derive";
 import { formatMillions, TRACK_LABELS } from "@/lib/format";
 import SchoolTypeBadge from "@/components/SchoolTypeBadge";
+import SchoolLogo from "@/components/SchoolLogo";
 import IncreaseBadge from "@/components/IncreaseBadge";
 import CompareCheckbox from "@/components/CompareCheckbox";
 import SortableHeader from "@/components/SortableHeader";
@@ -138,10 +139,21 @@ export default function MajorResultsTable({
                   />
                 </td>
                 <td className="px-3 py-3">
-                  <div className="font-medium text-ink">{row.school.name}</div>
-                  <div className="mt-0.5 flex items-center gap-2 text-ink-3">
-                    <span>{row.school.shortName}</span>
-                    <SchoolTypeBadge category={row.school.category} />
+                  <div className="flex items-center gap-2.5">
+                    <SchoolLogo
+                      logoUrl={row.school.logoUrl}
+                      name={row.school.name}
+                      shortName={row.school.shortName}
+                    />
+                    <div className="min-w-0">
+                      <div className="font-medium text-ink">
+                        {row.school.name}
+                      </div>
+                      <div className="mt-0.5 flex items-center gap-2 text-ink-3">
+                        <span>{row.school.shortName}</span>
+                        <SchoolTypeBadge category={row.school.category} />
+                      </div>
+                    </div>
                   </div>
                 </td>
                 <td className="px-3 py-3">
@@ -188,6 +200,11 @@ export default function MajorResultsTable({
               <CompareCheckbox
                 id={row.program.id}
                 label={`${row.major.name} — ${row.school.shortName}`}
+              />
+              <SchoolLogo
+                logoUrl={row.school.logoUrl}
+                name={row.school.name}
+                shortName={row.school.shortName}
               />
               <div className="min-w-0 flex-1">
                 <div className="font-medium text-ink">{row.school.name}</div>
