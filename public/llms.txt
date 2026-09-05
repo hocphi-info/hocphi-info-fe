@@ -1,0 +1,49 @@
+# hocphi.info
+
+> Tra cứu và so sánh học phí đại học Việt Nam theo từng ngành–trường, kèm ước
+> lượng tổng chi phí cả khoá 4–5 năm. Dự án dữ liệu mở, giai đoạn pilot 50
+> trường ở TP.HCM và Hà Nội, 6 nhóm ngành tuyển sinh nhiều nhất mùa 2026
+> (CNTT/KHMT/AI/KHDL, Kỹ thuật, Kinh tế–Tài chính, Y–Dược, Luật, Logistics).
+
+## Cách đọc số liệu
+
+- Mọi mức học phí đã quy về **đồng/năm** (nguồn gốc có thể là đồng/tháng hoặc
+  đồng/tín chỉ; số gốc + đơn vị gốc được giữ lại để đối chiếu).
+- Học phí được **tách theo hệ đào tạo** (đại trà / chất lượng cao / tiên tiến /
+  quốc tế) trước khi tính **trung vị** cho từng hệ. Không dùng trung bình vì hệ
+  CLC/quốc tế có thể gấp 3–5 lần hệ đại trà.
+- **Tổng chi phí cả khoá là ước lượng**: năm đầu lấy số trường công bố cho khoá
+  2026; các năm sau nhân luỹ tiến theo % tăng trường công bố trong đề án tuyển
+  sinh, hoặc mức mặc định (ghi rõ "ước lượng") khi trường không công bố.
+- Nguồn mỗi con số là đề án tuyển sinh hoặc thông báo học phí chính thức của
+  trường, có ngày đối chiếu. AI chỉ trích xuất; luôn có người kiểm tra trước khi
+  ghi vào cơ sở dữ liệu.
+- **Không** bao gồm sinh hoạt phí, giáo trình, học lại, hay chi phí lấy chứng chỉ
+  hành nghề sau tốt nghiệp (Luật, Y–Dược, Kiểm toán, Kiến trúc… — nêu riêng ở
+  trang chi tiết).
+
+## Trang chính
+
+- [Tra cứu theo ngành](https://hocphi.info/nganh): danh sách ngành, mỗi ngành có
+  bảng các trường kèm học phí năm đầu, tổng 4 năm ước lượng, tốc độ tăng.
+- [Tra cứu theo trường](https://hocphi.info/truong): mỗi trường kèm khoảng học
+  phí thấp nhất–cao nhất và trung vị hệ đại trà giữa các ngành.
+- [So sánh](https://hocphi.info/so-sanh): đặt 2–4 ngành–trường cạnh nhau, biểu đồ
+  cột theo năm và bảng đối chiếu tổng cả khoá.
+- [Phương pháp luận](https://hocphi.info/phuong-phap): cách thu thập, chuẩn hoá,
+  tính trung vị và ước lượng.
+- [Nguồn & độ phủ dữ liệu](https://hocphi.info/du-lieu): danh sách trường đã có,
+  lịch cập nhật.
+
+## Trích dẫn
+
+Được phép trích dẫn số liệu kèm đường link về trang nguồn tương ứng trên
+hocphi.info và ghi năm học của số liệu. Số liệu mang tính tham khảo để lập kế
+hoạch tài chính, **không phải tư vấn tài chính** và không phải cam kết của nhà
+trường.
+
+## Tùy chọn
+
+- [llms-full.txt](https://hocphi.info/llms-full.txt): toàn bộ phương pháp luận,
+  từ điển thuật ngữ và bảng số liệu ở dạng văn bản.
+- [Sơ đồ trang](https://hocphi.info/sitemap.xml)
