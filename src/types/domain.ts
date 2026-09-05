@@ -176,3 +176,62 @@ export interface SchoolDetailResponse {
   trackStats: SchoolTrackStat[];
   programs: SchoolProgramRow[];
 }
+
+// --- Trang "Dữ liệu & nguồn" (F14): độ phủ dữ liệu, từ GET /api/coverage ---
+// Mọi con số ở đây do BE đếm (một CTE `pub` = "1 dòng / bản ghi học phí đã công
+// bố" — nên các tổng cộng khớp nhau). Phần văn xuôi (changelog, chính sách
+// nguồn, mô tả nhóm ngành, nhãn trạng thái blocked) sống ở page.tsx, không ở đây.
+
+export interface CoverageTotals {
+  schoolsTotal: number;
+  schoolsWithData: number;
+  programsWithTuition: number;
+  tuitionRecords: number;
+  sourcesCited: number;
+}
+
+export interface CoverageCityRow {
+  cityCode: CityCode;
+  cityName: string;
+  schoolsTotal: number;
+  schoolsWithData: number;
+}
+
+export interface CoverageCategoryRow {
+  category: SchoolCategory;
+  schoolsTotal: number;
+  schoolsWithData: number;
+}
+
+export interface CoverageMajorGroupRow {
+  groupCode: MajorGroupCode;
+  groupName: string;
+  programsWithTuition: number;
+}
+
+export interface CoverageSchoolRow {
+  slug: string;
+  name: string;
+  shortName: string | null;
+  cityCode: CityCode;
+  category: SchoolCategory;
+  /** Số chương trình đã có ít nhất 1 bản ghi học phí công bố. 0 = trong hàng đợi. */
+  nPrograms: number;
+  /** doc_type của `source` mới nhất; null = trường chưa có nguồn nào. */
+  latestSourceDocType: SourceDocType | null;
+  /** "YYYY-YYYY"? Không — "YYYY-MM-DD" (published_date của nguồn) hoặc null. */
+  latestSourceDate: string | null;
+  /** "YYYY-MM-DD" (max updated_at của các bản ghi) hoặc null. */
+  lastUpdated: string | null;
+}
+
+/** Response của GET /api/coverage. */
+export interface CoverageResponse {
+  /** "YYYY-MM-DD" (max updated_at trên toàn bộ bản ghi) hoặc null khi chưa có gì. */
+  snapshotDate: string | null;
+  totals: CoverageTotals;
+  byCity: CoverageCityRow[];
+  byCategory: CoverageCategoryRow[];
+  byMajorGroup: CoverageMajorGroupRow[];
+  schools: CoverageSchoolRow[];
+}

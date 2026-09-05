@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { API_BASE } from "@/lib/api-base";
 import type {
+  CoverageResponse,
   MajorRow,
   ProgramDetailResponse,
   SchoolDetailResponse,
@@ -112,5 +113,20 @@ export async function fetchSchoolDetail(
   if (!res.ok) {
     throw new Error(`GET /api/schools/${schoolSlug} -> ${res.status}`);
   }
+  return res.json();
+}
+
+/** Độ phủ dữ liệu cho trang F14 (`/du-lieu`) — số tổng hợp + độ phủ theo thành
+ * phố / loại trường / nhóm ngành + bảng trạng thái từng trường.
+ *
+ * Khác mọi `fetch*` ở trên (không cache — tươi mỗi request): trang này là
+ * meta-thông tin, chấp nhận trễ tối đa 1h. `next: { revalidate: 3600 }` cho Next
+ * dựng lại HTML theo lịch — không phải deploy lại mỗi đợt seed, không đánh BE
+ * mỗi lượt xem. Đây là chỗ đầu tiên trong app dùng ISR (learning note). */
+export async function fetchCoverage(): Promise<CoverageResponse> {
+  const res = await fetch(`${API_BASE}/api/coverage`, {
+    next: { revalidate: 3600 },
+  });
+  if (!res.ok) throw new Error(`GET /api/coverage -> ${res.status}`);
   return res.json();
 }

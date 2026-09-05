@@ -3,12 +3,20 @@ import Link from "next/link";
 
 import Callout from "@/components/Callout";
 import JsonLd from "@/components/JsonLd";
+import { fetchCoverage } from "@/lib/api";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
+import type {
+  CityCode,
+  MajorGroupCode,
+  SchoolCategory,
+  SourceDocType,
+} from "@/types/domain";
 
-// Server Component, static. Content from ../mockup/Data.dc.html — coverage
-// snapshot + per-school status + change log + source policy. The counts here
-// are an illustrative snapshot; when an endpoint exposes coverage, swap the
-// literals for a fetch (this becomes `async` and reads from the API).
+// Async Server Component. Số liệu (stats, độ phủ, bảng trường, số ngành mỗi nhóm)
+// đến từ GET /api/coverage qua ISR (`fetchCoverage`, revalidate 1h) — trang tự
+// mới sau mỗi đợt seed BE, không cần deploy lại. Phần văn xuôi bên dưới (nhãn
+// trạng thái blocked, mô tả nhóm ngành, changelog, chính sách nguồn) là biên
+// tập — không suy ra được từ DB nên giữ ở đây.
 
 export const metadata: Metadata = {
   title: "Dữ liệu & nguồn",
@@ -16,25 +24,6 @@ export const metadata: Metadata = {
     "Độ phủ dữ liệu học phí hiện tại của hocphi.info: trạng thái từng trường trong 50 trường pilot, nhóm ngành, lịch cập nhật và loại nguồn được chấp nhận.",
   alternates: { canonical: "/du-lieu" },
 };
-
-const SNAPSHOT_DATE = "05/09/2026";
-
-const STATS = [
-  { n: "12", sub: "/ 50", label: "trường đã có ít nhất 1 ngành" },
-  { n: "184", sub: "", label: "chương trình (ngành × hệ × cơ sở)" },
-  { n: "176", sub: "", label: "bản ghi học phí theo năm học" },
-  { n: "43", sub: "", label: "tài liệu nguồn đã trích dẫn" },
-];
-
-const COVERAGE_CITY = [
-  { label: "TP. Hồ Chí Minh", value: "8 / 25", pct: 32 },
-  { label: "Hà Nội", value: "4 / 25", pct: 16 },
-];
-const COVERAGE_TYPE = [
-  { label: "Công lập tự chủ", value: "6", pct: 45 },
-  { label: "Công lập", value: "2", pct: 20 },
-  { label: "Tư thục", value: "4", pct: 32 },
-];
 
 type Status = "done" | "wip" | "queued" | "blocked";
 const STATUS_STYLE: Record<Status, { label: string; cls: string }> = {
@@ -47,178 +36,63 @@ const STATUS_STYLE: Record<Status, { label: string; cls: string }> = {
   blocked: { label: "Thiếu nguồn tĩnh", cls: "bg-muted-bg text-muted-ink" },
 };
 
-const SCHOOLS: {
-  name: string;
-  code: string;
-  city: string;
-  type: string;
-  majors: string;
-  source: string;
-  updated: string;
-  status: Status;
-}[] = [
-  {
-    name: "ĐH Công nghệ TP.HCM",
-    code: "HUTECH",
-    city: "TP.HCM",
-    type: "Tư thục",
-    majors: "64",
-    source: "Đề án TS 2026",
-    updated: "03/09",
-    status: "done",
-  },
-  {
-    name: "ĐH Khoa học Tự nhiên TP.HCM",
-    code: "HCMUS",
-    city: "TP.HCM",
-    type: "Công lập",
-    majors: "27",
-    source: "Đề án TS 2026",
-    updated: "03/09",
-    status: "done",
-  },
-  {
-    name: "ĐH Tôn Đức Thắng",
-    code: "TDTU",
-    city: "TP.HCM",
-    type: "Công lập tự chủ",
-    majors: "27",
-    source: "Đề án TS 2026 + phụ lục",
-    updated: "05/09",
-    status: "done",
-  },
-  {
-    name: "ĐH Quốc tế — ĐHQG-HCM",
-    code: "IU",
-    city: "TP.HCM",
-    type: "Công lập tự chủ",
-    majors: "23",
-    source: "Đề án TS 2026",
-    updated: "02/09",
-    status: "done",
-  },
-  {
-    name: "ĐH Ngoại ngữ — ĐHQGHN",
-    code: "ULIS",
-    city: "Hà Nội",
-    type: "Công lập tự chủ",
-    majors: "10",
-    source: "Đề án TS 2026",
-    updated: "01/09",
-    status: "done",
-  },
-  {
-    name: "ĐH Kinh tế Quốc dân",
-    code: "NEU",
-    city: "Hà Nội",
-    type: "Công lập tự chủ",
-    majors: "7",
-    source: "Thông báo HP 2026",
-    updated: "05/09",
-    status: "done",
-  },
-  {
-    name: "ĐH KHXH&NV TP.HCM",
-    code: "USSH",
-    city: "TP.HCM",
-    type: "Công lập",
-    majors: "4",
-    source: "Đề án TS 2026",
-    updated: "04/09",
-    status: "done",
-  },
-  {
-    name: "ĐH Công nghệ Thông tin — ĐHQG-HCM",
-    code: "UIT",
-    city: "TP.HCM",
-    type: "Công lập tự chủ",
-    majors: "2",
-    source: "QĐ học phí 2026 (khtc)",
-    updated: "04/09",
-    status: "wip",
-  },
-  {
-    name: "ĐH Văn Lang",
-    code: "VLU",
-    city: "TP.HCM",
-    type: "Tư thục",
-    majors: "1",
-    source: "Bài tin domain trường",
-    updated: "05/09",
-    status: "wip",
-  },
-  {
-    name: "ĐH Kinh tế – Luật — ĐHQG-HCM",
-    code: "UEL",
-    city: "TP.HCM",
-    type: "Công lập tự chủ",
-    majors: "—",
-    source: "Đã tải, chờ map",
-    updated: "—",
-    status: "queued",
-  },
-  {
-    name: "ĐH Công nghệ — ĐHQGHN",
-    code: "UET",
-    city: "Hà Nội",
-    type: "Công lập tự chủ",
-    majors: "—",
-    source: "Đã tải, chờ map",
-    updated: "—",
-    status: "queued",
-  },
-  {
-    name: "ĐH Bách khoa Hà Nội",
-    code: "HUST",
-    city: "Hà Nội",
-    type: "Công lập tự chủ",
-    majors: "0",
-    source: "—",
-    updated: "—",
-    status: "blocked",
-  },
-  {
-    name: "ĐH RMIT Việt Nam",
-    code: "RMIT",
-    city: "TP.HCM",
-    type: "Tư thục · 100% vốn NN",
-    majors: "0",
-    source: "—",
-    updated: "—",
-    status: "blocked",
-  },
-];
+// Nhãn trạng thái không suy ra được từ số đếm — giữ ở FE. `blocked` = học phí chỉ
+// nằm trên web động, không có bản tĩnh để trích. Trường không có ở đây: nPrograms
+// > 0 → "done", = 0 → "queued".
+const STATUS_OVERRIDES: Record<string, Status> = {
+  hust: "blocked",
+  "rmit-vietnam": "blocked",
+};
 
-const MAJOR_GROUPS = [
-  {
+const CITY_LABEL: Record<CityCode, string> = {
+  HCM: "TP. Hồ Chí Minh",
+  HN: "Hà Nội",
+};
+
+const CATEGORY_LABEL: Record<SchoolCategory, string> = {
+  cong_lap: "Công lập",
+  cong_lap_tu_chu: "Công lập tự chủ",
+  tu_thuc: "Tư thục",
+  tu_thuc_von_nuoc_ngoai: "Vốn nước ngoài",
+};
+
+const DOC_TYPE_LABEL: Record<SourceDocType, string> = {
+  de_an_tuyen_sinh: "Đề án tuyển sinh",
+  thong_bao_hoc_phi: "Thông báo học phí",
+  quy_dinh_nghe: "Quy định nghề",
+  khac: "Nguồn khác",
+};
+
+// Tên hiển thị + "gồm" của mỗi nhóm ngành — biên tập. Số "ngành đã có" lấy từ
+// coverage.byMajorGroup theo groupCode.
+const MAJOR_GROUP_INFO: Record<
+  MajorGroupCode,
+  { name: string; includes: string }
+> = {
+  CNTT: {
     name: "CNTT / KHMT / AI / KHDL",
     includes:
       "Công nghệ thông tin, Khoa học máy tính, Trí tuệ nhân tạo, Khoa học dữ liệu, An toàn thông tin",
-    count: "58",
   },
-  {
+  KY_THUAT: {
     name: "Kỹ thuật",
     includes: "Điện – Điện tử, Cơ khí, Ô tô, Vi mạch bán dẫn, Tự động hoá",
-    count: "41",
   },
-  {
+  KINH_TE: {
     name: "Kinh tế / Tài chính – Ngân hàng / QTKD",
     includes:
       "Kinh tế, Tài chính – Ngân hàng, Quản trị kinh doanh, Kế toán, Marketing",
-    count: "44",
   },
-  {
+  Y_DUOC: {
     name: "Y – Dược",
     includes: "Y khoa, Răng – Hàm – Mặt, Dược học, Điều dưỡng, Y tế công cộng",
-    count: "18",
   },
-  { name: "Luật", includes: "Luật, Luật kinh tế, Luật quốc tế", count: "12" },
-  {
+  LUAT: { name: "Luật", includes: "Luật, Luật kinh tế, Luật quốc tế" },
+  LOGISTICS: {
     name: "Logistics & Chuỗi cung ứng",
     includes: "Logistics và Quản lý chuỗi cung ứng, Kinh doanh quốc tế",
-    count: "11",
   },
-];
+};
 
 const CHANGELOG = [
   [
@@ -247,7 +121,61 @@ const th =
   "bg-surface-2 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-ink-3";
 const td = "border-t border-rule px-3 py-2.5 align-middle";
 
-export default function DataPage() {
+/** "2026-09-05" -> "05/09/2026" (year) hoặc "05/09" (no year); null -> "—". */
+function formatDate(iso: string | null, opts: { year?: boolean } = {}): string {
+  if (!iso) return "—";
+  const [y, m, d] = iso.split("-");
+  return opts.year ? `${d}/${m}/${y}` : `${d}/${m}`;
+}
+
+/** "Thông báo học phí 2026" từ doc_type + published_date; "—" nếu chưa có nguồn. */
+function sourceLabel(
+  docType: SourceDocType | null,
+  date: string | null,
+): string {
+  if (!docType) return "—";
+  const year = date ? ` ${date.slice(0, 4)}` : "";
+  return `${DOC_TYPE_LABEL[docType]}${year}`;
+}
+
+export default async function DataPage() {
+  const coverage = await fetchCoverage();
+  const { totals, snapshotDate } = coverage;
+
+  const stats = [
+    {
+      n: String(totals.schoolsWithData),
+      sub: `/ ${totals.schoolsTotal}`,
+      label: "trường đã có ít nhất 1 ngành",
+    },
+    {
+      n: String(totals.programsWithTuition),
+      sub: "",
+      label: "chương trình (ngành × hệ × cơ sở)",
+    },
+    {
+      n: String(totals.tuitionRecords),
+      sub: "",
+      label: "bản ghi học phí theo năm học",
+    },
+    {
+      n: String(totals.sourcesCited),
+      sub: "",
+      label: "tài liệu nguồn đã trích dẫn",
+    },
+  ];
+
+  const cityRows = coverage.byCity.map((r) => ({
+    label: CITY_LABEL[r.cityCode],
+    value: `${r.schoolsWithData} / ${r.schoolsTotal}`,
+    pct: r.schoolsTotal ? (r.schoolsWithData / r.schoolsTotal) * 100 : 0,
+  }));
+  const typeRows = coverage.byCategory.map((r) => ({
+    label: CATEGORY_LABEL[r.category],
+    value: `${r.schoolsWithData} / ${r.schoolsTotal}`,
+    pct: r.schoolsTotal ? (r.schoolsWithData / r.schoolsTotal) * 100 : 0,
+  }));
+
   const datasetLd = {
     "@context": "https://schema.org",
     "@type": "Dataset",
@@ -294,14 +222,14 @@ export default function DataPage() {
           vị.
         </p>
         <p className="mt-3 text-xs text-ink-3">
-          Ngày cập nhập: {SNAPSHOT_DATE}
+          Ngày cập nhập: {formatDate(snapshotDate, { year: true })}
         </p>
       </div>
 
       {/* Stats */}
       <section className="py-8">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {STATS.map((s) => (
+          {stats.map((s) => (
             <div
               key={s.label}
               className="rounded-xl border border-border bg-surface p-4"
@@ -333,8 +261,8 @@ export default function DataPage() {
       <section className="border-t border-rule py-8">
         <h2 className="text-xl font-bold tracking-tight text-ink">Độ phủ</h2>
         <div className="mt-4 grid gap-8 sm:grid-cols-2">
-          <CoverageList title="Theo thành phố" rows={COVERAGE_CITY} />
-          <CoverageList title="Theo loại trường" rows={COVERAGE_TYPE} />
+          <CoverageList title="Theo thành phố" rows={cityRows} />
+          <CoverageList title="Theo loại trường" rows={typeRows} />
         </div>
       </section>
 
@@ -344,8 +272,9 @@ export default function DataPage() {
           Trạng thái từng trường
         </h2>
         <p className="mt-1 text-sm text-ink-3">
-          12 trường đã lên dữ liệu, phần còn lại trong 50 trường pilot đang
-          trong hàng đợi. “Số ngành” là số chương trình đã đối chiếu và công bố.
+          {totals.schoolsWithData} trường đã lên dữ liệu, phần còn lại trong 50
+          trường pilot đang trong hàng đợi. “Số ngành” là số chương trình đã đối
+          chiếu và công bố.
         </p>
         <div className="mt-4 overflow-x-auto rounded-xl border border-border">
           <table className="w-full min-w-180 text-sm">
@@ -361,19 +290,26 @@ export default function DataPage() {
               </tr>
             </thead>
             <tbody className="text-ink-2">
-              {SCHOOLS.map((s) => {
-                const st = STATUS_STYLE[s.status];
+              {coverage.schools.map((s) => {
+                const status: Status =
+                  STATUS_OVERRIDES[s.slug] ??
+                  (s.nPrograms > 0 ? "done" : "queued");
+                const st = STATUS_STYLE[status];
                 return (
-                  <tr key={s.code}>
+                  <tr key={s.slug}>
                     <td className={td}>
                       <span className="font-semibold text-ink">{s.name}</span>{" "}
-                      <span className="text-ink-3">· {s.code}</span>
+                      {s.shortName ? (
+                        <span className="text-ink-3">· {s.shortName}</span>
+                      ) : null}
                     </td>
-                    <td className={td}>{s.city}</td>
-                    <td className={td}>{s.type}</td>
-                    <td className={`${td} text-right`}>{s.majors}</td>
-                    <td className={td}>{s.source}</td>
-                    <td className={td}>{s.updated}</td>
+                    <td className={td}>{CITY_LABEL[s.cityCode]}</td>
+                    <td className={td}>{CATEGORY_LABEL[s.category]}</td>
+                    <td className={`${td} text-right`}>{s.nPrograms}</td>
+                    <td className={td}>
+                      {sourceLabel(s.latestSourceDocType, s.latestSourceDate)}
+                    </td>
+                    <td className={td}>{formatDate(s.lastUpdated)}</td>
                     <td className={td}>
                       <span
                         className={`rounded-full px-2 py-0.5 text-xs font-semibold ${st.cls}`}
@@ -408,13 +344,20 @@ export default function DataPage() {
               </tr>
             </thead>
             <tbody className="text-ink-2">
-              {MAJOR_GROUPS.map((g) => (
-                <tr key={g.name}>
-                  <td className={`${td} font-semibold text-ink`}>{g.name}</td>
-                  <td className={td}>{g.includes}</td>
-                  <td className={`${td} text-right`}>{g.count}</td>
-                </tr>
-              ))}
+              {coverage.byMajorGroup.map((row) => {
+                const info = MAJOR_GROUP_INFO[row.groupCode];
+                return (
+                  <tr key={row.groupCode}>
+                    <td className={`${td} font-semibold text-ink`}>
+                      {info?.name ?? row.groupName}
+                    </td>
+                    <td className={td}>{info?.includes ?? ""}</td>
+                    <td className={`${td} text-right`}>
+                      {row.programsWithTuition}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

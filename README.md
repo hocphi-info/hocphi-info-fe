@@ -136,6 +136,10 @@ Xây theo [`docs/LEARNING_PATH.md`](docs/LEARNING_PATH.md), mỗi tuần một n
       tổng chi phí cả khoá (F9), trang phụ: `/phuong-phap` (F14), `/du-lieu` (F15), `/tai-tro`
 - [x] SEO & khung trang — `robots.ts`, `sitemap.ts`, JSON-LD, `not-found`
 - [x] Nối [`hocphi-info-be`](../hocphi-info-be) thật — toàn bộ màn hình (S1/S2/S3/S4, so sánh)
+- [x] Trang **F15 Dữ liệu & nguồn** (`/du-lieu`) đọc số thật từ `GET /api/coverage`
+      qua **ISR** (`fetch` với `next: { revalidate: 3600 }` — lần đầu app dùng ISR;
+      trang tự mới sau mỗi đợt seed BE, không cần deploy lại). Văn xuôi (changelog,
+      chính sách nguồn, nhãn "thiếu nguồn tĩnh") vẫn tĩnh trong `page.tsx`.
 - [ ] Deploy · người dùng thử — _các màn hình đã xong, sẵn sàng deploy_
 
 Bối cảnh sản phẩm: [`../y-tuong-hoc-phi-dai-hoc.md`](../y-tuong-hoc-phi-dai-hoc.md) ·
