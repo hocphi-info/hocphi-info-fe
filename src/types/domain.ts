@@ -114,16 +114,8 @@ export interface SchoolRow {
   stats: SchoolStats;
 }
 
-/** Một gợi ý của ô tìm nhanh (F13). View-model thuần FE: QuickSearch dựng từ
- * `GET /api/majors?search=` + `GET /api/schools?search=` rồi gộp lại (không còn
- * endpoint /api/search riêng). */
-export interface SearchHit {
-  kind: "school" | "major";
-  slug: string;
-  name: string;
-  /** Chỉ có với trường (short_name). */
-  shortName?: string;
-}
+// Ô "Tìm nhanh" (F13) không còn kiểu riêng: nó chỉ ghi `?q=` vào URL và
+// MajorResultsView lọc `MajorRow[]` sẵn có theo tên (xem lib/filters.ts).
 
 // --- Tuần 4: trang chi tiết ngành-trường (F6) + trang chi tiết trường (F7) ---
 

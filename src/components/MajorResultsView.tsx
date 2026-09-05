@@ -66,6 +66,17 @@ export default function MajorResultsView({ rows }: { rows: MajorRow[] }) {
           </DismissibleCallout>
         </div>
 
+        {/* Toolbar: quick search on the left, "So sánh" on the right. Rendered
+            unconditionally — if the quick search filters the table down to
+            nothing it must stay on screen so the user can edit or clear it
+            (inside the `visible.length > 0` branch it would unmount). */}
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="w-full sm:max-w-xs">
+            <QuickSearch />
+          </div>
+          <CompareCountButton />
+        </div>
+
         {visible.length === 0 ? (
           <div className="mt-4">
             <EmptyResults />
@@ -74,14 +85,6 @@ export default function MajorResultsView({ rows }: { rows: MajorRow[] }) {
           <>
             <div className="mt-4">
               <DistributionStrip rows={visible} />
-            </div>
-            {/* Toolbar sitting right on top of the table: quick search on the
-                left, "So sánh" on the right. */}
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-              <div className="w-full sm:max-w-xs">
-                <QuickSearch />
-              </div>
-              <CompareCountButton />
             </div>
             <div className="mt-3">
               <MajorResultsTable
