@@ -11,7 +11,7 @@
 //                       --filterSchoolRows(f, allMajorRows)-->  filtered
 //                       --sortSchoolRows(f)-->  visible
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { MajorRow } from "@/types/domain";
 import {
@@ -29,6 +29,11 @@ import EmptyResults from "@/components/EmptyResults";
 import SchoolRangeChart from "@/components/SchoolRangeChart";
 import DismissibleCallout from "@/components/DismissibleCallout";
 import SchoolResultsTable from "@/components/SchoolResultsTable";
+import ShowMoreButton from "@/components/ShowMoreButton";
+
+// See MajorResultsView for the rationale — the full filtered list still feeds
+// ResultsSummary / SchoolRangeChart; only the table is capped.
+const PAGE_SIZE = 20;
 
 export default function SchoolResultsView({ rows }: { rows: MajorRow[] }) {
   const sp = useSearchParams();
@@ -38,6 +43,18 @@ export default function SchoolResultsView({ rows }: { rows: MajorRow[] }) {
     const grouped = deriveSchoolRows(rows, filters.basisTracks);
     return sortSchoolRows(filterSchoolRows(grouped, rows, filters), filters);
   }, [rows, filters]);
+
+  // Ephemeral "rows revealed" state; reset on any query-string change. Same
+  // pattern as MajorResultsView (adjust state during render, no useEffect).
+  const [shown, setShown] = useState(PAGE_SIZE);
+  const spKey = sp.toString();
+  const [seenKey, setSeenKey] = useState(spKey);
+  if (spKey !== seenKey) {
+    setSeenKey(spKey);
+    setShown(PAGE_SIZE);
+  }
+
+  const paged = useMemo(() => visible.slice(0, shown), [visible, shown]);
 
   return (
     <div className="mt-6 min-w-0 lg:grid lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
@@ -76,22 +93,20 @@ export default function SchoolResultsView({ rows }: { rows: MajorRow[] }) {
             </div>
             <div className="mt-4">
               <SchoolResultsTable
-                rows={visible}
+                rows={paged}
                 sort={filters.sort}
                 dir={filters.dir}
               />
             </div>
+            {shown < visible.length && (
+              <ShowMoreButton
+                remaining={visible.length - shown}
+                noun="trường"
+                onClick={() => setShown((s) => s + PAGE_SIZE)}
+              />
+            )}
           </>
         )}
-
-        <button
-          type="button"
-          disabled
-          className="mt-4 w-full rounded-lg border border-border py-2 text-sm text-ink-3"
-        >
-          {/* TODO Tuần 4+: phân trang khi có BE + dữ liệu 50 trường */}
-          Xem thêm trường
-        </button>
       </section>
     </div>
   );
