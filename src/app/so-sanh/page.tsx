@@ -49,6 +49,8 @@ export default async function ComparePage({
       id: ref.id,
       label: ref.label,
       schoolName: detail.school.name,
+      schoolLogoUrl: detail.school.logoUrl,
+      schoolShortName: detail.school.shortName,
       majorName: detail.major.name,
       track: ref.track,
       year1Amount: program.year1.amountPerYear,

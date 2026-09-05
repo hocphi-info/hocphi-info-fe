@@ -2,6 +2,7 @@ import { fetchSchoolDetail } from "@/lib/api";
 import { TRACK_LABELS } from "@/lib/format";
 import RangeChart from "@/components/RangeChart";
 import SchoolTypeBadge from "@/components/SchoolTypeBadge";
+import SchoolLogo from "@/components/SchoolLogo";
 import SchoolProgramsTable from "@/components/SchoolProgramsTable";
 
 // Server Component — F7. `fetchSchoolDetail` (lib/api.ts) already calls
@@ -15,7 +16,13 @@ export default async function SchoolDetailPage({
 
   return (
     <main className="mx-auto w-full min-w-0 max-w-4xl flex-1 px-4 py-6">
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-3">
+        <SchoolLogo
+          logoUrl={detail.school.logoUrl}
+          name={detail.school.name}
+          shortName={detail.school.shortName}
+          size="md"
+        />
         <h1 className="text-2xl font-bold tracking-tight text-ink">
           {detail.school.name}
         </h1>

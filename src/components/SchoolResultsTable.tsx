@@ -2,6 +2,7 @@ import type { SchoolRow } from "@/types/domain";
 import type { SchoolFilters } from "@/lib/filters";
 import { formatMillions } from "@/lib/format";
 import SchoolTypeBadge from "@/components/SchoolTypeBadge";
+import SchoolLogo from "@/components/SchoolLogo";
 import SortableHeader from "@/components/SortableHeader";
 import RowLink from "@/components/RowLink";
 
@@ -123,10 +124,21 @@ export default function SchoolResultsTable({
                   className="border-b border-rule align-middle last:border-b-0"
                 >
                   <td className="py-3 pl-4 pr-3">
-                    <div className="font-medium text-ink">{school.name}</div>
-                    <div className="mt-0.5 flex items-center gap-2 text-ink-3">
-                      <span>{school.shortName}</span>
-                      <SchoolTypeBadge category={school.category} />
+                    <div className="flex items-center gap-2.5">
+                      <SchoolLogo
+                        logoUrl={school.logoUrl}
+                        name={school.name}
+                        shortName={school.shortName}
+                      />
+                      <div className="min-w-0">
+                        <div className="font-medium text-ink">
+                          {school.name}
+                        </div>
+                        <div className="mt-0.5 flex items-center gap-2 text-ink-3">
+                          <span>{school.shortName}</span>
+                          <SchoolTypeBadge category={school.category} />
+                        </div>
+                      </div>
                     </div>
                   </td>
                   <td className="px-3 py-3 text-right tabular-nums text-ink">
@@ -186,11 +198,20 @@ export default function SchoolResultsTable({
               key={school.slug}
               className="rounded-lg border border-border bg-surface p-3"
             >
-              <div className="font-medium text-ink">{school.name}</div>
-              <div className="mt-0.5 flex flex-wrap items-center gap-2 text-sm text-ink-3">
-                <span>{school.shortName}</span>
-                <SchoolTypeBadge category={school.category} />
-                <span>· {stats.nPrograms} ngành</span>
+              <div className="flex items-start gap-2.5">
+                <SchoolLogo
+                  logoUrl={school.logoUrl}
+                  name={school.name}
+                  shortName={school.shortName}
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium text-ink">{school.name}</div>
+                  <div className="mt-0.5 flex flex-wrap items-center gap-2 text-sm text-ink-3">
+                    <span>{school.shortName}</span>
+                    <SchoolTypeBadge category={school.category} />
+                    <span>· {stats.nPrograms} ngành</span>
+                  </div>
+                </div>
               </div>
               <div className="mt-2 text-lg font-semibold tabular-nums text-ink">
                 {single

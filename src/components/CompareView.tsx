@@ -18,6 +18,8 @@ export interface CompareItemData {
   id: string;
   label: string;
   schoolName: string;
+  schoolLogoUrl: string | null;
+  schoolShortName: string;
   majorName: string;
   track: Track;
   year1Amount: number;
