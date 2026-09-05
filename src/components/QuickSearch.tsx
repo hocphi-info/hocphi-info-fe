@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { API_BASE } from "@/lib/api-base";
 import type { SearchHit } from "@/types/domain";
 
 const MIN_LEN = 2;
@@ -43,7 +44,9 @@ export default function QuickSearch() {
     // Debounce: wait for a pause in typing before hitting the network.
     const timer = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(trimmed)}`);
+        const res = await fetch(
+          `${API_BASE}/api/search?q=${encodeURIComponent(trimmed)}`,
+        );
         const hits: SearchHit[] = res.ok ? await res.json() : [];
         if (!ignore) setData({ q: trimmed, hits });
       } catch {

@@ -32,10 +32,7 @@ src/
 │   ├── page.tsx                  # "/"
 │   ├── layout.tsx                # shared shell (header/footer go here)
 │   ├── nganh/{page,loading,error}.tsx   # "/nganh" (S1) — Server Component page + boundaries
-│   ├── truong/{page,loading,error}.tsx  # "/truong" (S2)
-│   └── api/{nganh,truong,search}/route.ts  # Route Handlers standing in for the backend —
-│       reads mock-data.ts, returns the same JSON shape the real API will. `lib/api.ts` is
-│       the only thing that changes when the FastAPI backend (hocphi-info-be) is wired up.
+│   └── truong/{page,loading,error}.tsx  # "/truong" (S2)
 ├── components/             # Reusable UI (Button, FilterPanel, Chart, …). Not route-specific.
 ├── lib/                    # API calls + data transforms. Flat, no repository/service layering.
 ├── types/                  # Shared TypeScript types (Truong, Nganh, HocPhi, …)

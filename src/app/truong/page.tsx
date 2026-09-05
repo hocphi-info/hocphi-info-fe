@@ -8,8 +8,8 @@ import ResultsSkeleton from "@/components/ResultsSkeleton";
 // endpoint /nganh uses) and lets the client SchoolResultsView group them into
 // per-school min/median/max. Reason (Week 3 plan §2): the "cơ sở tính khoảng"
 // radio and the "có đào tạo nhóm ngành" filter both need per-program data that a
-// pre-baked SchoolRow[] doesn't carry. /api/truong + fetchSchoolRows stay in
-// place as the shape contract for the future Go backend.
+// pre-baked SchoolRow[] doesn't carry — so this page never calls BE's
+// /api/schools; there was never a fetchSchoolRows() to wire up here.
 //
 // `await searchParams` opts the route into dynamic rendering (so useSearchParams
 // resolves during SSR); <Suspense> is required by the production build wherever
