@@ -1,11 +1,11 @@
 "use client";
 
-// Client Component — one checkbox per result row. It has no state of its own; it
-// reads and writes the shared selection from CompareTray via the useCompare hook.
-// When the list is full, unselected checkboxes are disabled with an explanatory
-// tooltip.
+// Client Component — one checkbox per result row. It has no state of its own;
+// it reads and writes the shared selection from useCompareSelection (URL
+// state — Tuần 5). When the list is full, unselected checkboxes are disabled
+// with an explanatory tooltip.
 
-import { useCompare } from "@/components/CompareTray";
+import { useCompareSelection } from "@/hooks/useCompareSelection";
 
 export default function CompareCheckbox({
   id,
@@ -14,7 +14,7 @@ export default function CompareCheckbox({
   id: string;
   label: string;
 }) {
-  const { isSelected, toggle, count, max } = useCompare();
+  const { isSelected, toggle, count, max } = useCompareSelection();
   const checked = isSelected(id);
   const disabled = !checked && count >= max;
 

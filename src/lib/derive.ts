@@ -37,6 +37,18 @@ function median(sortedAsc: number[]): number {
     : sortedAsc[mid];
 }
 
+/** Trung vị học phí/năm tính trên các năm của MỘT chương trình (khác
+ * `schoolTuitionStats`'s medianAmount, vốn tính trên nhiều ngành). Dùng ở
+ * bảng so sánh (F8, Tuần 5) — hàng "Trung vị/năm cả khoá". */
+export function medianPerYear(
+  yearlyAmounts: { amountPerYear: number }[],
+): number {
+  const amounts = yearlyAmounts
+    .map((y) => y.amountPerYear)
+    .sort((a, b) => a - b);
+  return median(amounts);
+}
+
 /**
  * Thống kê học phí năm đầu cho các ngành của một trường, tính trong phạm vi
  * `tracks` (mặc định chỉ hệ đại trà — giữ nguyên hành vi Tuần 1/2).

@@ -129,10 +129,10 @@ export interface SchoolFilters {
 }
 
 /** Accepts a real URLSearchParams OR the page's `searchParams` prop object. */
-type ParamsInput =
+export type ParamsInput =
   URLSearchParams | Record<string, string | string[] | undefined>;
 
-function getAll(sp: ParamsInput, key: string): string[] {
+export function getAll(sp: ParamsInput, key: string): string[] {
   if (sp instanceof URLSearchParams) return sp.getAll(key);
   const v = sp[key];
   if (v == null) return [];
