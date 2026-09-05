@@ -15,7 +15,7 @@
 // the same way you'd compute a filtered list inside build() instead of caching
 // it in a field.
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { MajorRow } from "@/types/domain";
 import {
@@ -34,6 +34,11 @@ import DistributionStrip from "@/components/DistributionStrip";
 import DismissibleCallout from "@/components/DismissibleCallout";
 import CompareCountButton from "@/components/CompareCountButton";
 import MajorResultsTable from "@/components/MajorResultsTable";
+import ShowMoreButton from "@/components/ShowMoreButton";
+
+// How many rows the table shows before "Xem thêm" is pressed. The full filtered
+// list still feeds ResultsSummary / DistributionStrip — only the table is capped.
+const PAGE_SIZE = 20;
 
 export default function MajorResultsView({ rows }: { rows: MajorRow[] }) {
   const sp = useSearchParams();
@@ -42,6 +47,24 @@ export default function MajorResultsView({ rows }: { rows: MajorRow[] }) {
     () => sortMajorRows(filterMajorRows(rows, filters), filters),
     [rows, filters],
   );
+
+  // "How many rows are revealed" is ephemeral view state (like FilterPanel's
+  // `mobileOpen`), NOT part of the URL filter/sort state.
+  const [shown, setShown] = useState(PAGE_SIZE);
+
+  // Reset to the first page whenever the query string changes (any filter, sort
+  // or the quick-search box). Adjusting state during render — the React docs
+  // "You Might Not Need an Effect" pattern — so there is no extra paint showing
+  // the old page count against the new list. `page` is not a URL param, so every
+  // query-string change is a filter/sort/q change that should reset.
+  const spKey = sp.toString();
+  const [seenKey, setSeenKey] = useState(spKey);
+  if (spKey !== seenKey) {
+    setSeenKey(spKey);
+    setShown(PAGE_SIZE);
+  }
+
+  const paged = useMemo(() => visible.slice(0, shown), [visible, shown]);
 
   return (
     <div className="mt-6 min-w-0 lg:grid lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
@@ -88,22 +111,20 @@ export default function MajorResultsView({ rows }: { rows: MajorRow[] }) {
             </div>
             <div className="mt-3">
               <MajorResultsTable
-                rows={visible}
+                rows={paged}
                 sort={filters.sort}
                 dir={filters.dir}
               />
             </div>
+            {shown < visible.length && (
+              <ShowMoreButton
+                remaining={visible.length - shown}
+                noun="kết quả"
+                onClick={() => setShown((s) => s + PAGE_SIZE)}
+              />
+            )}
           </>
         )}
-
-        <button
-          type="button"
-          disabled
-          className="mt-4 w-full rounded-lg border border-border py-2 text-sm text-ink-3"
-        >
-          {/* TODO Tuần 4+: phân trang khi có BE + dữ liệu 50 trường */}
-          Xem thêm kết quả
-        </button>
       </section>
     </div>
   );
