@@ -12,9 +12,10 @@ Xem học phí một ngành–trường quy về `đồng/năm`, tách theo hệ
 cao / tiên tiến / quốc tế), và ước lượng **tổng chi phí cả khoá** (4–6 năm) dựa trên % tăng
 học phí hàng năm. Không cần đăng nhập.
 
-> ⚠️ **Lưu ý**: các con số hiện đang chạy trên **dữ liệu minh hoạ** (`src/lib/mock-data.ts`),
-> chưa phải học phí thật — backend ([`hocphi-info-be`](../hocphi-info-be)) chưa nối. Đây cũng
-> là một **dự án học React/Next.js**: chủ dự án nền Flutter, vừa build sản phẩm vừa học.
+> ⚠️ **Lưu ý**: đã nối [`hocphi-info-be`](../hocphi-info-be) thật, nhưng dữ liệu học phí
+> mới có cho **7/50 trường pilot** (crawler đang chạy tiếp) — nhiều trường/ngành sẽ chưa
+> có số. Đây cũng là một **dự án học React/Next.js**: chủ dự án nền Flutter, vừa build sản
+> phẩm vừa học.
 
 - [hocphi-info-fe 🎓](#hocphi-info-fe-)
   - [I. Cách hoạt động](#i-cách-hoạt-động)
@@ -30,9 +31,10 @@ flowchart TD
     URL["URL: /nganh?city=HCM&group=CNTT&sort=year1<br/>— bộ lọc & sắp xếp lưu thẳng trên URL (chia sẻ được link)"] --> SC
 
     subgraph SERVER["Server Components — Next.js App Router"]
-        SC["nganh/page.tsx · truong/page.tsx (async)"] --> API["Route Handlers<br/>src/app/api/{nganh,truong,search}"]
-        API --> MOCK[("src/lib/mock-data.ts<br/>dữ liệu minh hoạ, server-only")]
+        SC["nganh/page.tsx · truong/page.tsx (async)"] --> APICLIENT["src/lib/api.ts<br/>fetchMajorRows()"]
     end
+
+    APICLIENT -->|"GET /api/majors"| BE[("hocphi-info-be<br/>FastAPI + Postgres")]
 
     SC --> CC
 
@@ -42,20 +44,22 @@ flowchart TD
         CT["CompareTray (Context)<br/>chọn 2–3 mục để so sánh (F8)"]
     end
 
+    QS -->|"GET /api/search (browser, CORS)"| BE
+
     CC --> OUT["Bảng desktop + thẻ mobile<br/>S1 theo ngành · S2 theo trường<br/>light / dark"]
 
-    ENV["NEXT_PUBLIC_API_URL"] -.->|"khi backend sẵn sàng: fetch thẳng vào đó,<br/>bỏ qua Route Handler"| API
+    ENV["NEXT_PUBLIC_API_URL"] -.-> APICLIENT
 ```
 
 Trang chủ dẫn tới hai màn hình tra cứu:
 
 - **`/nganh` (S1)** — danh sách chương trình theo ngành: học phí năm đầu, % tăng, hệ đào tạo,
   loại trường; lọc theo thành phố / nhóm ngành / hệ, sắp xếp theo cột, tất cả phản ánh trên URL.
-- **`/truong` (S2)** — gom theo trường: khoảng Min–Max, trung vị học phí hệ đại trà, số ngành.
+- **`/truong` (S2)** — gom theo trường: khoảng Min–Max, trung vị học phí hệ đại trà, số ngành
+  (tính lại từ dữ liệu `/nganh` ngay trên client, không gọi endpoint riêng).
 
-Dữ liệu đi qua **Route Handler** (`src/app/api/*`) đóng vai backend tạm thời. Khi
-[`hocphi-info-be`](../hocphi-info-be) chạy thật, chỉ cần đặt `NEXT_PUBLIC_API_URL` là
-`src/lib/api.ts` gọi thẳng API đó — component không đổi.
+`src/lib/api.ts` gọi thẳng [`hocphi-info-be`](../hocphi-info-be) (FastAPI) qua
+`NEXT_PUBLIC_API_URL` — không còn lớp Route Handler mock đứng giữa.
 
 ## II. Công nghệ
 
@@ -74,11 +78,10 @@ src/
     globals.css         # token Tailwind 4 + bảng màu
     nganh/              # "/nganh" (S1) — page + loading.tsx + error.tsx
     truong/             # "/truong" (S2) — page + loading.tsx + error.tsx
-    api/                # Route Handlers: nganh · truong · search (backend tạm thời)
   components/           # UI tái dùng: FilterPanel, SortableHeader, QuickSearch,
                         # CompareTray, *ResultsTable/View, *Badge, charts…
-  lib/                  # api.ts, api-base.ts, filters.ts, url.ts, derive.ts,
-                        # format.ts, mock-data.ts (server-only)
+  lib/                  # api.ts (gọi hocphi-info-be thật), api-base.ts, filters.ts,
+                        # url.ts, derive.ts, format.ts
   types/domain.ts       # kiểu dùng chung, khớp schema backend
 docs/                   # (git-ignore) LEARNING_PATH.md + brainstorms/ + plans/
 ```
@@ -88,13 +91,16 @@ Component đặc thù một route mà không dùng lại thì để cạnh `page
 
 ## IV. Chạy thử
 
+Chạy [`hocphi-info-be`](../hocphi-info-be) trước (xem README repo đó — Docker Compose cho
+Postgres + `uvicorn` cho API ở `:8000`), rồi:
+
 ```bash
-cp .env.example .env.local     # để trống NEXT_PUBLIC_API_URL -> dùng Route Handler nội bộ
+cp .env.example .env.local     # NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
 npm install
 npm run dev                    # http://localhost:3000
 ```
 
-Mở `/nganh` hoặc `/truong` để xem hai màn hình tra cứu (đang chạy dữ liệu minh hoạ).
+Mở `/nganh` hoặc `/truong` để xem hai màn hình tra cứu (dữ liệu thật, 7/50 trường có số).
 
 Kiểm thử:
 
@@ -117,7 +123,9 @@ Xây theo [`docs/LEARNING_PATH.md`](docs/LEARNING_PATH.md), mỗi tuần một n
 - [ ] **Tuần 4** — trang chi tiết ngành–trường (S3/S4), dynamic routes, biểu đồ Recharts (F11)
 - [ ] **Tuần 5+** — so sánh 2–3 mục (F8), ước lượng tổng chi phí (F9), trang phụ (F14 phương
       pháp, F15 dữ liệu & nguồn, F17 báo lỗi)
-- [ ] Nối [`hocphi-info-be`](../hocphi-info-be) thật · deploy · người dùng thử
+- [x] Nối [`hocphi-info-be`](../hocphi-info-be) thật (`/nganh`, `/truong`, tìm nhanh —
+      trang chi tiết vẫn ở Tuần 4)
+- [ ] Deploy · người dùng thử
 
 Bối cảnh sản phẩm: [`../y-tuong-hoc-phi-dai-hoc.md`](../y-tuong-hoc-phi-dai-hoc.md) ·
 đặc tả tính năng: `../yeu-cau-san-pham.md`.

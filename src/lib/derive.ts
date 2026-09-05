@@ -2,8 +2,8 @@
 //
 // The backend schema deliberately stores only source numbers; totals, medians and
 // min–max ranges are computed at query/render time (schema.md §1.3). These helpers
-// live on the FE for Week 1 and will be reused unchanged in Week 2 when the raw
-// data starts coming from the API instead of mock-data.ts.
+// were written against Week 1's mock data and kept unchanged when the raw data
+// switched to the real hocphi-info-be API.
 
 import type { MajorRow, SchoolStats, Track } from "@/types/domain";
 
