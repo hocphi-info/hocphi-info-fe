@@ -43,3 +43,6 @@ next-env.d.ts
 
 # docs (ghi chú cá nhân, không cần lên repo)
 /docs
+
+.wrangler
+.open-next
