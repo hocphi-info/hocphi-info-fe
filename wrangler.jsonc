@@ -1,9 +1,14 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hocphi-info-fe",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-09-01",
   "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    { "pattern": "hocphi.info", "custom_domain": true },
+    { "pattern": "www.hocphi.info", "custom_domain": true }
+  ],
+  "workers_dev": true,
+  "preview_urls": true,
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
