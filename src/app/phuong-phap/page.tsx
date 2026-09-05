@@ -111,7 +111,7 @@ export default function MethodPage() {
               báo tổng hợp.
             </p>
             <div className="mt-4 overflow-x-auto rounded-xl border border-border">
-              <table className="w-full min-w-[560px] text-sm">
+              <table className="w-full min-w-140 text-sm">
                 <thead>
                   <tr>
                     <th className={`${th} w-10`}>#</th>
@@ -240,7 +240,7 @@ export default function MethodPage() {
               gốc và đơn vị gốc được giữ lại để đối chiếu khi có tranh chấp.
             </p>
             <div className="mt-4 overflow-x-auto rounded-xl border border-border">
-              <table className="w-full min-w-[560px] text-sm">
+              <table className="w-full min-w-140 text-sm">
                 <thead>
                   <tr>
                     <th className={th}>Đơn vị gốc trường công bố</th>
@@ -376,7 +376,7 @@ Tổng   = Σ (Năm 1 … Năm N)              N = số năm chuẩn của ngàn
               đánh dấu “ước lượng”.
             </p>
             <div className="mt-4 overflow-x-auto rounded-xl border border-border">
-              <table className="w-full min-w-[480px] text-sm">
+              <table className="w-full min-w-120 text-sm">
                 <caption className="px-3 py-2 text-left text-xs text-ink-3">
                   Ví dụ: ngành Luật, ĐH Luật TP.HCM — hệ đại trà, g = 9%/năm
                   (trường công bố)
@@ -435,7 +435,7 @@ Tổng   = Σ (Năm 1 … Năm N)              N = số năm chuẩn của ngàn
               chi tiết.
             </p>
             <div className="mt-4 overflow-x-auto rounded-xl border border-border">
-              <table className="w-full min-w-[560px] text-sm">
+              <table className="w-full min-w-140 text-sm">
                 <thead>
                   <tr>
                     <th className={th}>Nhãn</th>
@@ -497,7 +497,7 @@ Tổng   = Σ (Năm 1 … Năm N)              N = số năm chuẩn của ngàn
               7 · Cách xử lý các trường hợp khó
             </h2>
             <div className="mt-4 overflow-x-auto rounded-xl border border-border">
-              <table className="w-full min-w-[560px] text-sm">
+              <table className="w-full min-w-140 text-sm">
                 <thead>
                   <tr>
                     <th className={`${th} w-1/3`}>Tình huống</th>
@@ -619,7 +619,7 @@ Tổng   = Σ (Năm 1 … Năm N)              N = số năm chuẩn của ngàn
               năm:
             </p>
             <div className="mt-4 overflow-x-auto rounded-xl border border-border">
-              <table className="w-full min-w-[480px] text-sm">
+              <table className="w-full min-w-120 text-sm">
                 <thead>
                   <tr>
                     <th className={th}>Thời điểm</th>
