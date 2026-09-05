@@ -107,6 +107,10 @@ export interface MajorFilters {
   maxMillions: number | null;
   /** "Chỉ trường công bố lộ trình tăng". */
   roadmapOnly: boolean;
+  /** Set by QuickSearch (F13) picking a school hit — narrows to that one school. */
+  schoolSlug: string | null;
+  /** Set by QuickSearch (F13) picking a major hit — narrows to that one major. */
+  majorSlug: string | null;
   sort: MajorSortKey;
   dir: SortDir;
 }
@@ -162,6 +166,8 @@ export function parseMajorFilters(sp: ParamsInput): MajorFilters {
     categories: clean(getAll(sp, "cat"), CATEGORIES),
     maxMillions: parseMax(getOne(sp, "max")),
     roadmapOnly: getOne(sp, "roadmap") === "1",
+    schoolSlug: getOne(sp, "school"),
+    majorSlug: getOne(sp, "major"),
     sort: clean([getOne(sp, "sort") ?? ""], MAJOR_SORT_KEYS)[0] ?? "year1",
     dir: getOne(sp, "dir") === "desc" ? "desc" : "asc",
   };
@@ -189,6 +195,8 @@ export function serializeMajorFilters(f: MajorFilters): URLSearchParams {
   f.categories.forEach((v) => p.append("cat", v));
   if (f.maxMillions != null) p.set("max", String(f.maxMillions));
   if (f.roadmapOnly) p.set("roadmap", "1");
+  if (f.schoolSlug) p.set("school", f.schoolSlug);
+  if (f.majorSlug) p.set("major", f.majorSlug);
   if (f.sort !== "year1") p.set("sort", f.sort);
   if (f.dir !== "asc") p.set("dir", f.dir);
   return p;
@@ -224,6 +232,8 @@ export function filterMajorRows(rows: MajorRow[], f: MajorFilters): MajorRow[] {
       return false;
     if (f.roadmapOnly && r.increase?.increaseSource !== "published_roadmap")
       return false;
+    if (f.schoolSlug && r.school.slug !== f.schoolSlug) return false;
+    if (f.majorSlug && r.major.slug !== f.majorSlug) return false;
     return true;
   });
 }
@@ -365,6 +375,8 @@ export function describeMajorFilters(f: MajorFilters): string {
     parts.push(`Loại trường: ${joinLabels(f.categories, CATEGORY_LABELS)}`);
   if (f.maxMillions != null) parts.push(`Học phí ≤ ${f.maxMillions} tr/năm`);
   if (f.roadmapOnly) parts.push("chỉ trường công bố lộ trình");
+  if (f.schoolSlug) parts.push("đang xem 1 trường (từ tìm nhanh)");
+  if (f.majorSlug) parts.push("đang xem 1 ngành (từ tìm nhanh)");
   return parts.length ? parts.join(" · ") : "Bộ lọc: tất cả";
 }
 
@@ -392,7 +404,15 @@ export interface FilterChip {
   value?: string;
 }
 
-export function majorFilterChips(f: MajorFilters): FilterChip[] {
+/**
+ * `rows` (optional) resolves the schoolSlug/majorSlug chip label to a real
+ * name — pass the page's full row list. Without it, the chip falls back to
+ * showing the slug.
+ */
+export function majorFilterChips(
+  f: MajorFilters,
+  rows?: MajorRow[],
+): FilterChip[] {
   const chips: FilterChip[] = [];
   f.cities.forEach((v) =>
     chips.push({ label: CITY_LABELS[v], param: "city", value: v }),
@@ -410,6 +430,17 @@ export function majorFilterChips(f: MajorFilters): FilterChip[] {
     chips.push({ label: `≤ ${f.maxMillions} tr`, param: "max" });
   if (f.roadmapOnly)
     chips.push({ label: "Có lộ trình tăng", param: "roadmap" });
+  if (f.schoolSlug) {
+    const name = rows?.find((r) => r.school.slug === f.schoolSlug)?.school.name;
+    chips.push({
+      label: `Trường: ${name ?? f.schoolSlug}`,
+      param: "school",
+    });
+  }
+  if (f.majorSlug) {
+    const name = rows?.find((r) => r.major.slug === f.majorSlug)?.major.name;
+    chips.push({ label: `Ngành: ${name ?? f.majorSlug}`, param: "major" });
+  }
   return chips;
 }
 
@@ -458,6 +489,8 @@ export function schoolParamsToMajor(sp: ParamsInput): URLSearchParams {
     categories: f.categories,
     maxMillions: f.maxMillions,
     roadmapOnly: false,
+    schoolSlug: null,
+    majorSlug: null,
     sort: f.sort === "name" ? "name" : "year1",
     dir: f.sort === "name" ? f.dir : "asc",
   };

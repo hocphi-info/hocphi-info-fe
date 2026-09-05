@@ -15,7 +15,7 @@ export default function CompareCountButton() {
       title={
         count < 2 ? "Chọn ít nhất 2 mục để so sánh" : "Trang so sánh sẽ có sau"
       }
-      className="rounded-full border border-accent-border px-4 py-1.5 text-sm font-medium text-accent-ink disabled:opacity-50"
+      className="rounded-full border border-accent-border bg-surface px-4 py-1.5 text-sm font-medium text-accent-ink shadow-sm disabled:opacity-50"
     >
       So sánh ({count})
     </button>

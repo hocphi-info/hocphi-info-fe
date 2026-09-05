@@ -55,7 +55,7 @@ export default function MajorResultsView({ rows }: { rows: MajorRow[] }) {
         />
 
         <div className="mt-3">
-          <FilterChips chips={majorFilterChips(filters)} />
+          <FilterChips chips={majorFilterChips(filters, rows)} />
         </div>
 
         <div className="mt-3">
