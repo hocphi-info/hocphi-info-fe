@@ -5,10 +5,11 @@ import { useSearchParams } from "next/navigation";
 
 import { API_BASE } from "@/lib/api-base";
 import { setOne, writeParams } from "@/lib/url";
-import type { SearchHit } from "@/types/domain";
+import type { MajorRow, SchoolRow, SearchHit } from "@/types/domain";
 
 const MIN_LEN = 2;
 const DEBOUNCE_MS = 250;
+const MAX_HITS = 8;
 
 // Client Component — the other kind of data fetching. This one runs in the
 // BROWSER: `fetch` inside a `useEffect`, results parked in `useState`, and the
@@ -68,13 +69,45 @@ export default function QuickSearch() {
     // win over a later one.
     let ignore = false;
 
-    // Debounce: wait for a pause in typing before hitting the network.
+    // Debounce: wait for a pause in typing before hitting the network. There is
+    // no dedicated /api/search endpoint anymore — we ask the two list endpoints
+    // in parallel (each filters its own entity by name via `?search=`) and merge
+    // the results into the hit shape the dropdown renders.
     const timer = setTimeout(async () => {
       try {
-        const res = await fetch(
-          `${API_BASE}/api/search?q=${encodeURIComponent(trimmed)}`,
-        );
-        const hits: SearchHit[] = res.ok ? await res.json() : [];
+        const q = encodeURIComponent(trimmed);
+        const [majorRes, schoolRes] = await Promise.all([
+          fetch(`${API_BASE}/api/majors?search=${q}`),
+          fetch(`${API_BASE}/api/schools?search=${q}`),
+        ]);
+        const majorRows: MajorRow[] = majorRes.ok ? await majorRes.json() : [];
+        const schoolRows: SchoolRow[] = schoolRes.ok
+          ? await schoolRes.json()
+          : [];
+
+        const schoolHits: SearchHit[] = schoolRows.map((r) => ({
+          kind: "school",
+          slug: r.school.slug,
+          name: r.school.name,
+          shortName: r.school.shortName || undefined,
+        }));
+
+        // /api/majors returns one row PER PROGRAM, so a major taught at N
+        // schools comes back N times — collapse to one hit per major slug.
+        const seen = new Set<string>();
+        const majorHits: SearchHit[] = [];
+        for (const r of majorRows) {
+          if (seen.has(r.major.slug)) continue;
+          seen.add(r.major.slug);
+          majorHits.push({
+            kind: "major",
+            slug: r.major.slug,
+            name: r.major.name,
+          });
+        }
+
+        // Schools before majors, capped — same shape the old endpoint returned.
+        const hits = [...schoolHits, ...majorHits].slice(0, MAX_HITS);
         if (!ignore) setData({ q: trimmed, hits });
       } catch {
         if (!ignore) setData({ q: trimmed, hits: [] });

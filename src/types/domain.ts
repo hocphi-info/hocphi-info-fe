@@ -114,7 +114,9 @@ export interface SchoolRow {
   stats: SchoolStats;
 }
 
-/** Một gợi ý của ô tìm nhanh (F13). Trả từ GET /api/search?q= — xem QuickSearch. */
+/** Một gợi ý của ô tìm nhanh (F13). View-model thuần FE: QuickSearch dựng từ
+ * `GET /api/majors?search=` + `GET /api/schools?search=` rồi gộp lại (không còn
+ * endpoint /api/search riêng). */
 export interface SearchHit {
   kind: "school" | "major";
   slug: string;
