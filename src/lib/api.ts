@@ -19,12 +19,15 @@ import type {
 // `await` here is the HTTP call itself.
 
 // Every request goes through `apiFetch`: one place to add a per-attempt timeout
-// and a small retry for *transient* upstream failures — a Fly machine that was
-// scaled to zero and is still booting, a 5xx, a dropped connection. It does NOT
-// retry 4xx like 403/404: those won't fix themselves on a second try, so the
-// response is handed straight back and the caller decides (throw -> error.tsx,
-// or notFound()).
-const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504]);
+// and a small retry for *transient* upstream failures — a Fly machine waking
+// from suspend, a 5xx, a dropped connection.
+//
+// 403 is in the retry set on purpose: hocphi-info-be has no auth at all (it is
+// permanently read-only, see its AGENTS.md), so a 403 from it is never a real
+// authorization failure — it's Fly's proxy returning one while it routes around
+// a machine that is resuming. 404 stays out: that's a real "not found" the
+// callers turn into notFound().
+const RETRYABLE_STATUS = new Set([403, 408, 429, 500, 502, 503, 504]);
 
 async function apiFetch(path: string): Promise<Response> {
   const url = `${API_BASE}${path}`;
