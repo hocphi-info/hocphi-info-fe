@@ -18,10 +18,44 @@ import type {
 // `API_BASE` is a plain constant (see api-base.ts), so no `await` on it — the only
 // `await` here is the HTTP call itself.
 
+// Every request goes through `apiFetch`: one place to add a per-attempt timeout
+// and a small retry for *transient* upstream failures — a Fly machine that was
+// scaled to zero and is still booting, a 5xx, a dropped connection. It does NOT
+// retry 4xx like 403/404: those won't fix themselves on a second try, so the
+// response is handed straight back and the caller decides (throw -> error.tsx,
+// or notFound()).
+const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504]);
+
+async function apiFetch(path: string): Promise<Response> {
+  const url = `${API_BASE}${path}`;
+  const maxAttempts = 3;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      // 10s/attempt: long enough for attempt 2-3 to catch a Fly machine cold
+      // boot (~10-20s after scale-to-zero). A warm call returns in ~0.5s.
+      const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+      if (res.ok || !RETRYABLE_STATUS.has(res.status)) return res;
+      lastError = new Error(`GET ${path} -> ${res.status}`);
+    } catch (err) {
+      lastError = err; // network error, or the 10s timeout aborted it
+    }
+    if (attempt < maxAttempts) {
+      // 300ms, then 600ms
+      await new Promise((r) => setTimeout(r, 300 * 2 ** (attempt - 1)));
+    }
+  }
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(`GET ${path} -> request failed`);
+}
+
 /** All rows for the "by major" screen (S1); /truong (S2) also uses this and
  * groups the rows client-side (see lib/filters.ts's deriveSchoolRows). */
 export async function fetchMajorRows(): Promise<MajorRow[]> {
-  const res = await fetch(`${API_BASE}/api/majors`);
+  const res = await apiFetch("/api/majors");
   // `fetch` does NOT throw on 404/500 — you have to check `res.ok` yourself.
   // Throwing here bubbles up to the nearest error.tsx.
   if (!res.ok) throw new Error(`GET /api/majors -> ${res.status}`);
@@ -36,9 +70,7 @@ export async function fetchProgramDetail(
   schoolSlug: string,
   majorSlug: string,
 ): Promise<ProgramDetailResponse> {
-  const res = await fetch(
-    `${API_BASE}/api/schools/${schoolSlug}/majors/${majorSlug}`,
-  );
+  const res = await apiFetch(`/api/schools/${schoolSlug}/majors/${majorSlug}`);
   if (res.status === 404) notFound();
   if (!res.ok) {
     throw new Error(
@@ -57,8 +89,8 @@ export async function fetchProgramDetailSafe(
   majorSlug: string,
 ): Promise<ProgramDetailResponse | null> {
   try {
-    const res = await fetch(
-      `${API_BASE}/api/schools/${schoolSlug}/majors/${majorSlug}`,
+    const res = await apiFetch(
+      `/api/schools/${schoolSlug}/majors/${majorSlug}`,
     );
     if (!res.ok) return null;
     return await res.json();
@@ -72,7 +104,7 @@ export async function fetchProgramDetailSafe(
 export async function fetchSchoolDetail(
   schoolSlug: string,
 ): Promise<SchoolDetailResponse> {
-  const res = await fetch(`${API_BASE}/api/schools/${schoolSlug}`);
+  const res = await apiFetch(`/api/schools/${schoolSlug}`);
   if (res.status === 404) notFound();
   if (!res.ok) {
     throw new Error(`GET /api/schools/${schoolSlug} -> ${res.status}`);
