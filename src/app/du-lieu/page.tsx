@@ -25,6 +25,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/du-lieu" },
 };
 
+// Render mỗi request (không prerender lúc build). Không có cái này, `revalidate`
+// trong `fetchCoverage` khiến Next dựng tĩnh trang lúc `next build` → build BẮT
+// BUỘC gọi được `/api/coverage`. Trên máy dev (API không chạy) hay khi API cold
+// start chậm, build sẽ vỡ. `revalidate` chỉ bền khi OpenNext incremental cache
+// (R2/KV) đã cấu hình — chưa có — nên tạm để dynamic như mọi trang dữ liệu khác.
+export const dynamic = "force-dynamic";
+
 type Status = "done" | "wip" | "queued" | "blocked";
 const STATUS_STYLE: Record<Status, { label: string; cls: string }> = {
   done: {
