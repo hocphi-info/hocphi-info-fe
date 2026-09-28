@@ -9,7 +9,7 @@ import ResultsSkeleton from "@/components/ResultsSkeleton";
 // per-school min/median/max. Reason (Week 3 plan §2): the "cơ sở tính khoảng"
 // radio and the "có đào tạo nhóm ngành" filter both need per-program data that a
 // pre-baked SchoolRow[] doesn't carry — so this page never calls BE's
-// /api/schools; there was never a fetchSchoolRows() to wire up here.
+// /api/v1/schools; there was never a fetchSchoolRows() to wire up here.
 //
 // `await searchParams` opts the route into dynamic rendering (so useSearchParams
 // resolves during SSR); <Suspense> is required by the production build wherever

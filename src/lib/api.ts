@@ -59,10 +59,10 @@ async function apiFetch(path: string): Promise<Response> {
 /** All rows for the "by major" screen (S1); /truong (S2) also uses this and
  * groups the rows client-side (see lib/filters.ts's deriveSchoolRows). */
 export async function fetchMajorRows(): Promise<MajorRow[]> {
-  const res = await apiFetch("/api/majors");
+  const res = await apiFetch("/api/v1/majors");
   // `fetch` does NOT throw on 404/500 — you have to check `res.ok` yourself.
   // Throwing here bubbles up to the nearest error.tsx.
-  if (!res.ok) throw new Error(`GET /api/majors -> ${res.status}`);
+  if (!res.ok) throw new Error(`GET /api/v1/majors -> ${res.status}`);
   return res.json();
 }
 
@@ -74,11 +74,13 @@ export async function fetchProgramDetail(
   schoolSlug: string,
   majorSlug: string,
 ): Promise<ProgramDetailResponse> {
-  const res = await apiFetch(`/api/schools/${schoolSlug}/majors/${majorSlug}`);
+  const res = await apiFetch(
+    `/api/v1/schools/${schoolSlug}/majors/${majorSlug}`,
+  );
   if (res.status === 404) notFound();
   if (!res.ok) {
     throw new Error(
-      `GET /api/schools/${schoolSlug}/majors/${majorSlug} -> ${res.status}`,
+      `GET /api/v1/schools/${schoolSlug}/majors/${majorSlug} -> ${res.status}`,
     );
   }
   return res.json();
@@ -94,7 +96,7 @@ export async function fetchProgramDetailSafe(
 ): Promise<ProgramDetailResponse | null> {
   try {
     const res = await apiFetch(
-      `/api/schools/${schoolSlug}/majors/${majorSlug}`,
+      `/api/v1/schools/${schoolSlug}/majors/${majorSlug}`,
     );
     if (!res.ok) return null;
     return await res.json();
@@ -108,10 +110,10 @@ export async function fetchProgramDetailSafe(
 export async function fetchSchoolDetail(
   schoolSlug: string,
 ): Promise<SchoolDetailResponse> {
-  const res = await apiFetch(`/api/schools/${schoolSlug}`);
+  const res = await apiFetch(`/api/v1/schools/${schoolSlug}`);
   if (res.status === 404) notFound();
   if (!res.ok) {
-    throw new Error(`GET /api/schools/${schoolSlug} -> ${res.status}`);
+    throw new Error(`GET /api/v1/schools/${schoolSlug} -> ${res.status}`);
   }
   return res.json();
 }
@@ -124,9 +126,9 @@ export async function fetchSchoolDetail(
  * dựng lại HTML theo lịch — không phải deploy lại mỗi đợt seed, không đánh BE
  * mỗi lượt xem. Đây là chỗ đầu tiên trong app dùng ISR (learning note). */
 export async function fetchCoverage(): Promise<CoverageResponse> {
-  const res = await fetch(`${API_BASE}/api/coverage`, {
+  const res = await fetch(`${API_BASE}/api/v1/coverage`, {
     next: { revalidate: 3600 },
   });
-  if (!res.ok) throw new Error(`GET /api/coverage -> ${res.status}`);
+  if (!res.ok) throw new Error(`GET /api/v1/coverage -> ${res.status}`);
   return res.json();
 }

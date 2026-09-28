@@ -134,7 +134,7 @@ export interface YearlyAmount {
 }
 
 /** 1 hệ đào tạo (track/language) trong trang chi tiết ngành-trường (F6).
- * Trả từ GET /api/schools/{school}/majors/{major}. */
+ * Trả từ GET /api/v1/schools/{school}/majors/{major}. */
 export interface ProgramDetail {
   program: Program;
   year1: TuitionRecord;
@@ -177,7 +177,7 @@ export interface SchoolDetailResponse {
   programs: SchoolProgramRow[];
 }
 
-// --- Trang "Dữ liệu & nguồn" (F14): độ phủ dữ liệu, từ GET /api/coverage ---
+// --- Trang "Dữ liệu & nguồn" (F14): độ phủ dữ liệu, từ GET /api/v1/coverage ---
 // Mọi con số ở đây do BE đếm (một CTE `pub` = "1 dòng / bản ghi học phí đã công
 // bố" — nên các tổng cộng khớp nhau). Phần văn xuôi (changelog, chính sách
 // nguồn, mô tả nhóm ngành, nhãn trạng thái blocked) sống ở page.tsx, không ở đây.
@@ -225,7 +225,7 @@ export interface CoverageSchoolRow {
   lastUpdated: string | null;
 }
 
-/** Response của GET /api/coverage. */
+/** Response của GET /api/v1/coverage. */
 export interface CoverageResponse {
   /** "YYYY-MM-DD" (max updated_at trên toàn bộ bản ghi) hoặc null khi chưa có gì. */
   snapshotDate: string | null;
