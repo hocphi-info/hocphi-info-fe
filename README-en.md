@@ -34,10 +34,10 @@ flowchart TD
     subgraph SERVER["Server Components — Next.js App Router (async)"]
         SC["nganh/ · truong/ · nganh/[truong]/[nganh]/ ·<br/>truong/[truong]/ · so-sanh/"] --> APICLIENT
         APICLIENT["src/lib/api.ts<br/>fetchMajorRows · fetchProgramDetail(Safe) · fetchSchoolDetail"]
-        STATIC["phuong-phap/ · du-lieu/ · tai-tro/<br/>(static — du-lieu not yet wired to /api/coverage)"]
+        STATIC["phuong-phap/ · du-lieu/ · tai-tro/<br/>(static — du-lieu not yet wired to /api/v1/coverage)"]
     end
 
-    APICLIENT -->|"GET /api/majors<br/>/api/schools/{s}/majors/{m}<br/>/api/schools/{s}"| BE[("hocphi-info-be<br/>FastAPI + Postgres")]
+    APICLIENT -->|"GET /api/v1/majors<br/>/api/v1/schools/{s}/majors/{m}<br/>/api/v1/schools/{s}"| BE[("hocphi-info-be<br/>FastAPI + Postgres")]
 
     SC --> CC
 

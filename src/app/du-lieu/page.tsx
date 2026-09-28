@@ -13,7 +13,7 @@ import type {
 } from "@/types/domain";
 
 // Async Server Component. Số liệu (stats, độ phủ, bảng trường, số ngành mỗi nhóm)
-// đến từ GET /api/coverage qua ISR (`fetchCoverage`, revalidate 1h) — trang tự
+// đến từ GET /api/v1/coverage qua ISR (`fetchCoverage`, revalidate 1h) — trang tự
 // mới sau mỗi đợt seed BE, không cần deploy lại. Phần văn xuôi bên dưới (nhãn
 // trạng thái blocked, mô tả nhóm ngành, changelog, chính sách nguồn) là biên
 // tập — không suy ra được từ DB nên giữ ở đây.
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 
 // Render mỗi request (không prerender lúc build). Không có cái này, `revalidate`
 // trong `fetchCoverage` khiến Next dựng tĩnh trang lúc `next build` → build BẮT
-// BUỘC gọi được `/api/coverage`. Trên máy dev (API không chạy) hay khi API cold
+// BUỘC gọi được `/api/v1/coverage`. Trên máy dev (API không chạy) hay khi API cold
 // start chậm, build sẽ vỡ. `revalidate` chỉ bền khi OpenNext incremental cache
 // (R2/KV) đã cấu hình — chưa có — nên tạm để dynamic như mọi trang dữ liệu khác.
 export const dynamic = "force-dynamic";

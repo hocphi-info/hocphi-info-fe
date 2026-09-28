@@ -33,10 +33,10 @@ flowchart TD
     subgraph SERVER["Server Components — Next.js App Router (async)"]
         SC["nganh/ · truong/ · nganh/[truong]/[nganh]/ ·<br/>truong/[truong]/ · so-sanh/"] --> APICLIENT
         APICLIENT["src/lib/api.ts<br/>fetchMajorRows · fetchProgramDetail(Safe) · fetchSchoolDetail"]
-        STATIC["phuong-phap/ · du-lieu/ · tai-tro/<br/>(tĩnh — du-lieu chưa nối /api/coverage)"]
+        STATIC["phuong-phap/ · du-lieu/ · tai-tro/<br/>(tĩnh — du-lieu chưa nối /api/v1/coverage)"]
     end
 
-    APICLIENT -->|"GET /api/majors<br/>/api/schools/{s}/majors/{m}<br/>/api/schools/{s}"| BE[("hocphi-info-be<br/>FastAPI + Postgres")]
+    APICLIENT -->|"GET /api/v1/majors<br/>/api/v1/schools/{s}/majors/{m}<br/>/api/v1/schools/{s}"| BE[("hocphi-info-be<br/>FastAPI + Postgres")]
 
     SC --> CC
 
@@ -136,7 +136,7 @@ Xây theo [`docs/LEARNING_PATH.md`](docs/LEARNING_PATH.md), mỗi tuần một n
       tổng chi phí cả khoá (F9), trang phụ: `/phuong-phap` (F14), `/du-lieu` (F15), `/tai-tro`
 - [x] SEO & khung trang — `robots.ts`, `sitemap.ts`, JSON-LD, `not-found`
 - [x] Nối [`hocphi-info-be`](../hocphi-info-be) thật — toàn bộ màn hình (S1/S2/S3/S4, so sánh)
-- [x] Trang **F15 Dữ liệu & nguồn** (`/du-lieu`) đọc số thật từ `GET /api/coverage`
+- [x] Trang **F15 Dữ liệu & nguồn** (`/du-lieu`) đọc số thật từ `GET /api/v1/coverage`
       qua **ISR** (`fetch` với `next: { revalidate: 3600 }` — lần đầu app dùng ISR;
       trang tự mới sau mỗi đợt seed BE, không cần deploy lại). Văn xuôi (changelog,
       chính sách nguồn, nhãn "thiếu nguồn tĩnh") vẫn tĩnh trong `page.tsx`.
