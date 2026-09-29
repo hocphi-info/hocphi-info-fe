@@ -33,4 +33,8 @@ jobs:
 
       - run: npm run typecheck
       - run: npm run lint
+      # Build only compiles; nothing is fetched at build time and this output is not
+      # deployed (make deploy rebuilds), so a placeholder API URL is enough.
       - run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
