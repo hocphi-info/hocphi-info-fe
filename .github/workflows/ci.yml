@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Daily: catches the BE changing its API contract (openapi.json) while this
+  # repo has no commits of its own to trigger a run.
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Regenerate types from the BE's openapi.json on `main`; any diff means the
+      # committed src/types/api.gen.ts is out of date with the backend contract.
+      - name: API types match the backend contract
+        run: |
+          npm run gen:api
+          git diff --exit-code -- src/types/api.gen.ts
+
+      - run: npm run typecheck
+      - run: npm run lint
+      # Build only compiles; nothing is fetched at build time and this output is not
+      # deployed (make deploy rebuilds), so a placeholder API URL is enough.
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000

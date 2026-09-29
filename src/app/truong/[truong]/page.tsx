@@ -29,8 +29,8 @@ export default async function SchoolDetailPage({
         <SchoolTypeBadge category={detail.school.category} />
       </div>
       <p className="mt-1 text-sm text-ink-3">
-        {detail.school.shortName} · {detail.programs.length} chương trình đã có
-        dữ liệu
+        {detail.school.shortName ?? detail.school.name} ·{" "}
+        {detail.programs.length} chương trình đã có dữ liệu
       </p>
 
       <div className="mt-6 space-y-6">

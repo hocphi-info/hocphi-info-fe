@@ -14,6 +14,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Output of `opennextjs-cloudflare build` (thousands of generated files).
+    ".open-next/**",
+    // Generated from the BE's openapi.json by `npm run gen:api` — never hand-edited.
+    "src/types/api.gen.ts",
   ]),
 ]);
 

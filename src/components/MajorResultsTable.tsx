@@ -135,7 +135,7 @@ export default function MajorResultsTable({
                 <td className="py-3 pl-4">
                   <CompareCheckbox
                     id={row.program.id}
-                    label={`${row.major.name} — ${row.school.shortName}`}
+                    label={`${row.major.name} — ${row.school.shortName ?? row.school.name}`}
                   />
                 </td>
                 <td className="px-3 py-3">
@@ -150,7 +150,7 @@ export default function MajorResultsTable({
                         {row.school.name}
                       </div>
                       <div className="mt-0.5 flex items-center gap-2 text-ink-3">
-                        <span>{row.school.shortName}</span>
+                        <span>{row.school.shortName ?? row.school.name}</span>
                         <SchoolTypeBadge category={row.school.category} />
                       </div>
                     </div>
@@ -180,7 +180,7 @@ export default function MajorResultsTable({
                 <td className="w-12 p-0 text-right">
                   <RowLink
                     href={`/nganh/${row.school.slug}/${row.major.slug}`}
-                    label={`${row.major.name} — ${row.school.shortName}`}
+                    label={`${row.major.name} — ${row.school.shortName ?? row.school.name}`}
                   />
                 </td>
               </tr>
@@ -199,7 +199,7 @@ export default function MajorResultsTable({
             <div className="flex items-start gap-2">
               <CompareCheckbox
                 id={row.program.id}
-                label={`${row.major.name} — ${row.school.shortName}`}
+                label={`${row.major.name} — ${row.school.shortName ?? row.school.name}`}
               />
               <SchoolLogo
                 logoUrl={row.school.logoUrl}
@@ -209,7 +209,7 @@ export default function MajorResultsTable({
               <div className="min-w-0 flex-1">
                 <div className="font-medium text-ink">{row.school.name}</div>
                 <div className="mt-0.5 flex flex-wrap items-center gap-2 text-sm text-ink-3">
-                  <span>{row.school.shortName}</span>
+                  <span>{row.school.shortName ?? row.school.name}</span>
                   <SchoolTypeBadge category={row.school.category} />
                 </div>
                 <div className="mt-1 text-base text-ink-2">

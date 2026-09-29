@@ -35,14 +35,24 @@ start: ## Chay ban build production tai :3000 (can `make build` truoc)
 	$(NPM) run start
 
 # ── Kiem tra chat luong ────────────────────────────────────────────────────────
-.PHONY: lint fmt check
+.PHONY: lint typecheck gen-api gen-check fmt check
 lint: ## eslint
 	$(NPM) run lint
+
+typecheck: ## tsc --noEmit
+	$(NPM) run typecheck
+
+gen-api: ## Sinh lai src/types/api.gen.ts tu openapi.json cua BE (OPENAPI_SRC=... de tro file local)
+	$(NPM) run gen:api
+
+gen-check: ## Bao loi neu api.gen.ts lech hop dong BE tren main (giong buoc CI)
+	$(NPM) run gen:api
+	git diff --exit-code -- src/types/api.gen.ts
 
 fmt: ## prettier --write .
 	$(NPM) run format
 
-check: lint ## Chay cac buoc kiem tra (hien tai: lint; husky/lint-staged da chay o pre-commit)
+check: gen-check typecheck lint ## Hop dong BE + tsc + eslint (giong CI; husky/lint-staged chay them o pre-commit)
 
 # ── Cloudflare Workers (OpenNext adapter) ──────────────────────────────────────
 .PHONY: cf-build preview deploy
@@ -52,7 +62,7 @@ cf-build: ## Build sang dinh dang Cloudflare Worker (.open-next/), khong deploy
 preview: ## Build + wrangler dev (gia lap Cloudflare Worker o local)
 	$(NPM) run cf:preview
 
-deploy: ## Build + deploy len Cloudflare Workers (hocphi.info + www.hocphi.info)
+deploy: check ## Chay `check`, build roi deploy len Cloudflare Workers (hocphi.info + www.hocphi.info)
 	$(NPM) run cf:deploy
 
 # ── Don dep ────────────────────────────────────────────────────────────────────

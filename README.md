@@ -92,7 +92,8 @@ src/
   hooks/                # useCompareSelection.ts
   lib/                  # api.ts (gọi hocphi-info-be thật), api-base.ts, filters.ts, url.ts,
                         # derive.ts, format.ts, compare.ts, site.ts, text.ts
-  types/domain.ts       # kiểu dùng chung, khớp schema backend
+  types/api.gen.ts      # SINH từ openapi.json của BE (npm run gen:api) — không sửa tay
+  types/domain.ts       # alias vào api.gen.ts + view model riêng của FE
 docs/                   # (git-ignore) LEARNING_PATH.md + brainstorms/ + plans/
 ```
 
