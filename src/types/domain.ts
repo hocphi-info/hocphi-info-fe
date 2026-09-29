@@ -20,7 +20,6 @@ type Schemas = components["schemas"];
 // --- Generated contract (aliases into api.gen.ts) ---
 
 export type CityCode = Schemas["CityCode"];
-export type MajorGroupCode = Schemas["MajorGroupCode"];
 export type SchoolCategory = Schemas["SchoolCategory"];
 export type Track = Schemas["ProgramTrack"];
 export type ProgramLanguage = Schemas["ProgramLanguage"];
@@ -62,7 +61,6 @@ export type SchoolDetailResponse = Schemas["SchoolDetailResponseOut"];
 export type CoverageTotals = Schemas["CoverageTotalsOut"];
 export type CoverageCityRow = Schemas["CoverageCityRowOut"];
 export type CoverageCategoryRow = Schemas["CoverageCategoryRowOut"];
-export type CoverageMajorGroupRow = Schemas["CoverageMajorGroupRowOut"];
 /** Dòng theo lĩnh vực; `fieldCode = null` là dòng "Chưa phân loại". */
 export type CoverageFieldRow = Schemas["CoverageFieldRowOut"];
 export type CoverageSchoolRow = Schemas["CoverageSchoolRowOut"];

@@ -157,14 +157,6 @@ export interface components {
       /** Programswithtuition */
       programsWithTuition: number;
     };
-    /** CoverageMajorGroupRowOut */
-    CoverageMajorGroupRowOut: {
-      groupCode: components["schemas"]["MajorGroupCode"];
-      /** Groupname */
-      groupName: string;
-      /** Programswithtuition */
-      programsWithTuition: number;
-    };
     /** CoverageOut */
     CoverageOut: {
       /** Snapshotdate */
@@ -174,8 +166,6 @@ export interface components {
       byCity: components["schemas"]["CoverageCityRowOut"][];
       /** Bycategory */
       byCategory: components["schemas"]["CoverageCategoryRowOut"][];
-      /** Bymajorgroup */
-      byMajorGroup: components["schemas"]["CoverageMajorGroupRowOut"][];
       /** Byfield */
       byField: components["schemas"]["CoverageFieldRowOut"][];
       /** Schools */
@@ -239,13 +229,6 @@ export interface components {
      */
     IncreaseSourceKind: "published_roadmap" | "default_estimate";
     /**
-     * MajorGroupCode
-     * @description Ma nhom nganh — bang tra cuu `major_groups`, khop nhu CityCode.
-     * @enum {string}
-     */
-    MajorGroupCode:
-      "CNTT" | "KY_THUAT" | "KINH_TE" | "Y_DUOC" | "LUAT" | "LOGISTICS";
-    /**
      * MajorOut
      * @description Khop `Major` domain.ts.
      */
@@ -256,7 +239,6 @@ export interface components {
       name: string;
       /** Code */
       code: string | null;
-      groupCode: components["schemas"]["MajorGroupCode"];
       taxonomy: components["schemas"]["TaxonomyOut"] | null;
       /** Aliases */
       aliases: string[];
