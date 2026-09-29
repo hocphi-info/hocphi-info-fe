@@ -14,26 +14,13 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import type {
-  CityCode,
-  MajorGroupCode,
-  SchoolCategory,
-  Track,
-} from "@/types/domain";
+import type { CityCode, SchoolCategory, Track } from "@/types/domain";
+import type { FieldOption } from "@/lib/filters";
 import { setOne, toggleMulti, writeParams } from "@/lib/url";
 
 const CITY_OPTIONS: { value: CityCode; label: string }[] = [
   { value: "HCM", label: "TP.HCM" },
   { value: "HN", label: "Hà Nội" },
-];
-
-const GROUP_OPTIONS: { value: MajorGroupCode; label: string }[] = [
-  { value: "CNTT", label: "CNTT / KHMT / AI / KHDL" },
-  { value: "KY_THUAT", label: "Kỹ thuật" },
-  { value: "KINH_TE", label: "Kinh tế – Tài chính – QTKD" },
-  { value: "Y_DUOC", label: "Y – Dược" },
-  { value: "LUAT", label: "Luật" },
-  { value: "LOGISTICS", label: "Logistics" },
 ];
 
 const TRACK_OPTIONS: { value: Track; label: string }[] = [
@@ -67,12 +54,18 @@ function Section({
   );
 }
 
-function PanelBody({ screen }: { screen: "nganh" | "truong" }) {
+function PanelBody({
+  screen,
+  fieldOptions,
+}: {
+  screen: "nganh" | "truong";
+  fieldOptions: FieldOption[];
+}) {
   const sp = useSearchParams();
 
   // --- read current state from the URL ---
   const cities = sp.getAll("city");
-  const groups = sp.getAll("group");
+  const fields = sp.getAll("field");
   const tracks = sp.getAll("track");
   const cats = sp.getAll("cat");
   const roadmapOn = sp.get("roadmap") === "1";
@@ -146,14 +139,14 @@ function PanelBody({ screen }: { screen: "nganh" | "truong" }) {
         ))}
       </Section>
 
-      {screen === "nganh" && (
-        <Section title="Nhóm ngành">
-          {GROUP_OPTIONS.map((o) => (
+      {screen === "nganh" && fieldOptions.length > 0 && (
+        <Section title="Lĩnh vực">
+          {fieldOptions.map((o) => (
             <MultiRow
-              key={o.value}
-              checked={groups.includes(o.value)}
-              onToggle={() => toggle("group", o.value)}
-              label={o.label}
+              key={o.code}
+              checked={fields.includes(o.code)}
+              onToggle={() => toggle("field", o.code)}
+              label={`${o.name} (${o.count})`}
             />
           ))}
         </Section>
@@ -208,14 +201,14 @@ function PanelBody({ screen }: { screen: "nganh" | "truong" }) {
         </Section>
       )}
 
-      {screen === "truong" && (
-        <Section title="Có đào tạo nhóm ngành">
-          {GROUP_OPTIONS.map((o) => (
+      {screen === "truong" && fieldOptions.length > 0 && (
+        <Section title="Có đào tạo lĩnh vực">
+          {fieldOptions.map((o) => (
             <MultiRow
-              key={o.value}
-              checked={groups.includes(o.value)}
-              onToggle={() => toggle("group", o.value)}
-              label={o.label}
+              key={o.code}
+              checked={fields.includes(o.code)}
+              onToggle={() => toggle("field", o.code)}
+              label={`${o.name} (${o.count})`}
             />
           ))}
         </Section>
@@ -275,8 +268,11 @@ function ResetButton() {
 
 export default function FilterPanel({
   screen,
+  fieldOptions,
 }: {
   screen: "nganh" | "truong";
+  /** Lĩnh vực có dữ liệu (deriveFieldOptions) — không hard-code trong panel. */
+  fieldOptions: FieldOption[];
 }) {
   // The only local state left: whether the panel is open on small screens.
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -289,7 +285,7 @@ export default function FilterPanel({
           <p className="text-base font-semibold text-ink">Bộ lọc</p>
           <ResetButton />
         </div>
-        <PanelBody screen={screen} />
+        <PanelBody screen={screen} fieldOptions={fieldOptions} />
       </aside>
 
       {/* Mobile: a button that toggles the panel */}
@@ -307,7 +303,7 @@ export default function FilterPanel({
             <div className="mb-2 flex justify-end">
               <ResetButton />
             </div>
-            <PanelBody screen={screen} />
+            <PanelBody screen={screen} fieldOptions={fieldOptions} />
           </div>
         )}
       </div>

@@ -5,6 +5,7 @@ import TuitionTrendChart from "@/components/TuitionTrendChart";
 import SourceBlock from "@/components/SourceBlock";
 import SchoolLogo from "@/components/SchoolLogo";
 import PostGradCostBlock from "@/components/PostGradCostBlock";
+import RelatedMajors from "@/components/RelatedMajors";
 
 // Server Component — F6, S3. `fetchProgramDetail` (lib/api.ts) already calls
 // `notFound()` on a 404 from the BE, so nothing here needs to check that —
@@ -117,6 +118,8 @@ export default async function ProgramDetailPage({
         ))}
 
         <PostGradCostBlock major={detail.major} />
+
+        <RelatedMajors major={detail.major} related={detail.relatedMajors} />
       </div>
     </main>
   );

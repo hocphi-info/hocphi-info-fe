@@ -5,23 +5,18 @@ import Callout from "@/components/Callout";
 import JsonLd from "@/components/JsonLd";
 import { fetchCoverage } from "@/lib/api";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
-import type {
-  CityCode,
-  MajorGroupCode,
-  SchoolCategory,
-  SourceDocType,
-} from "@/types/domain";
+import type { CityCode, SchoolCategory, SourceDocType } from "@/types/domain";
 
-// Async Server Component. Số liệu (stats, độ phủ, bảng trường, số ngành mỗi nhóm)
-// đến từ GET /api/v1/coverage qua ISR (`fetchCoverage`, revalidate 1h) — trang tự
-// mới sau mỗi đợt seed BE, không cần deploy lại. Phần văn xuôi bên dưới (nhãn
-// trạng thái blocked, mô tả nhóm ngành, changelog, chính sách nguồn) là biên
-// tập — không suy ra được từ DB nên giữ ở đây.
+// Async Server Component. Số liệu (stats, độ phủ, bảng trường, số chương trình mỗi
+// lĩnh vực) đến từ GET /api/v1/coverage qua ISR (`fetchCoverage`, revalidate 1h) —
+// trang tự mới sau mỗi đợt seed BE, không cần deploy lại. Phần văn xuôi bên dưới
+// (nhãn trạng thái blocked, changelog, chính sách nguồn) là biên tập — không suy ra
+// được từ DB nên giữ ở đây.
 
 export const metadata: Metadata = {
   title: "Dữ liệu & nguồn",
   description:
-    "Độ phủ dữ liệu học phí hiện tại của hocphi.info: trạng thái từng trường trong 50 trường pilot, nhóm ngành, lịch cập nhật và loại nguồn được chấp nhận.",
+    "Độ phủ dữ liệu học phí hiện tại của hocphi.info: trạng thái từng trường trong 50 trường pilot, lĩnh vực đào tạo, lịch cập nhật và loại nguồn được chấp nhận.",
   alternates: { canonical: "/du-lieu" },
 };
 
@@ -68,37 +63,6 @@ const DOC_TYPE_LABEL: Record<SourceDocType, string> = {
   thong_bao_hoc_phi: "Thông báo học phí",
   quy_dinh_nghe: "Quy định nghề",
   khac: "Nguồn khác",
-};
-
-// Tên hiển thị + "gồm" của mỗi nhóm ngành — biên tập. Số "ngành đã có" lấy từ
-// coverage.byMajorGroup theo groupCode.
-const MAJOR_GROUP_INFO: Record<
-  MajorGroupCode,
-  { name: string; includes: string }
-> = {
-  CNTT: {
-    name: "CNTT / KHMT / AI / KHDL",
-    includes:
-      "Công nghệ thông tin, Khoa học máy tính, Trí tuệ nhân tạo, Khoa học dữ liệu, An toàn thông tin",
-  },
-  KY_THUAT: {
-    name: "Kỹ thuật",
-    includes: "Điện – Điện tử, Cơ khí, Ô tô, Vi mạch bán dẫn, Tự động hoá",
-  },
-  KINH_TE: {
-    name: "Kinh tế / Tài chính – Ngân hàng / QTKD",
-    includes:
-      "Kinh tế, Tài chính – Ngân hàng, Quản trị kinh doanh, Kế toán, Marketing",
-  },
-  Y_DUOC: {
-    name: "Y – Dược",
-    includes: "Y khoa, Răng – Hàm – Mặt, Dược học, Điều dưỡng, Y tế công cộng",
-  },
-  LUAT: { name: "Luật", includes: "Luật, Luật kinh tế, Luật quốc tế" },
-  LOGISTICS: {
-    name: "Logistics & Chuỗi cung ứng",
-    includes: "Logistics và Quản lý chuỗi cung ứng, Kinh doanh quốc tế",
-  },
 };
 
 const CHANGELOG = [
@@ -332,39 +296,40 @@ export default async function DataPage() {
         </div>
       </section>
 
-      {/* Major groups */}
+      {/* Fields (lĩnh vực đào tạo, danh mục Bộ GD&ĐT) */}
       <section className="border-t border-rule py-8">
         <h2 className="text-xl font-bold tracking-tight text-ink">
-          Nhóm ngành pilot
+          Lĩnh vực đã có dữ liệu
         </h2>
         <p className="mt-1 text-sm text-ink-3">
-          Tập trung 6 nhóm ngành thu hút nhiều thí sinh nhất mùa tuyển sinh
-          2026.
+          Ngành được xếp theo danh mục thống kê ngành đào tạo của Bộ GD&ĐT
+          (Thông tư 09/2022/TT-BGDĐT). Chỉ hiện lĩnh vực đã có học phí công bố.
         </p>
         <div className="mt-4 overflow-x-auto rounded-xl border border-border">
-          <table className="w-full min-w-140 text-sm">
+          <table className="w-full min-w-120 text-sm">
             <thead>
               <tr>
-                <th className={th}>Nhóm ngành</th>
-                <th className={th}>Gồm</th>
-                <th className={`${th} text-right`}>Ngành đã có</th>
+                <th className={th}>Lĩnh vực</th>
+                <th className={`${th} text-right`}>Chương trình đã có</th>
               </tr>
             </thead>
             <tbody className="text-ink-2">
-              {coverage.byMajorGroup.map((row) => {
-                const info = MAJOR_GROUP_INFO[row.groupCode];
-                return (
-                  <tr key={row.groupCode}>
-                    <td className={`${td} font-semibold text-ink`}>
-                      {info?.name ?? row.groupName}
-                    </td>
-                    <td className={td}>{info?.includes ?? ""}</td>
-                    <td className={`${td} text-right`}>
-                      {row.programsWithTuition}
-                    </td>
-                  </tr>
-                );
-              })}
+              {coverage.byField.map((row) => (
+                <tr key={row.fieldCode ?? "unclassified"}>
+                  <td className={`${td} font-semibold text-ink`}>
+                    {row.fieldName}
+                    {row.fieldCode === null && (
+                      <span className="ml-2 font-normal text-ink-3">
+                        · tên riêng của trường hoặc ngành thí điểm, chưa có mã
+                        trong danh mục
+                      </span>
+                    )}
+                  </td>
+                  <td className={`${td} text-right`}>
+                    {row.programsWithTuition}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

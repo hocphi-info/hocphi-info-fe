@@ -16,26 +16,30 @@
 
 import type {
   CityCode,
-  MajorGroupCode,
+  Major,
   MajorRow,
   SchoolCategory,
   SchoolRow,
   Track,
 } from "@/types/domain";
 import { schoolTuitionStats, totalCourseCost } from "@/lib/derive";
-import { normalize } from "@/lib/text";
+import { aliasMatches, normalize } from "@/lib/text";
 
 // --- Allowed values (used to reject junk query params defensively) ----------
 
 const CITY_CODES: CityCode[] = ["HCM", "HN"];
-const GROUP_CODES: MajorGroupCode[] = [
-  "CNTT",
-  "KY_THUAT",
-  "KINH_TE",
-  "Y_DUOC",
-  "LUAT",
-  "LOGISTICS",
-];
+// Lĩnh vực (danh mục Bộ GD&ĐT): mã 3 số bắt đầu bằng 7 (vd "748"), hoặc
+// "unclassified" cho ngành chưa có mã. Không hard-code danh sách mã: các mục lọc
+// suy ra từ dữ liệu (deriveFieldOptions), nên chỉ kiểm tra dạng của giá trị —
+// mã lạ (hoặc `?group=` cũ, khoá không còn được đọc) chỉ đơn giản không khớp gì.
+export const UNCLASSIFIED = "unclassified";
+const FIELD_PARAM = /^(7\d{2}|unclassified)$/;
+
+/** Mã lĩnh vực của một ngành, hoặc UNCLASSIFIED. */
+export function majorFieldCode(major: Major): string {
+  return major.taxonomy?.field.code ?? UNCLASSIFIED;
+}
+
 const CATEGORIES: SchoolCategory[] = [
   "cong_lap",
   "cong_lap_tu_chu",
@@ -54,14 +58,15 @@ export const BASIS_ALL_TRACKS: Track[] = [
 // --- Human labels (for the "bộ lọc đang áp" description + mobile chips) ------
 
 const CITY_LABELS: Record<CityCode, string> = { HCM: "TP.HCM", HN: "Hà Nội" };
-const GROUP_LABELS: Record<MajorGroupCode, string> = {
-  CNTT: "CNTT / KHMT",
-  KY_THUAT: "Kỹ thuật",
-  KINH_TE: "Kinh tế",
-  Y_DUOC: "Y – Dược",
-  LUAT: "Luật",
-  LOGISTICS: "Logistics",
-};
+
+/** Tên hiển thị của một lĩnh vực; `names` (mã → tên) lấy từ deriveFieldOptions. */
+export function fieldLabel(
+  code: string,
+  names?: Record<string, string>,
+): string {
+  return code === UNCLASSIFIED ? "Chưa phân loại" : (names?.[code] ?? code);
+}
+
 const CATEGORY_LABELS: Record<SchoolCategory, string> = {
   cong_lap: "Công lập",
   cong_lap_tu_chu: "Công lập tự chủ",
@@ -101,7 +106,8 @@ export const SCHOOL_SORT_LABELS: Record<SchoolSortKey, string> = {
 
 export interface MajorFilters {
   cities: CityCode[];
-  groups: MajorGroupCode[];
+  /** Lĩnh vực (mã 3 số hoặc UNCLASSIFIED); rỗng = không lọc. */
+  fields: string[];
   tracks: Track[];
   categories: SchoolCategory[];
   /** Max năm-đầu tuition in triệu đồng/năm; null = no cap. */
@@ -122,8 +128,8 @@ export interface MajorFilters {
 
 export interface SchoolFilters {
   cities: CityCode[];
-  /** "Có đào tạo nhóm ngành" — school has ≥1 program in one of these groups. */
-  groups: MajorGroupCode[];
+  /** "Có đào tạo lĩnh vực" — school has ≥1 program in one of these fields. */
+  fields: string[];
   categories: SchoolCategory[];
   /** Max "học phí thấp nhất" in triệu đồng/năm; null = no cap. */
   maxMillions: number | null;
@@ -148,6 +154,11 @@ function getOne(sp: ParamsInput, key: string): string | null {
   return getAll(sp, key)[0] ?? null;
 }
 
+/** Keep only well-formed field codes — silently drops junk (incl. old `group`). */
+function cleanFields(values: string[]): string[] {
+  return values.filter((v) => FIELD_PARAM.test(v));
+}
+
 /** Keep only values that are in `allowed` — silently drops junk. */
 function clean<T extends string>(values: string[], allowed: readonly T[]): T[] {
   return values.filter((v): v is T =>
@@ -166,7 +177,7 @@ function parseMax(raw: string | null): number | null {
 export function parseMajorFilters(sp: ParamsInput): MajorFilters {
   return {
     cities: clean(getAll(sp, "city"), CITY_CODES),
-    groups: clean(getAll(sp, "group"), GROUP_CODES),
+    fields: cleanFields(getAll(sp, "field")),
     tracks: clean(getAll(sp, "track"), TRACKS),
     categories: clean(getAll(sp, "cat"), CATEGORIES),
     maxMillions: parseMax(getOne(sp, "max")),
@@ -182,7 +193,7 @@ export function parseMajorFilters(sp: ParamsInput): MajorFilters {
 export function parseSchoolFilters(sp: ParamsInput): SchoolFilters {
   return {
     cities: clean(getAll(sp, "city"), CITY_CODES),
-    groups: clean(getAll(sp, "group"), GROUP_CODES),
+    fields: cleanFields(getAll(sp, "field")),
     categories: clean(getAll(sp, "cat"), CATEGORIES),
     maxMillions: parseMax(getOne(sp, "max")),
     basisTracks: getOne(sp, "basis") === "all" ? BASIS_ALL_TRACKS : ["dai_tra"],
@@ -196,7 +207,7 @@ export function parseSchoolFilters(sp: ParamsInput): SchoolFilters {
 export function serializeMajorFilters(f: MajorFilters): URLSearchParams {
   const p = new URLSearchParams();
   f.cities.forEach((v) => p.append("city", v));
-  f.groups.forEach((v) => p.append("group", v));
+  f.fields.forEach((v) => p.append("field", v));
   f.tracks.forEach((v) => p.append("track", v));
   f.categories.forEach((v) => p.append("cat", v));
   if (f.maxMillions != null) p.set("max", String(f.maxMillions));
@@ -212,7 +223,7 @@ export function serializeMajorFilters(f: MajorFilters): URLSearchParams {
 export function serializeSchoolFilters(f: SchoolFilters): URLSearchParams {
   const p = new URLSearchParams();
   f.cities.forEach((v) => p.append("city", v));
-  f.groups.forEach((v) => p.append("group", v));
+  f.fields.forEach((v) => p.append("field", v));
   f.categories.forEach((v) => p.append("cat", v));
   if (f.maxMillions != null) p.set("max", String(f.maxMillions));
   if (f.basisTracks.length > 1) p.set("basis", "all");
@@ -225,14 +236,30 @@ export function serializeSchoolFilters(f: SchoolFilters): URLSearchParams {
 
 const MILLION = 1_000_000;
 
+/**
+ * Ô "Tìm nhanh": khớp chuỗi con trên (tên trường + tên viết tắt + tên ngành), đã
+ * bỏ dấu; HOẶC khớp tên gọi khác của ngành ("cntt", "it") theo quy tắc riêng
+ * (bằng / tiền tố ≥ 3 ký tự — xem lib/text.ts). `needle` đã normalize().
+ * Giữ cùng hành vi với BE `?search=` của /api/v1/majors.
+ */
+function matchesQuery(r: MajorRow, needle: string): boolean {
+  const haystack = normalize(
+    `${r.school.name} ${r.school.shortName ?? ""} ${r.major.name}`,
+  );
+  return (
+    haystack.includes(needle) ||
+    r.major.aliases.some((a) => aliasMatches(needle, normalize(a)))
+  );
+}
+
 export function filterMajorRows(rows: MajorRow[], f: MajorFilters): MajorRow[] {
-  // Ô "Tìm nhanh": khớp chuỗi con trên (tên trường + tên viết tắt + tên ngành),
-  // đã bỏ dấu. Chuẩn hoá 1 lần ở đây thay vì mỗi hàng.
+  // Chuẩn hoá từ khoá 1 lần ở đây thay vì mỗi hàng.
   const needle = f.q ? normalize(f.q) : "";
 
   return rows.filter((r) => {
     if (f.cities.length && !f.cities.includes(r.school.cityCode)) return false;
-    if (f.groups.length && !f.groups.includes(r.major.groupCode)) return false;
+    if (f.fields.length && !f.fields.includes(majorFieldCode(r.major)))
+      return false;
     if (f.tracks.length && !f.tracks.includes(r.program.track)) return false;
     if (f.categories.length && !f.categories.includes(r.school.category))
       return false;
@@ -243,13 +270,7 @@ export function filterMajorRows(rows: MajorRow[], f: MajorFilters): MajorRow[] {
       return false;
     if (f.roadmapOnly && r.increase?.increaseSource !== "published_roadmap")
       return false;
-    if (
-      needle &&
-      !normalize(
-        `${r.school.name} ${r.school.shortName ?? ""} ${r.major.name}`,
-      ).includes(needle)
-    )
-      return false;
+    if (needle && !matchesQuery(r, needle)) return false;
     if (f.schoolSlug && r.school.slug !== f.schoolSlug) return false;
     if (f.majorSlug && r.major.slug !== f.majorSlug) return false;
     return true;
@@ -258,10 +279,10 @@ export function filterMajorRows(rows: MajorRow[], f: MajorFilters): MajorRow[] {
 
 /**
  * Group MajorRow[] into SchoolRow[] on the client, so the S2 "cơ sở tính khoảng"
- * radio (R6) and "có đào tạo nhóm ngành" filter can actually work — SchoolRow
+ * radio (R6) and "có đào tạo lĩnh vực" filter can actually work — SchoolRow
  * from the API has pre-baked stats with no per-program data to recompute from.
  *
- * `groups` filter is applied to the WHOLE school (does it teach any of these?),
+ * `fields` filter is applied to the WHOLE school (does it teach any of these?),
  * not to the range calculation, per spec S2.
  */
 export function deriveSchoolRows(
@@ -289,13 +310,13 @@ export function filterSchoolRows(
   allMajorRows: MajorRow[],
   f: SchoolFilters,
 ): SchoolRow[] {
-  // Which schools teach at least one program in the selected groups.
-  const groupsBySchool = new Map<string, Set<MajorGroupCode>>();
-  if (f.groups.length) {
+  // Which schools teach at least one program in the selected fields.
+  const fieldsBySchool = new Map<string, Set<string>>();
+  if (f.fields.length) {
     for (const r of allMajorRows) {
-      const set = groupsBySchool.get(r.school.slug) ?? new Set();
-      set.add(r.major.groupCode);
-      groupsBySchool.set(r.school.slug, set);
+      const set = fieldsBySchool.get(r.school.slug) ?? new Set<string>();
+      set.add(majorFieldCode(r.major));
+      fieldsBySchool.set(r.school.slug, set);
     }
   }
 
@@ -305,12 +326,58 @@ export function filterSchoolRows(
       return false;
     if (f.maxMillions != null && stats.minAmount > f.maxMillions * MILLION)
       return false;
-    if (f.groups.length) {
-      const taught = groupsBySchool.get(school.slug);
-      if (!taught || !f.groups.some((g) => taught.has(g))) return false;
+    if (f.fields.length) {
+      const taught = fieldsBySchool.get(school.slug);
+      if (!taught || !f.fields.some((c) => taught.has(c))) return false;
     }
     return true;
   });
+}
+
+// --- Field (lĩnh vực) options — derived from the rows, not hard-coded --------
+
+export interface FieldOption {
+  /** Mã lĩnh vực 3 số, hoặc UNCLASSIFIED. */
+  code: string;
+  name: string;
+  /** Số dòng (`unit: "row"`, màn /nganh) hoặc số trường (`unit: "school"`, /truong). */
+  count: number;
+}
+
+/**
+ * Tuỳ chọn cho bộ lọc Lĩnh vực: chỉ những lĩnh vực CÓ dữ liệu trong `rows` (kèm số
+ * lượng), sắp theo số lượng giảm dần rồi theo tên; "Chưa phân loại" luôn cuối.
+ * Không cần endpoint riêng — client đã giữ đủ `MajorRow[]`.
+ */
+export function deriveFieldOptions(
+  rows: MajorRow[],
+  unit: "row" | "school",
+): FieldOption[] {
+  const names = new Map<string, string>();
+  const members = new Map<string, Set<string>>(); // code -> row keys / school slugs
+  for (const r of rows) {
+    const code = majorFieldCode(r.major);
+    names.set(code, r.major.taxonomy?.field.name ?? fieldLabel(code));
+    const set = members.get(code) ?? new Set<string>();
+    set.add(unit === "school" ? r.school.slug : r.program.id);
+    members.set(code, set);
+  }
+  return [...members.entries()]
+    .map(([code, set]) => ({
+      code,
+      name: names.get(code) ?? code,
+      count: set.size,
+    }))
+    .sort((a, b) => {
+      if (a.code === UNCLASSIFIED) return 1;
+      if (b.code === UNCLASSIFIED) return -1;
+      return b.count - a.count || a.name.localeCompare(b.name, "vi");
+    });
+}
+
+/** Mã → tên, để truyền cho describe* và chips (nhãn lọc đang áp). */
+export function fieldNamesOf(options: FieldOption[]): Record<string, string> {
+  return Object.fromEntries(options.map((o) => [o.code, o.name]));
 }
 
 // --- Sort (never mutates the input array) ---------------------------------
@@ -381,13 +448,24 @@ function joinLabels<T extends string>(
   return values.map((v) => labels[v]).join(", ");
 }
 
-/** One-line summary: "Thành phố: TP.HCM · Nhóm ngành: CNTT / KHMT · Hệ: đại trà". */
-export function describeMajorFilters(f: MajorFilters): string {
+function joinFieldLabels(
+  codes: string[],
+  names?: Record<string, string>,
+): string {
+  return codes.map((c) => fieldLabel(c, names)).join(", ");
+}
+
+/** One-line summary: "Thành phố: TP.HCM · Lĩnh vực: Máy tính và CNTT · Hệ: đại trà".
+ * `fieldNames` (mã → tên, từ fieldNamesOf) để hiện tên lĩnh vực thay vì mã. */
+export function describeMajorFilters(
+  f: MajorFilters,
+  fieldNames?: Record<string, string>,
+): string {
   const parts: string[] = [];
   if (f.cities.length)
     parts.push(`Thành phố: ${joinLabels(f.cities, CITY_LABELS)}`);
-  if (f.groups.length)
-    parts.push(`Nhóm ngành: ${joinLabels(f.groups, GROUP_LABELS)}`);
+  if (f.fields.length)
+    parts.push(`Lĩnh vực: ${joinFieldLabels(f.fields, fieldNames)}`);
   if (f.tracks.length) parts.push(`Hệ: ${joinLabels(f.tracks, TRACK_LABELS)}`);
   if (f.categories.length)
     parts.push(`Loại trường: ${joinLabels(f.categories, CATEGORY_LABELS)}`);
@@ -399,12 +477,15 @@ export function describeMajorFilters(f: MajorFilters): string {
   return parts.length ? parts.join(" · ") : "Bộ lọc: tất cả";
 }
 
-export function describeSchoolFilters(f: SchoolFilters): string {
+export function describeSchoolFilters(
+  f: SchoolFilters,
+  fieldNames?: Record<string, string>,
+): string {
   const parts: string[] = [];
   if (f.cities.length)
     parts.push(`Thành phố: ${joinLabels(f.cities, CITY_LABELS)}`);
-  if (f.groups.length)
-    parts.push(`Có đào tạo: ${joinLabels(f.groups, GROUP_LABELS)}`);
+  if (f.fields.length)
+    parts.push(`Có đào tạo: ${joinFieldLabels(f.fields, fieldNames)}`);
   if (f.categories.length)
     parts.push(`Loại trường: ${joinLabels(f.categories, CATEGORY_LABELS)}`);
   if (f.maxMillions != null)
@@ -431,13 +512,14 @@ export interface FilterChip {
 export function majorFilterChips(
   f: MajorFilters,
   rows?: MajorRow[],
+  fieldNames?: Record<string, string>,
 ): FilterChip[] {
   const chips: FilterChip[] = [];
   f.cities.forEach((v) =>
     chips.push({ label: CITY_LABELS[v], param: "city", value: v }),
   );
-  f.groups.forEach((v) =>
-    chips.push({ label: GROUP_LABELS[v], param: "group", value: v }),
+  f.fields.forEach((v) =>
+    chips.push({ label: fieldLabel(v, fieldNames), param: "field", value: v }),
   );
   f.tracks.forEach((v) =>
     chips.push({ label: TRACK_LABELS[v], param: "track", value: v }),
@@ -464,13 +546,16 @@ export function majorFilterChips(
   return chips;
 }
 
-export function schoolFilterChips(f: SchoolFilters): FilterChip[] {
+export function schoolFilterChips(
+  f: SchoolFilters,
+  fieldNames?: Record<string, string>,
+): FilterChip[] {
   const chips: FilterChip[] = [];
   f.cities.forEach((v) =>
     chips.push({ label: CITY_LABELS[v], param: "city", value: v }),
   );
-  f.groups.forEach((v) =>
-    chips.push({ label: GROUP_LABELS[v], param: "group", value: v }),
+  f.fields.forEach((v) =>
+    chips.push({ label: fieldLabel(v, fieldNames), param: "field", value: v }),
   );
   f.categories.forEach((v) =>
     chips.push({ label: CATEGORY_LABELS[v], param: "cat", value: v }),
@@ -489,7 +574,7 @@ export function majorParamsToSchool(sp: ParamsInput): URLSearchParams {
   const f = parseMajorFilters(sp);
   const school: SchoolFilters = {
     cities: f.cities,
-    groups: f.groups, // reinterpreted as "có đào tạo nhóm ngành"
+    fields: f.fields, // reinterpreted as "có đào tạo lĩnh vực"
     categories: f.categories,
     maxMillions: f.maxMillions,
     basisTracks: ["dai_tra"],
@@ -504,7 +589,7 @@ export function schoolParamsToMajor(sp: ParamsInput): URLSearchParams {
   const f = parseSchoolFilters(sp);
   const major: MajorFilters = {
     cities: f.cities,
-    groups: f.groups,
+    fields: f.fields,
     tracks: [],
     categories: f.categories,
     maxMillions: f.maxMillions,

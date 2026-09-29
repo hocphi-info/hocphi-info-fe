@@ -19,7 +19,9 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { MajorRow } from "@/types/domain";
 import {
+  deriveFieldOptions,
   describeMajorFilters,
+  fieldNamesOf,
   filterMajorRows,
   majorFilterChips,
   parseMajorFilters,
@@ -48,6 +50,10 @@ export default function MajorResultsView({ rows }: { rows: MajorRow[] }) {
     [rows, filters],
   );
 
+  // Lĩnh vực có dữ liệu + số lượng, suy ra từ chính `rows` (không endpoint riêng).
+  const fieldOptions = useMemo(() => deriveFieldOptions(rows, "row"), [rows]);
+  const fieldNames = useMemo(() => fieldNamesOf(fieldOptions), [fieldOptions]);
+
   // "How many rows are revealed" is ephemeral view state (like FilterPanel's
   // `mobileOpen`), NOT part of the URL filter/sort state.
   const [shown, setShown] = useState(PAGE_SIZE);
@@ -68,17 +74,17 @@ export default function MajorResultsView({ rows }: { rows: MajorRow[] }) {
 
   return (
     <div className="mt-6 min-w-0 lg:grid lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
-      <FilterPanel screen="nganh" />
+      <FilterPanel screen="nganh" fieldOptions={fieldOptions} />
 
       <section className="mt-4 min-w-0 lg:mt-0">
         <ResultsSummary
           count={visible.length}
           noun="ngành – trường"
-          description={describeMajorFilters(filters)}
+          description={describeMajorFilters(filters, fieldNames)}
         />
 
         <div className="mt-3">
-          <FilterChips chips={majorFilterChips(filters, rows)} />
+          <FilterChips chips={majorFilterChips(filters, rows, fieldNames)} />
         </div>
 
         <div className="mt-3">
