@@ -84,7 +84,7 @@ export default function DistributionStrip({ rows }: { rows: MajorRow[] }) {
               key={r.program.id}
               className="absolute top-7 size-3.5 -translate-x-1/2 rounded-full border-2 border-surface bg-ink-2"
               style={{ left: `${pct(r.year1.amountPerYear)}%` }}
-              title={`${r.school.shortName} · ${formatMillions(r.year1.amountPerYear)}`}
+              title={`${r.school.shortName ?? r.school.name} · ${formatMillions(r.year1.amountPerYear)}`}
             />
           ))}
           <div className="absolute top-11 left-0 text-[11px] text-ink-3 tabular-nums">
@@ -106,7 +106,8 @@ export default function DistributionStrip({ rows }: { rows: MajorRow[] }) {
               key={r.program.id}
               className="rounded-full bg-accent-bg px-2 py-0.5 text-accent-ink"
             >
-              {r.school.shortName} · {formatMillions(r.year1.amountPerYear)}
+              {r.school.shortName ?? r.school.name} ·{" "}
+              {formatMillions(r.year1.amountPerYear)}
             </span>
           ))}
         </div>

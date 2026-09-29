@@ -179,7 +179,7 @@ export default function SchoolResultsTable({
                   <td className="w-12 p-0 text-right">
                     <RowLink
                       href={`/truong/${school.slug}`}
-                      label={school.shortName}
+                      label={school.shortName ?? school.name}
                     />
                   </td>
                 </tr>
