@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "gen:api": "openapi-typescript \"${OPENAPI_SRC:-https://raw.githubusercontent.com/hocphi-info/hocphi-info-be/main/openapi.json}\" -o src/types/api.gen.ts && prettier --write src/types/api.gen.ts",
     "format": "prettier --write .",
     "prepare": "husky"
