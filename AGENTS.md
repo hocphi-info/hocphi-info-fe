@@ -35,7 +35,8 @@ src/
 │   └── truong/{page,loading,error}.tsx  # "/truong" (S2)
 ├── components/             # Reusable UI (Button, FilterPanel, Chart, …). Not route-specific.
 ├── lib/                    # API calls + data transforms. Flat, no repository/service layering.
-├── types/                  # Shared TypeScript types (Truong, Nganh, HocPhi, …)
+├── types/                  # api.gen.ts = GENERATED from BE openapi.json (never hand-edit);
+│                           # domain.ts = aliases into it + FE-only view models
 └── hooks/                  # Custom hooks, only when state logic repeats across components
 ```
 
@@ -57,6 +58,16 @@ Route-specific components that aren't reused elsewhere can live next to their `p
   that) — keep new filter/sort logic in that shape rather than inlining it in a component.
 - Path alias `@/*` → `./src/*` (already configured in `tsconfig.json`).
 - Env vars: `NEXT_PUBLIC_API_URL` for the backend base URL (see `.env.local` / `.env.production`).
+
+## API contract (types are generated)
+
+The BE's committed `openapi.json` is the contract. `src/types/api.gen.ts` is generated from
+it with `npm run gen:api` (add `OPENAPI_SRC=../hocphi-info-be/openapi.json` to use the local
+BE checkout); `src/types/domain.ts` re-exports those types under the names the app uses.
+To change a response shape: change the Pydantic model in `hocphi-info-be`, `make openapi`
+there, then regenerate here and let `npm run typecheck` point at what to fix. CI (`gen:api` +
+`git diff --exit-code`) and `make check` fail when `api.gen.ts` is out of date, and
+`make deploy` runs `check` first.
 
 ## Git commit messages
 
