@@ -144,6 +144,19 @@ export interface components {
       /** Schoolswithdata */
       schoolsWithData: number;
     };
+    /**
+     * CoverageFieldRowOut
+     * @description 1 linh vuc (danh muc Bo GD&DT) co du lieu. `field_code = null` la dong
+     *     "Chua phan loai" (nganh chua co ma 7 so).
+     */
+    CoverageFieldRowOut: {
+      /** Fieldcode */
+      fieldCode: string | null;
+      /** Fieldname */
+      fieldName: string;
+      /** Programswithtuition */
+      programsWithTuition: number;
+    };
     /** CoverageMajorGroupRowOut */
     CoverageMajorGroupRowOut: {
       groupCode: components["schemas"]["MajorGroupCode"];
@@ -163,6 +176,8 @@ export interface components {
       byCategory: components["schemas"]["CoverageCategoryRowOut"][];
       /** Bymajorgroup */
       byMajorGroup: components["schemas"]["CoverageMajorGroupRowOut"][];
+      /** Byfield */
+      byField: components["schemas"]["CoverageFieldRowOut"][];
       /** Schools */
       schools: components["schemas"]["CoverageSchoolRowOut"][];
     };
@@ -242,6 +257,9 @@ export interface components {
       /** Code */
       code: string | null;
       groupCode: components["schemas"]["MajorGroupCode"];
+      taxonomy: components["schemas"]["TaxonomyOut"] | null;
+      /** Aliases */
+      aliases: string[];
       /** Standardyears */
       standardYears: number;
       /** Requirespracticelicense */
@@ -285,6 +303,8 @@ export interface components {
       major: components["schemas"]["MajorOut"];
       /** Programs */
       programs: components["schemas"]["ProgramDetailOut"][];
+      /** Relatedmajors */
+      relatedMajors: components["schemas"]["RelatedMajorOut"][];
     };
     /**
      * ProgramIncreaseOut
@@ -329,6 +349,23 @@ export interface components {
      * @enum {string}
      */
     ProgramTrack: "dai_tra" | "chat_luong_cao" | "tien_tien" | "quoc_te";
+    /**
+     * RelatedMajorOut
+     * @description Nganh CUNG NHOM NGANH (5 so) voi nganh dang xem — de so sanh. So truong va
+     *     khoang hoc phi Nam 1 tinh tren he DAI TRA (khong tron he).
+     */
+    RelatedMajorOut: {
+      /** Slug */
+      slug: string;
+      /** Name */
+      name: string;
+      /** Nschools */
+      nSchools: number;
+      /** Minyear1Amount */
+      minYear1Amount: number;
+      /** Maxyear1Amount */
+      maxYear1Amount: number;
+    };
     /**
      * SchoolCategory
      * @description Gop `type` + `autonomy_status` cua brief thanh 1 enum (schema.md §3 schools).
@@ -443,6 +480,26 @@ export interface components {
       publishedDate: string | null;
     };
     /**
+     * TaxonomyNodeOut
+     * @description 1 nut cua danh muc nganh cua Bo GD&DT (ma + ten chinh thuc).
+     */
+    TaxonomyNodeOut: {
+      /** Code */
+      code: string;
+      /** Name */
+      name: string;
+    };
+    /**
+     * TaxonomyOut
+     * @description Vi tri cua nganh trong danh muc Bo GD&DT: linh vuc (3 so) va nhom nganh
+     *     (5 so). Chi co khi nganh da co ma 7 so; nganh "Chua phan loai" -> `taxonomy`
+     *     la null o `MajorOut`.
+     */
+    TaxonomyOut: {
+      field: components["schemas"]["TaxonomyNodeOut"];
+      group: components["schemas"]["TaxonomyNodeOut"];
+    };
+    /**
      * TuitionRecordOut
      * @description Khop `TuitionRecord` domain.ts. KHONG lo needs_review/review_reason —
      *     chua co UI hien thi (xem migration 0002 + plan Tuan 2).
@@ -517,7 +574,7 @@ export interface operations {
   list_majors_api_v1_majors_get: {
     parameters: {
       query?: {
-        /** @description Loc theo TEN TRUONG + ten viet tat + TEN NGANH (khop bat ky), bo dau, khong phan biet hoa/thuong. Toi thieu 2 ky tu sau khi chuan hoa; ngan hon -> tra []. */
+        /** @description Loc theo TEN TRUONG + ten viet tat + TEN NGANH (khop bat ky) hoac TEN GOI KHAC cua nganh (alias: bang han / tien to >= 3 ky tu), bo dau, khong phan biet hoa/thuong. Toi thieu 2 ky tu sau khi chuan hoa; ngan hon -> tra []. */
         search?: string | null;
       };
       header?: never;

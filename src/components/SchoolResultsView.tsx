@@ -15,8 +15,10 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { MajorRow } from "@/types/domain";
 import {
+  deriveFieldOptions,
   deriveSchoolRows,
   describeSchoolFilters,
+  fieldNamesOf,
   filterSchoolRows,
   parseSchoolFilters,
   schoolFilterChips,
@@ -44,6 +46,13 @@ export default function SchoolResultsView({ rows }: { rows: MajorRow[] }) {
     return sortSchoolRows(filterSchoolRows(grouped, rows, filters), filters);
   }, [rows, filters]);
 
+  // Lĩnh vực có dữ liệu; số đếm là SỐ TRƯỜNG dạy lĩnh vực đó (màn này lọc theo trường).
+  const fieldOptions = useMemo(
+    () => deriveFieldOptions(rows, "school"),
+    [rows],
+  );
+  const fieldNames = useMemo(() => fieldNamesOf(fieldOptions), [fieldOptions]);
+
   // Ephemeral "rows revealed" state; reset on any query-string change. Same
   // pattern as MajorResultsView (adjust state during render, no useEffect).
   const [shown, setShown] = useState(PAGE_SIZE);
@@ -58,17 +67,17 @@ export default function SchoolResultsView({ rows }: { rows: MajorRow[] }) {
 
   return (
     <div className="mt-6 min-w-0 lg:grid lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
-      <FilterPanel screen="truong" />
+      <FilterPanel screen="truong" fieldOptions={fieldOptions} />
 
       <section className="mt-4 min-w-0 lg:mt-0">
         <ResultsSummary
           count={visible.length}
           noun="trường"
-          description={describeSchoolFilters(filters)}
+          description={describeSchoolFilters(filters, fieldNames)}
         />
 
         <div className="mt-3">
-          <FilterChips chips={schoolFilterChips(filters)} />
+          <FilterChips chips={schoolFilterChips(filters, fieldNames)} />
         </div>
 
         <div className="mt-3">

@@ -40,6 +40,14 @@ export type ProgramIncrease = Schemas["ProgramIncreaseOut"];
 /** Một dòng ở màn hình "Tra cứu theo ngành" (S1) = 1 program đã ghép đủ ngữ cảnh. */
 export type MajorRow = Schemas["MajorRowOut"];
 
+// Phân loại ngành theo danh mục Bộ GD&ĐT (Lĩnh vực → Nhóm ngành → Ngành). `Major.taxonomy`
+// là null khi ngành "Chưa phân loại" (chưa có mã 7 số trong danh mục).
+export type TaxonomyNode = Schemas["TaxonomyNodeOut"];
+export type Taxonomy = Schemas["TaxonomyOut"];
+/** Ngành cùng nhóm ngành, hiện ở trang chi tiết ngành-trường (số trường + khoảng
+ * học phí năm 1 hệ đại trà). */
+export type RelatedMajor = Schemas["RelatedMajorOut"];
+
 // Tuần 4: trang chi tiết ngành-trường (F6) + trang chi tiết trường (F7).
 export type YearlyAmount = Schemas["YearlyAmountOut"];
 /** 1 hệ đào tạo (track/language) trong trang chi tiết ngành-trường (F6). */
@@ -55,6 +63,8 @@ export type CoverageTotals = Schemas["CoverageTotalsOut"];
 export type CoverageCityRow = Schemas["CoverageCityRowOut"];
 export type CoverageCategoryRow = Schemas["CoverageCategoryRowOut"];
 export type CoverageMajorGroupRow = Schemas["CoverageMajorGroupRowOut"];
+/** Dòng theo lĩnh vực; `fieldCode = null` là dòng "Chưa phân loại". */
+export type CoverageFieldRow = Schemas["CoverageFieldRowOut"];
 export type CoverageSchoolRow = Schemas["CoverageSchoolRowOut"];
 export type CoverageResponse = Schemas["CoverageOut"];
 

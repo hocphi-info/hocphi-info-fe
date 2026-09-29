@@ -28,7 +28,7 @@ học phí hàng năm. Không cần đăng nhập.
 
 ```mermaid
 flowchart TD
-    URL["URL: /nganh?city=HCM&group=CNTT&sort=year1<br/>— bộ lọc & sắp xếp lưu thẳng trên URL (chia sẻ được link)"] --> SC
+    URL["URL: /nganh?city=HCM&field=748&sort=year1<br/>— bộ lọc & sắp xếp lưu thẳng trên URL (chia sẻ được link)"] --> SC
 
     subgraph SERVER["Server Components — Next.js App Router (async)"]
         SC["nganh/ · truong/ · nganh/[truong]/[nganh]/ ·<br/>truong/[truong]/ · so-sanh/"] --> APICLIENT
@@ -54,7 +54,7 @@ flowchart TD
 Trang chủ dẫn tới các màn hình tra cứu:
 
 - **`/nganh` (S1)** — danh sách chương trình theo ngành: học phí năm đầu, % tăng, hệ đào tạo,
-  loại trường; lọc theo thành phố / nhóm ngành / hệ, sắp xếp theo cột, tất cả phản ánh trên URL.
+  loại trường; lọc theo thành phố / lĩnh vực (danh mục Bộ GD&ĐT) / hệ, tìm theo tên gọi khác (CNTT, IT, KHMT…), sắp xếp theo cột, tất cả phản ánh trên URL.
 - **`/truong` (S2)** — gom theo trường: khoảng Min–Max, trung vị học phí hệ đại trà, số ngành
   (tính lại từ dữ liệu `/nganh` ngay trên client, không gọi endpoint riêng).
 - **`/nganh/[truong]/[nganh]` (S3, F6)** · **`/truong/[truong]` (S4, F7)** — trang chi tiết:
