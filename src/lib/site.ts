@@ -11,6 +11,12 @@ export const SITE_NAME = "hocphi.info";
 export const SITE_TAGLINE =
   "Tra cứu & so sánh học phí đại học Việt Nam theo ngành – trường, kèm ước lượng tổng chi phí cả khoá 4–5 năm.";
 
+/** Endpoint MCP công khai (Cloud Run, repo hocphi-info-mcp). Đặt NEXT_PUBLIC_MCP_URL
+ *  khi chuyển sang tên miền riêng; mặc định là URL cố định của dịch vụ. */
+export const MCP_URL =
+  process.env.NEXT_PUBLIC_MCP_URL ??
+  "https://hocphi-info-mcp-722605738307.asia-southeast1.run.app/mcp";
+
 /** Địa chỉ nhận mọi email từ site: liên hệ, báo lỗi, báo số liệu sai. */
 export const CONTACT_EMAIL = "nvbien.contact@gmail.com";
 
@@ -85,6 +91,7 @@ export const FOOTER_COLUMNS: {
     links: [
       { label: "Phương pháp luận", href: "/phuong-phap" },
       { label: "Dữ liệu & nguồn", href: "/du-lieu" },
+      { label: "Dùng với AI (MCP)", href: "/dung-voi-ai" },
       {
         label: "Báo số liệu chưa đúng",
         href: mailtoUrl("[hocphi.info] Báo số liệu chưa đúng"),

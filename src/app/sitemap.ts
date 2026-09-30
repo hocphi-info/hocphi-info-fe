@@ -18,6 +18,7 @@ const STATIC_ROUTES: {
   { path: "/so-sanh", changeFrequency: "monthly", priority: 0.6 },
   { path: "/phuong-phap", changeFrequency: "monthly", priority: 0.7 },
   { path: "/du-lieu", changeFrequency: "weekly", priority: 0.7 },
+  { path: "/dung-voi-ai", changeFrequency: "monthly", priority: 0.5 },
   { path: "/tai-tro", changeFrequency: "yearly", priority: 0.4 },
 ];
 

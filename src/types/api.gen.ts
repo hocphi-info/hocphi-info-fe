@@ -109,6 +109,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/taxonomy": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Taxonomy Roots */
+    get: operations["get_taxonomy_roots_api_v1_taxonomy_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/taxonomy/{code}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Taxonomy Node */
+    get: operations["get_taxonomy_node_api_v1_taxonomy__code__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -462,6 +496,59 @@ export interface components {
       publishedDate: string | null;
     };
     /**
+     * TaxonomyChildOut
+     * @description Nut con truc tiep CO du lieu; so dem gop tu TOAN BO hau due.
+     */
+    TaxonomyChildOut: {
+      /** Code */
+      code: string;
+      /** Name */
+      name: string;
+      /** Level */
+      level: number;
+      /** Nmajors */
+      nMajors: number;
+      /** Nprograms */
+      nPrograms: number;
+    };
+    /**
+     * TaxonomyMajorOut
+     * @description Nganh cua hocphi co du lieu duoi nut dang xem.
+     */
+    TaxonomyMajorOut: {
+      /** Slug */
+      slug: string;
+      /** Name */
+      name: string;
+      /** Code */
+      code: string | null;
+      /** Nschools */
+      nSchools: number;
+      /** Minyear1Amount */
+      minYear1Amount: number | null;
+      /** Maxyear1Amount */
+      maxYear1Amount: number | null;
+    };
+    /** TaxonomyNodeDetailOut */
+    TaxonomyNodeDetailOut: {
+      /** Code */
+      code: string;
+      /** Name */
+      name: string;
+      /** Level */
+      level: number;
+      /** Nmajors */
+      nMajors: number;
+      /** Nprograms */
+      nPrograms: number;
+      /** Path */
+      path: components["schemas"]["TaxonomyNodeRefOut"][];
+      /** Children */
+      children: components["schemas"]["TaxonomyChildOut"][];
+      /** Majors */
+      majors: components["schemas"]["TaxonomyMajorOut"][];
+    };
+    /**
      * TaxonomyNodeOut
      * @description 1 nut cua danh muc nganh cua Bo GD&DT (ma + ten chinh thuc).
      */
@@ -470,6 +557,15 @@ export interface components {
       code: string;
       /** Name */
       name: string;
+    };
+    /** TaxonomyNodeRefOut */
+    TaxonomyNodeRefOut: {
+      /** Code */
+      code: string;
+      /** Name */
+      name: string;
+      /** Level */
+      level: number;
     };
     /**
      * TaxonomyOut
@@ -480,6 +576,22 @@ export interface components {
     TaxonomyOut: {
       field: components["schemas"]["TaxonomyNodeOut"];
       group: components["schemas"]["TaxonomyNodeOut"];
+    };
+    /**
+     * TaxonomyRootsOut
+     * @description Cac linh vuc co du lieu (+ tong nganh chua phan loai neu > 0).
+     */
+    TaxonomyRootsOut: {
+      /** Fields */
+      fields: components["schemas"]["TaxonomyChildOut"][];
+      unclassified: components["schemas"]["TaxonomySummaryOut"] | null;
+    };
+    /** TaxonomySummaryOut */
+    TaxonomySummaryOut: {
+      /** Nmajors */
+      nMajors: number;
+      /** Nprograms */
+      nPrograms: number;
     };
     /**
      * TuitionRecordOut
@@ -696,6 +808,57 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["CoverageOut"];
+        };
+      };
+    };
+  };
+  get_taxonomy_roots_api_v1_taxonomy_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TaxonomyRootsOut"];
+        };
+      };
+    };
+  };
+  get_taxonomy_node_api_v1_taxonomy__code__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        code: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TaxonomyNodeDetailOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
         };
       };
     };
