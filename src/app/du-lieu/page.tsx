@@ -158,6 +158,7 @@ export default async function DataPage() {
     temporalCoverage: "2024/2026",
     variableMeasured: "Học phí đại học (đồng/năm)",
     isAccessibleForFree: true,
+    license: "https://creativecommons.org/licenses/by-nc/4.0/",
     url: absoluteUrl("/du-lieu"),
   };
   const breadcrumbLd = {
@@ -425,8 +426,20 @@ export default async function DataPage() {
             </h2>
             <p className="mt-1 text-sm leading-relaxed text-ink-2">
               Bộ dữ liệu học phí sẽ mở dưới dạng API đọc và file CSV, kèm cột
-              nguồn + ngày đối chiếu cho từng dòng, giấy phép cho phép dùng lại
-              có ghi nguồn.
+              nguồn + ngày đối chiếu cho từng dòng.
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-ink-2">
+              Giấy phép dữ liệu:{" "}
+              <a
+                href="https://creativecommons.org/licenses/by-nc/4.0/deed.vi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent-ink underline"
+              >
+                CC BY-NC 4.0
+              </a>{" "}
+              — được dùng lại, có ghi nguồn hocphi.info, không dùng cho mục đích
+              thương mại.
             </p>
           </div>
         </div>
