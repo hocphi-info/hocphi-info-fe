@@ -13,14 +13,20 @@
     "typecheck": "next typegen && tsc --noEmit",
     "gen:api": "openapi-typescript \"${OPENAPI_SRC:-https://raw.githubusercontent.com/hocphi-info/hocphi-info-be/main/openapi.json}\" -o src/types/api.gen.ts && prettier --write src/types/api.gen.ts",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "blog:build": "node scripts/blog/build.mjs",
+    "blog:check": "node scripts/blog/build.mjs --check-only",
+    "predev": "node scripts/blog/build.mjs --drafts --no-og --no-links",
+    "pretypecheck": "node scripts/blog/build.mjs --no-og --no-links",
+    "prebuild": "node scripts/blog/build.mjs",
+    "test:blog": "node --test \"scripts/blog/**/*.test.mjs\""
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
+    "*.{json,css,md}": [
       "prettier --write"
     ],
-    "*.{json,css,md}": [
+    "*.{ts,tsx,js,jsx,mjs}": [
+      "eslint --fix",
       "prettier --write"
     ]
   },
@@ -32,6 +38,7 @@
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.20.6",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -39,10 +46,14 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "eslint-config-prettier": "^10.1.8",
+    "gray-matter": "^4.0.3",
     "husky": "^9.1.7",
+    "image-size": "^2.0.4",
     "lint-staged": "^16.4.0",
+    "markdown-it": "^15.0.2",
     "openapi-typescript": "7.13.0",
     "prettier": "^3.9.6",
+    "satori": "^0.47.1",
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.129.0"

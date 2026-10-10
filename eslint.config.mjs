@@ -18,6 +18,8 @@ const eslintConfig = defineConfig([
     ".open-next/**",
     // Generated from the BE's openapi.json by `npm run gen:api` — never hand-edited.
     "src/types/api.gen.ts",
+    // Sinh bởi scripts/blog/build.mjs từ content/bai-viet — không sửa tay.
+    "src/generated/**",
   ]),
 ]);
 

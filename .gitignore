@@ -46,3 +46,12 @@ next-env.d.ts
 
 .wrangler
 .open-next
+# bài viết: sinh lại mỗi lần build từ content/bai-viet (scripts/blog)
+/src/generated/
+/public/media/
+
+# bài viết: nội dung (thư mục bài, ảnh, published.json, redirects.json) chỉ nằm ở máy tác giả,
+# không lên git để repo không phình. Chỉ README và _template (mẫu) được theo dõi.
+/content/bai-viet/*
+!/content/bai-viet/README.md
+!/content/bai-viet/_template/
