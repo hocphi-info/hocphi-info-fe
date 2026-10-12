@@ -91,7 +91,6 @@ export const FOOTER_COLUMNS: {
     links: [
       { label: "Phương pháp luận", href: "/phuong-phap" },
       { label: "Dữ liệu & nguồn", href: "/du-lieu" },
-      { label: "Dùng với AI (MCP)", href: "/dung-voi-ai" },
       {
         label: "Báo số liệu chưa đúng",
         href: mailtoUrl("[hocphi.info] Báo số liệu chưa đúng"),

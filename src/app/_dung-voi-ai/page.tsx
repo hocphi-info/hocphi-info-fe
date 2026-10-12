@@ -5,6 +5,10 @@ import Callout from "@/components/Callout";
 import CopyableCode from "@/components/CopyableCode";
 import { MCP_URL } from "@/lib/site";
 
+// TẠM ẨN (2026-10-12): thư mục bắt đầu bằng `_` là private folder nên Next không tạo route
+// (/dung-voi-ai trả 404). Lý do: máy chủ MCP trên Cloud Run đã tắt để tiết kiệm tiền. Bật lại:
+// deploy lại MCP, đổi tên thư mục về `dung-voi-ai`, thêm lại link ở site.ts và sitemap.ts.
+//
 // Server Component, static. Client setup steps were checked against each
 // vendor's docs on 2026-09-30; those UIs change often, so keep the wording
 // generic where the vendor's own docs are the better reference.
