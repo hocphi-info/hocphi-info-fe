@@ -53,18 +53,6 @@ export default function PostsPage() {
         <FollowLinks />
       </header>
 
-      <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-b border-rule pb-6 text-sm text-ink-3">
-        <li className="flex items-center gap-2">
-          <PillarPill pillar="data" /> số liệu gốc từ cơ sở dữ liệu
-        </li>
-        <li className="flex items-center gap-2">
-          <PillarPill pillar="research" /> câu hỏi chưa báo nào trả lời
-        </li>
-        <li className="flex items-center gap-2">
-          <PillarPill pillar="news" /> thời sự, nhìn qua học phí
-        </li>
-      </ul>
-
       {!latest ? (
         <div className="mt-10 rounded-xl border border-border bg-surface p-8 text-center">
           <p className="font-semibold text-ink">Bài đầu tiên sắp ra mắt.</p>

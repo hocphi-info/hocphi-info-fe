@@ -1,5 +1,17 @@
 {
-  "data": { "label": "Dữ liệu", "from": "#213b6e", "to": "#3962a4" },
-  "research": { "label": "Nghiên cứu", "from": "#023f4c", "to": "#02717a" },
-  "news": { "label": "Tin & góc học phí", "from": "#653c1a", "to": "#9e6b2f" }
+  "data": {
+    "label": "Dữ liệu",
+    "from": "#213b6e",
+    "to": "#3962a4"
+  },
+  "research": {
+    "label": "Nghiên cứu",
+    "from": "#023f4c",
+    "to": "#02717a"
+  },
+  "news": {
+    "label": "Thời sự",
+    "from": "#653c1a",
+    "to": "#9e6b2f"
+  }
 }
