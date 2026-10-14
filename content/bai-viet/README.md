@@ -46,7 +46,7 @@ mọi người biết có sửa, đặt `updated: YYYY-MM-DD`.
 | `pillar` | có | `data` (dữ liệu & phân tích gốc), `research` (câu hỏi nghiên cứu), `news` (tin kèm góc học phí) |
 | `scope` | **có nếu `pillar: data`** | Phạm vi số liệu: bao nhiêu trường/ngành, năm học nào, độ phủ chưa đầy đủ. Hiện thành ô "Phạm vi số liệu" |
 | `sources` | có, ≥ 1 | Danh sách `{ name, url, accessed }`; `accessed` = ngày bạn đối chiếu nguồn |
-| `author` | không | Mặc định: Nguyễn Văn Biển — Người sáng lập hocphi.info |
+| `author` | không | Mặc định: Nguyễn Văn Biên — Người sáng lập hocphi.info |
 | `cover` | không | Ảnh bìa tự làm (nên 1200×630, ≤ 300 KB). Có thì dùng thay thẻ tự sinh khi chia sẻ |
 | `draft` | không | `true` = nháp: không vào danh sách, sitemap, feed, bản production |
 | `related` | không | Liên kết "Tra cứu học phí liên quan": `{ label, href }`, `href` là `/truong/<slug>`, `/nganh/<truong>/<nganh>` hoặc `/nganh` |

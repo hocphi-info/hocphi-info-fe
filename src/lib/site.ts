@@ -28,7 +28,7 @@ export function mailtoUrl(subject?: string): string {
 }
 
 /** Tác giả mặc định của bài viết (có thể ghi đè bằng `author` trong front matter). */
-export const AUTHOR_NAME = "Nguyễn Văn Biển";
+export const AUTHOR_NAME = "Nguyễn Văn Biên";
 export const AUTHOR_ROLE = "Người sáng lập hocphi.info";
 
 /** Absolute URL helper for canonical / OG / JSON-LD. `path` starts with "/". */
