@@ -17,7 +17,7 @@
     "blog:build": "node scripts/blog/build.mjs",
     "blog:check": "node scripts/blog/build.mjs --check-only",
     "predev": "node scripts/blog/build.mjs --drafts --no-og --no-links",
-    "pretypecheck": "node scripts/blog/build.mjs --no-og --no-links",
+    "pretypecheck": "node scripts/blog/build.mjs --drafts --no-og --no-links",
     "prebuild": "node scripts/blog/build.mjs",
     "test:blog": "node --test \"scripts/blog/**/*.test.mjs\""
   },
