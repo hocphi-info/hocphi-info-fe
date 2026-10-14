@@ -72,6 +72,7 @@ export const SOCIAL_LINKS: {
 export const NAV_LINKS = [
   { label: "Tra cứu", href: "/nganh" },
   // { label: "So sánh", href: "/so-sanh" },
+  { label: "Bài viết", href: "/bai-viet" },
   { label: "Phương pháp", href: "/phuong-phap" },
   { label: "Dữ liệu & nguồn", href: "/du-lieu" },
 ] as const;
@@ -88,6 +89,7 @@ export const FOOTER_COLUMNS: {
       { label: "Học phí theo ngành", href: "/nganh" },
       { label: "Học phí theo trường", href: "/truong" },
       // { label: "So sánh", href: "/so-sanh" },
+      { label: "Bài viết", href: "/bai-viet" },
     ],
   },
   {
