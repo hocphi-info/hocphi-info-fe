@@ -65,6 +65,22 @@ preview: ## Build + wrangler dev (gia lap Cloudflare Worker o local)
 deploy: check ## Chay `check`, build roi deploy len Cloudflare Workers (hocphi.info + www.hocphi.info)
 	$(NPM) run cf:deploy
 
+# ── Bai viet (/bai-viet) ───────────────────────────────────────────────────────
+# Bai la thu muc content/bai-viet/<slug>/ (index.md + anh). Xem content/bai-viet/README.md.
+.PHONY: blog-new blog-check blog-dev blog
+blog-new: ## Tao bai moi tu mau: make blog-new SLUG=ten-bai-viet
+	@test -n "$(SLUG)" || (echo "Thieu SLUG, vd: make blog-new SLUG=hoc-phi-nganh-luat" && exit 1)
+	node scripts/blog/new.mjs $(SLUG)
+
+blog-check: ## Kiem tra toan bo bai viet (khong ghi, khong deploy)
+	$(NPM) run blog:check
+
+blog-dev: ## Xem truoc bai (ke ca nhap), tu sinh lai khi sua file
+	node scripts/blog/dev.mjs
+
+blog: blog-check deploy ## Kiem tra bai -> deploy -> ghi published.json (nho commit)
+	node scripts/blog/record.mjs
+
 # ── Don dep ────────────────────────────────────────────────────────────────────
 .PHONY: clean
 clean: ## Xoa build output (.next, .open-next)

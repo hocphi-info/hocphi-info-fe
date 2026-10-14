@@ -1,3 +1,6 @@
 .next
 node_modules
 docs
+content/bai-viet/**
+src/generated
+public/media

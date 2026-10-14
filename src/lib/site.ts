@@ -27,6 +27,10 @@ export function mailtoUrl(subject?: string): string {
     : `mailto:${CONTACT_EMAIL}`;
 }
 
+/** Tác giả mặc định của bài viết (có thể ghi đè bằng `author` trong front matter). */
+export const AUTHOR_NAME = "Nguyễn Văn Biên";
+export const AUTHOR_ROLE = "Người sáng lập hocphi.info";
+
 /** Absolute URL helper for canonical / OG / JSON-LD. `path` starts with "/". */
 export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString();
@@ -68,6 +72,7 @@ export const SOCIAL_LINKS: {
 export const NAV_LINKS = [
   { label: "Tra cứu", href: "/nganh" },
   // { label: "So sánh", href: "/so-sanh" },
+  { label: "Bài viết", href: "/bai-viet" },
   { label: "Phương pháp", href: "/phuong-phap" },
   { label: "Dữ liệu & nguồn", href: "/du-lieu" },
 ] as const;
@@ -84,6 +89,7 @@ export const FOOTER_COLUMNS: {
       { label: "Học phí theo ngành", href: "/nganh" },
       { label: "Học phí theo trường", href: "/truong" },
       // { label: "So sánh", href: "/so-sanh" },
+      { label: "Bài viết", href: "/bai-viet" },
     ],
   },
   {
