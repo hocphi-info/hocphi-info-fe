@@ -4,6 +4,7 @@ import { totalCourseCost } from "@/lib/derive";
 import { formatMillions, TRACK_LABELS } from "@/lib/format";
 import SchoolTypeBadge from "@/components/SchoolTypeBadge";
 import SchoolLogo from "@/components/SchoolLogo";
+import TuitionDisclosureBadge from "@/components/TuitionDisclosureBadge";
 import IncreaseBadge from "@/components/IncreaseBadge";
 import CompareCheckbox from "@/components/CompareCheckbox";
 import SortableHeader from "@/components/SortableHeader";
@@ -149,9 +150,14 @@ export default function MajorResultsTable({
                       <div className="font-medium text-ink">
                         {row.school.name}
                       </div>
-                      <div className="mt-0.5 flex items-center gap-2 text-ink-3">
+                      <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-ink-3">
                         <span>{row.school.shortName ?? row.school.name}</span>
                         <SchoolTypeBadge category={row.school.category} />
+                        {row.school.tuitionDisclosure && (
+                          <TuitionDisclosureBadge
+                            level={row.school.tuitionDisclosure.level}
+                          />
+                        )}
                       </div>
                     </div>
                   </div>
@@ -211,6 +217,11 @@ export default function MajorResultsTable({
                 <div className="mt-0.5 flex flex-wrap items-center gap-2 text-sm text-ink-3">
                   <span>{row.school.shortName ?? row.school.name}</span>
                   <SchoolTypeBadge category={row.school.category} />
+                  {row.school.tuitionDisclosure && (
+                    <TuitionDisclosureBadge
+                      level={row.school.tuitionDisclosure.level}
+                    />
+                  )}
                 </div>
                 <div className="mt-1 text-base text-ink-2">
                   {row.major.name} · {TRACK_LABELS[row.program.track]}
