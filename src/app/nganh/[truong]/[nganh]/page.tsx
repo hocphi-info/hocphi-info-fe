@@ -6,6 +6,7 @@ import SourceBlock from "@/components/SourceBlock";
 import SchoolLogo from "@/components/SchoolLogo";
 import PostGradCostBlock from "@/components/PostGradCostBlock";
 import RelatedMajors from "@/components/RelatedMajors";
+import TuitionDisclosureBlock from "@/components/TuitionDisclosureBlock";
 
 // Server Component — F6, S3. `fetchProgramDetail` (lib/api.ts) already calls
 // `notFound()` on a 404 from the BE, so nothing here needs to check that —
@@ -43,6 +44,14 @@ export default async function ProgramDetailPage({
       </h1>
 
       <div className="mt-6 space-y-8">
+        {/* Trường bị đánh giá "không minh bạch" thì con số bên dưới chỉ là ước
+            lượng từ nguồn gián tiếp — đặt cảnh báo TRƯỚC bảng số. */}
+        {detail.school.tuitionDisclosure && (
+          <TuitionDisclosureBlock
+            disclosure={detail.school.tuitionDisclosure}
+          />
+        )}
+
         {detail.programs.map((p) => (
           <section key={p.program.id} className="space-y-4">
             <div>

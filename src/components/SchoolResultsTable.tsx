@@ -3,6 +3,7 @@ import type { SchoolFilters } from "@/lib/filters";
 import { formatMillions } from "@/lib/format";
 import SchoolTypeBadge from "@/components/SchoolTypeBadge";
 import SchoolLogo from "@/components/SchoolLogo";
+import TuitionDisclosureBadge from "@/components/TuitionDisclosureBadge";
 import SortableHeader from "@/components/SortableHeader";
 import RowLink from "@/components/RowLink";
 
@@ -134,9 +135,14 @@ export default function SchoolResultsTable({
                         <div className="font-medium text-ink">
                           {school.name}
                         </div>
-                        <div className="mt-0.5 flex items-center gap-2 text-ink-3">
+                        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-ink-3">
                           <span>{school.shortName}</span>
                           <SchoolTypeBadge category={school.category} />
+                          {school.tuitionDisclosure && (
+                            <TuitionDisclosureBadge
+                              level={school.tuitionDisclosure.level}
+                            />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -209,6 +215,11 @@ export default function SchoolResultsTable({
                   <div className="mt-0.5 flex flex-wrap items-center gap-2 text-sm text-ink-3">
                     <span>{school.shortName}</span>
                     <SchoolTypeBadge category={school.category} />
+                    {school.tuitionDisclosure && (
+                      <TuitionDisclosureBadge
+                        level={school.tuitionDisclosure.level}
+                      />
+                    )}
                     <span>· {stats.nPrograms} ngành</span>
                   </div>
                 </div>

@@ -4,6 +4,7 @@ import RangeChart from "@/components/RangeChart";
 import SchoolTypeBadge from "@/components/SchoolTypeBadge";
 import SchoolLogo from "@/components/SchoolLogo";
 import SchoolProgramsTable from "@/components/SchoolProgramsTable";
+import TuitionDisclosureBlock from "@/components/TuitionDisclosureBlock";
 
 // Server Component — F7. `fetchSchoolDetail` (lib/api.ts) already calls
 // `notFound()` on a 404 from the BE (trường không tồn tại, hoặc chưa có
@@ -34,6 +35,12 @@ export default async function SchoolDetailPage({
       </p>
 
       <div className="mt-6 space-y-6">
+        {detail.school.tuitionDisclosure && (
+          <TuitionDisclosureBlock
+            disclosure={detail.school.tuitionDisclosure}
+          />
+        )}
+
         <RangeChart
           title="Khoảng học phí theo hệ đào tạo"
           subtitle="triệu đồng / năm"

@@ -34,6 +34,13 @@ export function formatMillions(
   return `${opts.approx ? "≈ " : ""}${text} tr`;
 }
 
+/** "2026-10-16" (date ISO từ API) -> "16/10/2026". Cắt chuỗi thay vì `new Date()`
+ * để không lệch ngày theo múi giờ của server/trình duyệt. */
+export function formatDateVi(isoDate: string): string {
+  const [y, m, d] = isoDate.split("-");
+  return `${d}/${m}/${y}`;
+}
+
 /** 8 -> "+8%/năm" */
 export function formatPercent(pct: number): string {
   return `+${pct}%/năm`;

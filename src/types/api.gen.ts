@@ -415,6 +415,7 @@ export interface components {
       category: components["schemas"]["SchoolCategory"];
       /** Logourl */
       logoUrl: string | null;
+      tuitionDisclosure: components["schemas"]["TuitionDisclosureOut"] | null;
     };
     /**
      * SchoolProgramRowOut
@@ -592,6 +593,33 @@ export interface components {
       nMajors: number;
       /** Nprograms */
       nPrograms: number;
+    };
+    /**
+     * TuitionDisclosure
+     * @description Muc do truong cong khai hoc phi (danh gia tay, cap truong — migration 0008).
+     *
+     *     Chi 2 muc, owner chot 2026-10-16. NULL o DB = chua danh gia (FE khong hien).
+     * @enum {string}
+     */
+    TuitionDisclosure: "theo_nganh" | "khong_minh_bach";
+    /**
+     * TuitionDisclosureOut
+     * @description Danh gia muc cong khai hoc phi cua truong (migration 0008).
+     *
+     *     Nhan dinh cua nguoi van hanh, nen luon di kem ngay kiem tra + link bang
+     *     chung de nguoi doc tu doi chieu.
+     */
+    TuitionDisclosureOut: {
+      level: components["schemas"]["TuitionDisclosure"];
+      /**
+       * Checkedon
+       * Format: date
+       */
+      checkedOn: string;
+      /** Evidenceurl */
+      evidenceUrl: string;
+      /** Note */
+      note: string | null;
     };
     /**
      * TuitionRecordOut

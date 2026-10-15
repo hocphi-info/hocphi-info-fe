@@ -28,6 +28,10 @@ export type Confidence = Schemas["ConfidenceLevel"];
 export type SourceDocType = Schemas["SourceDocType"];
 
 export type School = Schemas["SchoolOut"];
+/** Mức công khai học phí của trường: "theo_nganh" (xanh) | "khong_minh_bach" (đỏ).
+ * `School.tuitionDisclosure` null = chưa đánh giá -> không hiện gì. */
+export type TuitionDisclosureLevel = Schemas["TuitionDisclosure"];
+export type TuitionDisclosure = Schemas["TuitionDisclosureOut"];
 export type Major = Schemas["MajorOut"];
 export type Program = Schemas["ProgramOut"];
 /** Tài liệu gốc của 1 mức học phí (F12) — chỉ Năm 1 (bản ghi thật) có nguồn;

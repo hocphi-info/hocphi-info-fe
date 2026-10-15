@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import Callout from "@/components/Callout";
+import TuitionDisclosureBadge from "@/components/TuitionDisclosureBadge";
 import JsonLd from "@/components/JsonLd";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
@@ -27,6 +28,7 @@ const SECTIONS = [
   { id: "truong-hop-kho", label: "7 · Trường hợp đặc biệt" },
   { id: "khong-bao-gom", label: "8 · Không bao gồm" },
   { id: "cap-nhat", label: "9 · Lịch cập nhật" },
+  { id: "minh-bach", label: "10 · Minh bạch học phí" },
 ];
 
 const th =
@@ -80,7 +82,7 @@ export default function MethodPage() {
           kiểm lại bất kỳ con số nào.
         </p>
         <p className="mt-3 text-xs text-ink-3">
-          Cập nhật quy tắc: 09/2026 · Áp dụng cho dữ liệu khoá tuyển sinh 2026
+          Cập nhật quy tắc: 10/2026 · Áp dụng cho dữ liệu khoá tuyển sinh 2026
         </p>
       </div>
 
@@ -657,6 +659,73 @@ Tổng   = Σ (Năm 1 … Năm N)              N = số năm chuẩn của ngàn
                 Dữ liệu &amp; nguồn
               </Link>
               .
+            </p>
+          </section>
+
+          {/* 10 */}
+          <section id="minh-bach" className="scroll-mt-6">
+            <h2 className="text-xl font-bold tracking-tight text-ink">
+              10 · Minh bạch học phí
+            </h2>
+            <p className="mt-1 text-sm leading-relaxed text-ink-2">
+              Ngoài con số, hocphi.info đánh giá{" "}
+              <strong className="text-ink">cách trường công bố học phí</strong>.
+              Chỉ có 2 mức, gắn ở trang trường và cạnh tên trường trong bảng kết
+              quả:
+            </p>
+            <div className="mt-4 overflow-x-auto rounded-xl border border-border">
+              <table className="w-full min-w-120 text-sm">
+                <thead>
+                  <tr>
+                    <th className={th}>Mức</th>
+                    <th className={th}>Khi nào</th>
+                  </tr>
+                </thead>
+                <tbody className="text-ink-2">
+                  <tr>
+                    <td className={td}>
+                      <TuitionDisclosureBadge level="theo_nganh" />
+                    </td>
+                    <td className={td}>
+                      Trường công bố học phí cụ thể cho{" "}
+                      <strong className="text-ink">
+                        từng ngành / chương trình
+                      </strong>
+                      , ai cũng xem được trước khi nộp hồ sơ.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className={td}>
+                      <TuitionDisclosureBadge level="khong_minh_bach" />
+                    </td>
+                    <td className={td}>
+                      Trường chỉ công bố một khoảng chung cho cả trường (vd “45
+                      – 85 triệu/năm tuỳ chương trình”) mà không có bảng theo
+                      ngành, hoặc không công bố gì; học phí thật chỉ biết được
+                      sau khi nhập học.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-ink-2">
+              Mỗi đánh giá luôn kèm{" "}
+              <strong className="text-ink">ngày kiểm tra</strong> và{" "}
+              <strong className="text-ink">
+                đường dẫn tới trang của trường
+              </strong>{" "}
+              làm bằng chứng. Trường cập nhật bảng học phí theo ngành thì
+              hocphi.info đánh giá lại. Trường chưa được kiểm tra thì không hiện
+              nhãn nào.
+            </p>
+            <p className="mt-4 text-sm leading-relaxed text-ink-2">
+              Căn cứ: Nghị định 238/2025/NĐ-CP (thay Nghị định 81/2021/NĐ-CP),
+              Điều 13 khoản 4 — cơ sở giáo dục “trước khi tuyển sinh hoặc xét
+              tuyển phải công bố, công khai mức thu học phí, chi phí đào tạo cho
+              từng năm học […] và dự kiến cho cả khóa học đối với giáo dục đại
+              học”. Nhãn của hocphi.info là đánh giá về mức độ thuận tiện cho
+              người học, không phải kết luận vi phạm pháp luật — việc đó thuộc
+              thẩm quyền cơ quan quản lý.
             </p>
           </section>
 
