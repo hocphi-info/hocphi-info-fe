@@ -67,6 +67,7 @@ mọi người biết có sửa, đặt `updated: YYYY-MM-DD`.
 - Đặt cạnh `index.md`, dẫn bằng đường dẫn tương đối, **luôn có mô tả thay thế**:
   `![Biểu đồ cột: học phí 4 trường](bieu-do.webp)`.
 - Định dạng png / jpg / webp. **Mỗi ảnh ≤ 300 KB** (từ 150 KB trở lên bị cảnh báo).
+- Ảnh luôn được căn giữa (`.post-body img` trong `globals.css`); ảnh nhỏ hơn cột bài giữ nguyên kích thước.
 - Biểu đồ nên xuất nền trong suốt hoặc trung tính để đọc được ở chế độ tối.
 - Ảnh nằm trong thư mục mà không bài nào dùng sẽ bị bỏ qua (có cảnh báo).
 

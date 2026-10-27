@@ -233,6 +233,7 @@ body {
 }
 .post-body img {
   display: block;
+  margin-inline: auto;
   max-width: 100%;
   height: auto;
   border: 1px solid var(--border);

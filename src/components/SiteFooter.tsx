@@ -88,7 +88,7 @@ export default function SiteFooter() {
             theo % tăng.
           </p>
           <p>
-            © 2026 hocphi.info · Cập nhật 09/2026 · Pilot 50 trường TP.HCM &amp;
+            © 2026 hocphi.info · Cập nhật 10/2026 · Pilot 50 trường TP.HCM &amp;
             Hà Nội.
           </p>
         </div>
