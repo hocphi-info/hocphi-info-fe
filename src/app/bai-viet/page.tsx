@@ -5,7 +5,12 @@ import FollowLinks from "@/components/FollowLinks";
 import PillarPill from "@/components/PillarPill";
 import PostCard from "@/components/PostCard";
 import PostCover from "@/components/PostCover";
-import { formatPostDate, getAllPosts, postAuthor, postPath } from "@/lib/posts";
+import {
+  formatPostDate,
+  getListedPosts,
+  postAuthor,
+  postPath,
+} from "@/lib/posts";
 import { SITE_NAME, absoluteUrl } from "@/lib/site";
 
 // Server Component, hoàn toàn tĩnh: danh sách lấy từ module sinh sẵn (lib/posts.ts),
@@ -33,7 +38,7 @@ export const metadata: Metadata = {
 };
 
 export default function PostsPage() {
-  const posts = getAllPosts();
+  const posts = getListedPosts();
   const [latest, ...older] = posts;
 
   return (

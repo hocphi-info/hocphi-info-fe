@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { getAllPosts, postUrl } from "@/lib/posts";
+import { getListedPosts, postUrl } from "@/lib/posts";
 import { absoluteUrl } from "@/lib/site";
 
 // Special file convention: `app/sitemap.ts` → served at /sitemap.xml.
@@ -38,7 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Bài viết (/bai-viet): chỉ có khi đã có ít nhất một bài đăng — danh sách rỗng
   // không nên được lập chỉ mục. Bản production không chứa bài nháp (xem lib/posts.ts).
-  const posts = getAllPosts();
+  const posts = getListedPosts();
   if (posts.length > 0) {
     entries.push({
       url: absoluteUrl("/bai-viet"),

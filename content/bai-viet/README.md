@@ -49,6 +49,7 @@ mọi người biết có sửa, đặt `updated: YYYY-MM-DD`.
 | `author` | không | Mặc định: Nguyễn Văn Biên — Người sáng lập hocphi.info |
 | `cover` | không | Ảnh bìa tự làm (nên 1200×630, ≤ 300 KB). Có thì dùng thay thẻ tự sinh khi chia sẻ |
 | `draft` | không | `true` = nháp: không vào danh sách, sitemap, feed, bản production |
+| `unlisted` | không | `true` = bài ẩn: vẫn có trong production và **ai có link vẫn đọc được**, nhưng không vào danh sách `/bai-viet`, sitemap, feed, gợi ý bài liên quan; gắn `noindex` và nhãn "Chưa công khai" trên trang bài. Khác `draft`: không làm chết URL đã chia sẻ |
 | `related` | không | Liên kết "Tra cứu học phí liên quan": `{ label, href }`, `href` là `/truong/<slug>`, `/nganh/<truong>/<nganh>` hoặc `/nganh` |
 
 ## Viết nội dung

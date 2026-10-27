@@ -70,6 +70,31 @@ test("bài hợp lệ → ghi posts.json và chép ảnh, bỏ qua bài nháp", 
   assert.ok(!JSON.stringify(posts).includes("bai-nhap"));
 });
 
+test("bài ẩn (unlisted) vẫn vào posts.json nhưng không được bài khác gợi ý", async () => {
+  const root = makeRoot({
+    "bai-a": {
+      "index.md": postFile(validFrontmatter(), body),
+      "bieu-do.png": makePng(600),
+    },
+    "bai-an": {
+      "index.md": postFile(
+        validFrontmatter({ unlisted: true, date: "2026-10-11" }),
+        body,
+      ),
+      "bieu-do.png": makePng(600),
+    },
+  });
+  const r = await runBuild(opts(root));
+  assert.equal(errorsOf(r).length, 0, JSON.stringify(r.issues));
+  const posts = readPosts(root);
+  const an = posts.find((p) => p.slug === "bai-an");
+  const a = posts.find((p) => p.slug === "bai-a");
+  assert.equal(an.unlisted, true);
+  assert.equal(a.unlisted, false);
+  assert.deepEqual(a.relatedSlugs, []);
+  assert.deepEqual(an.relatedSlugs, ["bai-a"]);
+});
+
 test("--drafts đưa bài nháp vào bản dev", async () => {
   const root = makeRoot({
     "bai-nhap": {

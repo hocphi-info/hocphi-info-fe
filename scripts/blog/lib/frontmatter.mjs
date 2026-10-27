@@ -121,6 +121,11 @@ export function validateFrontmatter(data) {
     err('"draft" phải là true hoặc false.');
   const draft = data.draft === true;
 
+  // unlisted: vẫn mở được bằng link, nhưng không vào danh sách/sitemap/feed
+  if (data.unlisted !== undefined && typeof data.unlisted !== "boolean")
+    err('"unlisted" phải là true hoặc false.');
+  const unlisted = data.unlisted === true;
+
   // scope (bắt buộc với bài dữ liệu — R7)
   let scope = null;
   if (data.scope !== undefined && data.scope !== null) {
@@ -192,6 +197,7 @@ export function validateFrontmatter(data) {
       author,
       cover,
       draft,
+      unlisted,
       scope,
       related,
       sources,

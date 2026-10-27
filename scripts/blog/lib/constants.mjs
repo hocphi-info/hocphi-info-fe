@@ -36,6 +36,7 @@ export const FRONTMATTER_KEYS = new Set([
   "author",
   "cover",
   "draft",
+  "unlisted",
   "scope",
   "related",
   "sources",

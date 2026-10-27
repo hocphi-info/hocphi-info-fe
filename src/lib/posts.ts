@@ -31,15 +31,22 @@ export type Post = {
   /** HTML đã render sẵn từ Markdown (nội dung do chính chủ dự án viết, đã qua kiểm tra). */
   html: string;
   draft: boolean;
+  /** Mở được bằng link nhưng không vào danh sách, sitemap, feed hay gợi ý bài liên quan. */
+  unlisted: boolean;
   relatedSlugs: string[];
 };
 
 // JSON rỗng ([]) được TS suy ra kiểu never[] nên phải ép kiểu qua unknown.
 const POSTS = generated as unknown as Post[];
 
-/** Mới nhất trước (đã sắp sẵn lúc build). */
+/** Mới nhất trước (đã sắp sẵn lúc build). Gồm cả bài ẩn — dùng để sinh trang. */
 export function getAllPosts(): Post[] {
   return POSTS;
+}
+
+/** Như getAllPosts nhưng bỏ bài ẩn — dùng cho danh sách, sitemap, feed. */
+export function getListedPosts(): Post[] {
+  return POSTS.filter((p) => !p.unlisted);
 }
 
 export function getPostBySlug(slug: string): Post | undefined {
