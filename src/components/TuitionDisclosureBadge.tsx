@@ -1,14 +1,15 @@
 import type { TuitionDisclosureLevel } from "@/types/domain";
 
-// Server Component — pill nhỏ "Học phí minh bạch / không minh bạch" cạnh tên
-// trường ở các bảng. Khác SchoolTypeBadge (pill nền đặc, chỉ phân loại): badge
+// Server Component — pill nhỏ "Học phí minh bạch / Chưa công bố học phí theo
+// ngành" cạnh tên trường ở các bảng. Nhãn mức thấp mô tả SỰ KIỆN kiểm chứng
+// được (có/chưa có bảng theo ngành), không phán xét trường. Khác SchoolTypeBadge (pill nền đặc, chỉ phân loại): badge
 // này CÓ hàm ý tốt/xấu nên dùng token good/bad riêng + viền + icon, để không
 // nhầm với pill "Tư thục" màu xanh. Trường chưa đánh giá -> cha không render.
 // Chi tiết (ghi chú, ngày kiểm tra, nguồn) nằm ở TuitionDisclosureBlock.
 
 export const DISCLOSURE_LABELS: Record<TuitionDisclosureLevel, string> = {
   theo_nganh: "Học phí minh bạch",
-  khong_minh_bach: "Học phí không minh bạch",
+  khong_minh_bach: "Chưa công bố học phí theo ngành",
 };
 
 const TONE: Record<TuitionDisclosureLevel, string> = {

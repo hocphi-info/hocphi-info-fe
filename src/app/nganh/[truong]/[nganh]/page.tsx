@@ -44,7 +44,7 @@ export default async function ProgramDetailPage({
       </h1>
 
       <div className="mt-6 space-y-8">
-        {/* Trường bị đánh giá "không minh bạch" thì con số bên dưới chỉ là ước
+        {/* Trường "chưa công bố học phí theo ngành" thì con số bên dưới chỉ là ước
             lượng từ nguồn gián tiếp — đặt cảnh báo TRƯỚC bảng số. */}
         {detail.school.tuitionDisclosure && (
           <TuitionDisclosureBlock
