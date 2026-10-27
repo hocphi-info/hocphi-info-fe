@@ -1,4 +1,4 @@
-import { getAllPosts, pillarLabel, postAuthor, postUrl } from "@/lib/posts";
+import { getListedPosts, pillarLabel, postAuthor, postUrl } from "@/lib/posts";
 import { SITE_NAME, absoluteUrl } from "@/lib/site";
 
 // Route Handler → /bai-viet/feed.xml (RSS 2.0). Chỉ để tóm tắt + link về bài: mục tiêu
@@ -24,7 +24,7 @@ function rfc822(date: string): string {
 }
 
 export function GET() {
-  const posts = getAllPosts();
+  const posts = getListedPosts();
   const newest = posts[0];
 
   const items = posts

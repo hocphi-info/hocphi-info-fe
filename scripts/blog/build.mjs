@@ -183,6 +183,7 @@ export async function runBuild({
         headings: rendered.headings,
         html: rendered.html,
         draft: isDraft,
+        unlisted: fm.value.unlisted,
       },
     });
   }
@@ -225,7 +226,9 @@ export async function runBuild({
           : -1,
     );
   const posts = included.map((r) => r.post);
-  for (const p of posts) p.relatedSlugs = pickRelated(posts, p.slug);
+  // Bài ẩn (unlisted) không được bài khác gợi ý tới, nhưng bản thân nó vẫn gợi ý bài khác.
+  const listed = posts.filter((p) => !p.unlisted);
+  for (const p of posts) p.relatedSlugs = pickRelated([...listed, p], p.slug);
 
   if (links) {
     const entries = posts.flatMap((p) =>

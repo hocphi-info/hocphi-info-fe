@@ -49,6 +49,8 @@ export async function generateMetadata({
     description: post.summary,
     // Canonical sạch: link có ?utm_… vẫn mở đúng bài nhưng chỉ có một URL được lập chỉ mục.
     alternates: { canonical: postPath(slug) },
+    // Bài ẩn: ai có link vẫn đọc được, nhưng không để Google lập chỉ mục.
+    ...(post.unlisted && { robots: { index: false, follow: true } }),
     openGraph: {
       type: "article",
       siteName: SITE_NAME,
@@ -144,6 +146,11 @@ export default async function PostPage({
         <article className="min-w-0">
           <div className="flex flex-wrap items-center gap-2 text-xs text-ink-3">
             <PillarPill pillar={post.pillar} />
+            {post.unlisted && (
+              <span className="rounded-full border border-border bg-surface-2 px-2 py-0.5 font-medium text-ink-2">
+                Chưa công khai
+              </span>
+            )}
             <span>{post.readingMinutes} phút đọc</span>
           </div>
           <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
