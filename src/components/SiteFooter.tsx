@@ -1,7 +1,14 @@
 import Link from "next/link";
 
 import Logo from "@/components/Logo";
-import { FOOTER_COLUMNS, SITE_TAGLINE, SOCIAL_LINKS } from "@/lib/site";
+import {
+  AUTHOR_NAME,
+  CONTACT_EMAIL,
+  FOOTER_COLUMNS,
+  SITE_TAGLINE,
+  SOCIAL_LINKS,
+  mailtoUrl,
+} from "@/lib/site";
 
 // Server Component — static. Expanded from the 3-line note block to the columned
 // footer in ../mockup/Landing.dc.html now that the marketing/content pages exist.
@@ -90,6 +97,14 @@ export default function SiteFooter() {
           <p>
             © 2026 hocphi.info · Cập nhật 10/2026 · Pilot 50 trường TP.HCM &amp;
             Hà Nội.
+          </p>
+          {/* Tên + liên hệ người chịu trách nhiệm nội dung phải có trên trang
+              chủ (NĐ 174/2026, Điều 93 khoản 1). */}
+          <p>
+            Chịu trách nhiệm nội dung: {AUTHOR_NAME} ·{" "}
+            <a href={mailtoUrl()} className="underline hover:text-ink">
+              {CONTACT_EMAIL}
+            </a>
           </p>
         </div>
       </div>
