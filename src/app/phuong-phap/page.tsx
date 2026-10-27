@@ -701,8 +701,8 @@ Tổng   = Σ (Năm 1 … Năm N)              N = số năm chuẩn của ngàn
                     <td className={td}>
                       Trường chỉ công bố một khoảng chung cho cả trường (vd “45
                       – 85 triệu/năm tuỳ chương trình”) mà không có bảng theo
-                      ngành, hoặc không công bố gì; học phí thật chỉ biết được
-                      sau khi nhập học.
+                      ngành, hoặc không công bố gì; muốn biết học phí từng ngành
+                      phải liên hệ trực tiếp với trường.
                     </td>
                   </tr>
                 </tbody>
