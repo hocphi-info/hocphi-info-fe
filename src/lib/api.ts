@@ -30,6 +30,11 @@ import type {
 // callers turn into notFound().
 const RETRYABLE_STATUS = new Set([403, 408, 429, 500, 502, 503, 504]);
 
+// Slug comes from the URL (route params arrive already decoded), so "../" or "?"
+// in it would otherwise rewrite the path we request on the API host. Encoding
+// keeps every slug a single path segment.
+const seg = encodeURIComponent;
+
 async function apiFetch(path: string): Promise<Response> {
   const url = `${API_BASE}${path}`;
   const maxAttempts = 3;
@@ -75,7 +80,7 @@ export async function fetchProgramDetail(
   majorSlug: string,
 ): Promise<ProgramDetailResponse> {
   const res = await apiFetch(
-    `/api/v1/schools/${schoolSlug}/majors/${majorSlug}`,
+    `/api/v1/schools/${seg(schoolSlug)}/majors/${seg(majorSlug)}`,
   );
   if (res.status === 404) notFound();
   if (!res.ok) {
@@ -96,7 +101,7 @@ export async function fetchProgramDetailSafe(
 ): Promise<ProgramDetailResponse | null> {
   try {
     const res = await apiFetch(
-      `/api/v1/schools/${schoolSlug}/majors/${majorSlug}`,
+      `/api/v1/schools/${seg(schoolSlug)}/majors/${seg(majorSlug)}`,
     );
     if (!res.ok) return null;
     return await res.json();
@@ -110,7 +115,7 @@ export async function fetchProgramDetailSafe(
 export async function fetchSchoolDetail(
   schoolSlug: string,
 ): Promise<SchoolDetailResponse> {
-  const res = await apiFetch(`/api/v1/schools/${schoolSlug}`);
+  const res = await apiFetch(`/api/v1/schools/${seg(schoolSlug)}`);
   if (res.status === 404) notFound();
   if (!res.ok) {
     throw new Error(`GET /api/v1/schools/${schoolSlug} -> ${res.status}`);

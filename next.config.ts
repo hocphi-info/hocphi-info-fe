@@ -24,7 +24,31 @@ function postRedirects() {
   }));
 }
 
+// Header bảo mật cho mọi trang. CSP cố ý chỉ khoá những thứ site không dùng (nhúng
+// iframe, <object>, <base>, form gửi ra ngoài) — KHÔNG giới hạn script/style, vì Next
+// chèn script inline + Umami nạp từ domain ngoài; muốn siết script phải làm CSP nonce.
+// HSTS: trình duyệt bỏ qua header này khi trang tải qua http (dev localhost không bị ảnh hưởng).
+const securityHeaders = [
+  {
+    key: "Content-Security-Policy",
+    value:
+      "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'",
+  },
+  { key: "Strict-Transport-Security", value: "max-age=31536000" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=()",
+  },
+];
+
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
+  },
   async redirects() {
     return postRedirects();
   },
