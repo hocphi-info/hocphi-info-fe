@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import { API_BASE } from "@/lib/api-base";
 import type {
@@ -71,11 +72,13 @@ export async function fetchMajorRows(): Promise<MajorRow[]> {
   return res.json();
 }
 
-/** Chi tiết 1 ngành tại 1 trường (F6, S3). 404 (slug sai theo bất kỳ nghĩa
+/** Chi tiết 1 ngành tại 1 trường (F6, S3). Bọc `cache` của React: `generateMetadata`
+ * và page cùng gọi hàm này trong một request nhưng chỉ tốn một lần gọi API (fetch
+ * có `signal` nên Next không tự gộp request trùng). Cùng lý do cho `fetchSchoolDetail`. 404 (slug sai theo bất kỳ nghĩa
  * nào — trường không tồn tại, ngành không tồn tại, hoặc không khớp chương
  * trình nào) gọi `notFound()` ngay tại đây, khác `fetchMajorRows` — nên
  * page.tsx không cần tự kiểm tra trước khi render. */
-export async function fetchProgramDetail(
+export const fetchProgramDetail = cache(async function fetchProgramDetail(
   schoolSlug: string,
   majorSlug: string,
 ): Promise<ProgramDetailResponse> {
@@ -89,7 +92,7 @@ export async function fetchProgramDetail(
     );
   }
   return res.json();
-}
+});
 
 /** Biến thể của `fetchProgramDetail` cho trang so sánh (F8, Tuần 5): trả
  * `null` thay vì gọi `notFound()` khi lỗi/404. Khác trang F6 (1 mục lỗi = cả
@@ -112,7 +115,7 @@ export async function fetchProgramDetailSafe(
 
 /** Chi tiết 1 trường (F7) — hồ sơ + toàn bộ ngành đã có dữ liệu + Min-Max
  * theo hệ. 404 khi trường không tồn tại hoặc chưa có chương trình nào đã seed. */
-export async function fetchSchoolDetail(
+export const fetchSchoolDetail = cache(async function fetchSchoolDetail(
   schoolSlug: string,
 ): Promise<SchoolDetailResponse> {
   const res = await apiFetch(`/api/v1/schools/${seg(schoolSlug)}`);
@@ -121,7 +124,7 @@ export async function fetchSchoolDetail(
     throw new Error(`GET /api/v1/schools/${schoolSlug} -> ${res.status}`);
   }
   return res.json();
-}
+});
 
 /** Độ phủ dữ liệu cho trang F14 (`/du-lieu`) — số tổng hợp + độ phủ theo thành
  * phố / loại trường / nhóm ngành + bảng trạng thái từng trường.

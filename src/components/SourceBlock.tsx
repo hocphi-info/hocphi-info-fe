@@ -1,11 +1,5 @@
+import { DOC_TYPE_LABELS } from "@/lib/format";
 import type { Source } from "@/types/domain";
-
-const DOC_TYPE_LABELS: Record<Source["docType"], string> = {
-  de_an_tuyen_sinh: "Đề án tuyển sinh",
-  thong_bao_hoc_phi: "Thông báo học phí",
-  quy_dinh_nghe: "Quy định nghề",
-  khac: "Khác",
-};
 
 // Khối "Nguồn dữ liệu" (F12) — chỉ ở trang chi tiết ngành-trường (F6), không
 // lặp lại ở trang chi tiết trường (F7). Chỉ Năm 1 (bản ghi công bố thật) có
