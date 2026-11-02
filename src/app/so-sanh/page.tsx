@@ -1,9 +1,20 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { fetchMajorRows, fetchProgramDetailSafe } from "@/lib/api";
 import { medianPerYear } from "@/lib/derive";
 import { parseCompareIds, resolveCompareItems } from "@/lib/compare";
 import CompareEmptyState from "@/components/CompareEmptyState";
 import CompareView, { type CompareItemData } from "@/components/CompareView";
+
+import { pageMetadata } from "@/lib/seo";
+
+// Canonical về /so-sanh (không query): ?ids=… là trạng thái chọn của từng người dùng.
+export const metadata: Metadata = pageMetadata({
+  title: "So sánh học phí đại học",
+  description:
+    "So sánh học phí giữa các ngành và trường đại học Việt Nam: học phí mỗi năm và tổng chi phí ước tính cả khoá.",
+  path: "/so-sanh",
+});
 
 // Server Component — trang so sánh (S5, F8, Tuần 5). `Program.id` (id được
 // CompareCheckbox ở /nganh chọn) không tự fetch chi tiết được — phải tra qua

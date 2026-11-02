@@ -1,9 +1,19 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { fetchMajorRows } from "@/lib/api";
 import ViewModeToggle from "@/components/ViewModeToggle";
 import CompareTray from "@/components/CompareTray";
 import MajorResultsView from "@/components/MajorResultsView";
 import ResultsSkeleton from "@/components/ResultsSkeleton";
+
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Tra cứu học phí đại học theo ngành",
+  description:
+    "Tra cứu và so sánh học phí đại học Việt Nam theo ngành: học phí mỗi năm, mức tăng và tổng chi phí ước tính cả khoá, có nguồn đề án tuyển sinh.",
+  path: "/nganh",
+});
 
 // Server Component. It fetches the FULL row list (as in Week 2) and hands it to
 // the client MajorResultsView, which does all filtering/sorting from the URL.
