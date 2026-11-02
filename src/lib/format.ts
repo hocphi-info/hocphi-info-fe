@@ -1,4 +1,4 @@
-import type { Track } from "@/types/domain";
+import type { SourceDocType, Track } from "@/types/domain";
 
 // Number formatting helpers, following the display rules in
 // ../yeu-cau-san-pham.md §2.1:
@@ -12,6 +12,14 @@ export const TRACK_LABELS: Record<Track, string> = {
   chat_luong_cao: "Chất lượng cao",
   tien_tien: "Tiên tiến",
   quoc_te: "Quốc tế / liên kết",
+};
+
+/** Nhãn tiếng Việt cho loại tài liệu nguồn — dùng ở khối "Nguồn dữ liệu" và câu dẫn SEO. */
+export const DOC_TYPE_LABELS: Record<SourceDocType, string> = {
+  de_an_tuyen_sinh: "Đề án tuyển sinh",
+  thong_bao_hoc_phi: "Thông báo học phí",
+  quy_dinh_nghe: "Quy định nghề",
+  khac: "Khác",
 };
 
 /**

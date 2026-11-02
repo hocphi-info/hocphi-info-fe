@@ -1,12 +1,32 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { fetchProgramDetail } from "@/lib/api";
 import { campusLabel, formatMillions, TRACK_LABELS } from "@/lib/format";
+import {
+  breadcrumbLd,
+  courseLd,
+  datasetLd,
+  programMetadata,
+  programPath,
+  programSummary,
+  schoolPath,
+} from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 import TuitionTrendChart from "@/components/TuitionTrendChart";
 import SourceBlock from "@/components/SourceBlock";
 import SchoolLogo from "@/components/SchoolLogo";
 import PostGradCostBlock from "@/components/PostGradCostBlock";
 import RelatedMajors from "@/components/RelatedMajors";
 import TuitionDisclosureBlock from "@/components/TuitionDisclosureBlock";
+
+// `fetchProgramDetail` is wrapped in React `cache`, so this and the page below
+// share one API call per request. A bad slug pair makes it call `notFound()` here.
+export async function generateMetadata({
+  params,
+}: PageProps<"/nganh/[truong]/[nganh]">): Promise<Metadata> {
+  const { truong, nganh } = await params;
+  return programMetadata(await fetchProgramDetail(truong, nganh));
+}
 
 // Server Component — F6, S3. `fetchProgramDetail` (lib/api.ts) already calls
 // `notFound()` on a 404 from the BE, so nothing here needs to check that —
@@ -17,6 +37,7 @@ export default async function ProgramDetailPage({
 }: PageProps<"/nganh/[truong]/[nganh]">) {
   const { truong, nganh } = await params;
   const detail = await fetchProgramDetail(truong, nganh);
+  const { lead } = programSummary(detail);
 
   // Ngành này có chương trình ở nhiều cơ sở (vd TDTU Du lịch: cơ sở chính +
   // Phân hiệu Khánh Hòa)? Nếu có thì gắn nhãn cơ sở lên MỌI section — kể cả
@@ -26,6 +47,19 @@ export default async function ProgramDetailPage({
 
   return (
     <main className="mx-auto w-full min-w-0 max-w-4xl flex-1 px-4 py-6">
+      <JsonLd data={courseLd(detail)} />
+      <JsonLd data={datasetLd(detail)} />
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Trang chủ", path: "/" },
+          { name: "Tra cứu học phí", path: "/nganh" },
+          { name: detail.school.name, path: schoolPath(detail.school.slug) },
+          {
+            name: detail.major.name,
+            path: programPath(detail.school.slug, detail.major.slug),
+          },
+        ])}
+      />
       <div className="flex items-center gap-2">
         <SchoolLogo
           logoUrl={detail.school.logoUrl}
@@ -42,6 +76,8 @@ export default async function ProgramDetailPage({
       <h1 className="text-2xl font-bold tracking-tight text-ink">
         {detail.major.name}
       </h1>
+      {/* Câu trả lời ngắn dưới H1: cùng nguồn với meta description và JSON-LD. */}
+      <p className="mt-2 text-ink-2">{lead}</p>
 
       <div className="mt-6 space-y-8">
         {/* Trường "chưa công bố học phí theo ngành" thì con số bên dưới chỉ là ước

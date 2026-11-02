@@ -1,10 +1,29 @@
+import type { Metadata } from "next";
+
 import { fetchSchoolDetail } from "@/lib/api";
 import { TRACK_LABELS } from "@/lib/format";
+import {
+  breadcrumbLd,
+  schoolLd,
+  schoolMetadata,
+  schoolPath,
+  schoolSummary,
+} from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 import RangeChart from "@/components/RangeChart";
 import SchoolTypeBadge from "@/components/SchoolTypeBadge";
 import SchoolLogo from "@/components/SchoolLogo";
 import SchoolProgramsTable from "@/components/SchoolProgramsTable";
 import TuitionDisclosureBlock from "@/components/TuitionDisclosureBlock";
+
+// `fetchSchoolDetail` is wrapped in React `cache`, so this and the page below
+// share one API call per request. A bad slug makes it call `notFound()` here.
+export async function generateMetadata({
+  params,
+}: PageProps<"/truong/[truong]">): Promise<Metadata> {
+  const { truong } = await params;
+  return schoolMetadata(await fetchSchoolDetail(truong));
+}
 
 // Server Component — F7. `fetchSchoolDetail` (lib/api.ts) already calls
 // `notFound()` on a 404 from the BE (trường không tồn tại, hoặc chưa có
@@ -14,9 +33,18 @@ export default async function SchoolDetailPage({
 }: PageProps<"/truong/[truong]">) {
   const { truong } = await params;
   const detail = await fetchSchoolDetail(truong);
+  const { lead } = schoolSummary(detail);
 
   return (
     <main className="mx-auto w-full min-w-0 max-w-4xl flex-1 px-4 py-6">
+      <JsonLd data={schoolLd(detail.school)} />
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Trang chủ", path: "/" },
+          { name: "Học phí theo trường", path: "/truong" },
+          { name: detail.school.name, path: schoolPath(detail.school.slug) },
+        ])}
+      />
       <div className="flex flex-wrap items-center gap-3">
         <SchoolLogo
           logoUrl={detail.school.logoUrl}
@@ -29,6 +57,9 @@ export default async function SchoolDetailPage({
         </h1>
         <SchoolTypeBadge category={detail.school.category} />
       </div>
+      {/* Câu trả lời ngắn đặt ngay dưới H1: cùng nội dung với meta description,
+          là đoạn công cụ tìm kiếm/AI dễ trích nhất. */}
+      <p className="mt-2 text-ink-2">{lead}</p>
       <p className="mt-1 text-sm text-ink-3">
         {detail.school.shortName ?? detail.school.name} ·{" "}
         {detail.programs.length} chương trình đã có dữ liệu

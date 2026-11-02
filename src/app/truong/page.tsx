@@ -1,8 +1,18 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { fetchMajorRows } from "@/lib/api";
 import ViewModeToggle from "@/components/ViewModeToggle";
 import SchoolResultsView from "@/components/SchoolResultsView";
 import ResultsSkeleton from "@/components/ResultsSkeleton";
+
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Tra cứu học phí đại học theo trường",
+  description:
+    "Học phí các trường đại học Việt Nam: khoảng học phí thấp nhất đến cao nhất theo hệ đào tạo, trung vị và số ngành đã có dữ liệu của từng trường.",
+  path: "/truong",
+});
 
 // Server Component. Unlike Week 2, this fetches the by-MAJOR rows (the same
 // endpoint /nganh uses) and lets the client SchoolResultsView group them into

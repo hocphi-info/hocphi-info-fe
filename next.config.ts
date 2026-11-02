@@ -44,13 +44,32 @@ const securityHeaders = [
   },
 ];
 
+// Bot nhận metadata "blocking" (trong <head>) thay vì stream vào <body>. Next mặc định
+// chỉ gồm các bot không chạy JS; đặt option này GHI ĐÈ danh sách mặc định nên phần đầu
+// regex là bản copy từ node_modules/next/dist/shared/lib/router/utils/html-bots.js (xem
+// lại khi nâng Next). Phần sau là thêm: Googlebot thường và các bot AI search/user-agent
+// (OAI-SearchBot, ChatGPT-User, PerplexityBot, Claude-SearchBot…) — chúng không chạy JS
+// nên sẽ không thấy <title>/canonical/OG nếu metadata chỉ nằm trong <body>.
+const HTML_LIMITED_BOTS =
+  /[\w-]+-Google|Google-[\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight|Googlebot|OAI-SearchBot|ChatGPT-User|GPTBot|PerplexityBot|Perplexity-User|Claude-SearchBot|Claude-User|ClaudeBot|coccocbot|Zalo/i;
+
+// Mọi request tới www.hocphi.info chuyển vĩnh viễn (308) về domain chính, giữ nguyên
+// đường dẫn và query. Canonical/sitemap/JSON-LD đều dùng SITE_URL (lib/site.ts).
+const wwwRedirect = {
+  source: "/:path*",
+  has: [{ type: "host" as const, value: "www.hocphi.info" }],
+  destination: "https://hocphi.info/:path*",
+  permanent: true,
+};
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  htmlLimitedBots: HTML_LIMITED_BOTS,
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
   async redirects() {
-    return postRedirects();
+    return [wwwRedirect, ...postRedirects()];
   },
 };
 
