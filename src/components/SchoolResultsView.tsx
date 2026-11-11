@@ -30,6 +30,7 @@ import ResultsSummary from "@/components/ResultsSummary";
 import EmptyResults from "@/components/EmptyResults";
 import SchoolRangeChart from "@/components/SchoolRangeChart";
 import DismissibleCallout from "@/components/DismissibleCallout";
+import QuickSearch from "@/components/QuickSearch";
 import SchoolResultsTable from "@/components/SchoolResultsTable";
 import ShowMoreButton from "@/components/ShowMoreButton";
 
@@ -88,9 +89,16 @@ export default function SchoolResultsView({ rows }: { rows: MajorRow[] }) {
           </DismissibleCallout>
         </div>
 
+        {/* Outside the empty/non-empty branch on purpose: if the box lived
+            inside the results it would vanish the moment a query matched
+            nothing, leaving the user no way to edit it. */}
+        <div className="mt-4 w-full sm:max-w-xs">
+          <QuickSearch placeholder="Tìm trường…" ariaLabel="Tìm nhanh trường" />
+        </div>
+
         {visible.length === 0 ? (
           <div className="mt-4">
-            <EmptyResults />
+            <EmptyResults noun="trường" />
           </div>
         ) : (
           <>
