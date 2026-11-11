@@ -9,11 +9,16 @@
 
 import { writeParams } from "@/lib/url";
 
-export default function EmptyResults() {
+// `noun` is optional so /nganh keeps its wording; /truong passes "trường".
+export default function EmptyResults({
+  noun = "ngành – trường",
+}: {
+  noun?: string;
+}) {
   return (
     <div className="rounded-lg border border-dashed border-border bg-surface-2 px-6 py-12 text-center">
       <p className="text-base font-medium text-ink">
-        Không tìm thấy ngành – trường nào khớp bộ lọc
+        Không tìm thấy {noun} nào khớp bộ lọc
       </p>
       <p className="mt-1 text-sm text-ink-3">
         Thử bỏ bớt một vài điều kiện để mở rộng kết quả.
