@@ -124,6 +124,20 @@ npm run build
 > Node fetch phía server resolve `localhost` ra IPv6 `::1` gây `ECONNREFUSED`; `src/lib/api-base.ts`
 > tự ép `//localhost:` → `//127.0.0.1:`. Nếu đặt `NEXT_PUBLIC_API_URL`, dùng `127.0.0.1` thay `localhost`.
 
+### Bình luận ẩn danh
+
+Khối `CommentSection` (client island) nằm cuối `/nganh`, `/truong`, `/truong/[truong]`,
+`/nganh/[truong]/[nganh]`, `/bai-viet`, `/bai-viet/[slug]`; trình duyệt tự gọi
+`GET/POST /api/v1/comments` của BE khi người dùng cuộn tới. Chống bot bằng Cloudflare Turnstile:
+
+| Biến                             | Ý nghĩa                                                                                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Site key của widget Turnstile (công khai, nhúng lúc build). Để trống = không hiện ô xác minh (dev). Thử local: khoá luôn-qua `1x00000000000000000000AA` |
+
+Đặt cùng lúc với `TURNSTILE_SECRET_KEY` ở BE (xem README BE). Code đọc theo thứ tự:
+`src/lib/comments.ts` (dựng cây, quy tắc 3 cấp) → `CommentSection.tsx` (reducer + tải lười) →
+`CommentItem.tsx` (đệ quy) → `CommentForm.tsx` + `Turnstile.tsx`.
+
 ## V. Lộ trình
 
 Xây theo [`docs/LEARNING_PATH.md`](docs/LEARNING_PATH.md), mỗi tuần một nhóm khái niệm:

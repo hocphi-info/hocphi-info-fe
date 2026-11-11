@@ -6,6 +6,7 @@ import SchoolResultsView from "@/components/SchoolResultsView";
 import ResultsSkeleton from "@/components/ResultsSkeleton";
 
 import { pageMetadata } from "@/lib/seo";
+import CommentSection from "@/components/CommentSection";
 
 export const metadata: Metadata = pageMetadata({
   title: "Tra cứu học phí đại học theo trường",
@@ -42,6 +43,12 @@ export default async function TruongPage({
       <Suspense fallback={<ResultsSkeleton />}>
         <SchoolResultsView rows={rows} />
       </Suspense>
+      <CommentSection
+        threadKey="truong"
+        title="Thảo luận chung: học phí theo trường"
+        subtitle="Hỏi đáp chung về học phí các trường. Không cần đăng nhập. Bình luận là ý kiến cá nhân, không phải số liệu đã kiểm chứng."
+        className="max-w-3xl"
+      />
     </main>
   );
 }

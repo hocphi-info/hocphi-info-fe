@@ -12,6 +12,7 @@ import {
   postPath,
 } from "@/lib/posts";
 import { SITE_NAME, absoluteUrl } from "@/lib/site";
+import CommentSection from "@/components/CommentSection";
 
 // Server Component, hoàn toàn tĩnh: danh sách lấy từ module sinh sẵn (lib/posts.ts),
 // không gọi API. Bố cục theo ../mockup/BlogList.dc.html (desktop) và
@@ -126,6 +127,13 @@ export default function PostsPage() {
           </aside>
         </>
       )}
+
+      <CommentSection
+        threadKey="bai-viet"
+        title="Thảo luận chung về bài viết"
+        subtitle="Góp ý chủ đề bạn muốn đọc, hỏi đáp về học phí. Không cần đăng nhập."
+        className="max-w-3xl"
+      />
     </main>
   );
 }

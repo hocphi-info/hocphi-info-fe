@@ -7,6 +7,7 @@ import MajorResultsView from "@/components/MajorResultsView";
 import ResultsSkeleton from "@/components/ResultsSkeleton";
 
 import { pageMetadata } from "@/lib/seo";
+import CommentSection from "@/components/CommentSection";
 
 export const metadata: Metadata = pageMetadata({
   title: "Tra cứu học phí đại học theo ngành",
@@ -43,6 +44,12 @@ export default async function NganhPage({ searchParams }: PageProps<"/nganh">) {
       <Suspense fallback={<ResultsSkeleton />}>
         <MajorResultsView rows={rows} />
       </Suspense>
+      <CommentSection
+        threadKey="nganh"
+        title="Thảo luận chung: học phí theo ngành"
+        subtitle="Hỏi đáp chung về học phí các ngành. Không cần đăng nhập. Bình luận là ý kiến cá nhân, không phải số liệu đã kiểm chứng."
+        className="max-w-3xl"
+      />
       <CompareTray />
     </main>
   );

@@ -70,6 +70,16 @@ export type CoverageFieldRow = Schemas["CoverageFieldRowOut"];
 export type CoverageSchoolRow = Schemas["CoverageSchoolRowOut"];
 export type CoverageResponse = Schemas["CoverageOut"];
 
+// Bình luận ẩn danh, lồng nhau (GET/POST /api/v1/comments). API trả danh sách PHẲNG;
+// FE tự dựng cây bằng `parentId` (lib/comments.ts → buildTree).
+export type CommentSort = Schemas["CommentSort"];
+export type CommentReportReason = Schemas["CommentReportReason"];
+/** 1 bình luận. `isHidden` = bị ẩn/xoá nhưng còn trả lời bên dưới → hiện "[đã ẩn]". */
+export type CommentOut = Schemas["CommentOut"];
+export type CommentList = Schemas["CommentListOut"];
+export type CommentCreateIn = Schemas["CommentCreateIn"];
+export type CommentCreated = Schemas["CommentCreatedOut"];
+
 // --- FE-only view models (hand-written; NOT part of the API contract) ---
 
 /** Thống kê học phí hệ đại trà của một trường, dùng ở màn hình "Tra cứu theo trường" (S2). */

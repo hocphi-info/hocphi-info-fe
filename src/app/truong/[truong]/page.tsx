@@ -15,6 +15,7 @@ import SchoolTypeBadge from "@/components/SchoolTypeBadge";
 import SchoolLogo from "@/components/SchoolLogo";
 import SchoolProgramsTable from "@/components/SchoolProgramsTable";
 import TuitionDisclosureBlock from "@/components/TuitionDisclosureBlock";
+import CommentSection from "@/components/CommentSection";
 
 // `fetchSchoolDetail` is wrapped in React `cache`, so this and the page below
 // share one API call per request. A bad slug makes it call `notFound()` here.
@@ -93,6 +94,11 @@ export default async function SchoolDetailPage({
           rows={detail.programs}
         />
       </div>
+
+      <CommentSection
+        threadKey={`truong/${detail.school.slug}`}
+        title={`Bình luận về học phí ${detail.school.shortName ?? detail.school.name}`}
+      />
     </main>
   );
 }

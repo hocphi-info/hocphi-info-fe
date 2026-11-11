@@ -17,6 +17,7 @@ import {
   postUrl,
 } from "@/lib/posts";
 import { SITE_NAME, SITE_URL, absoluteUrl, mailtoUrl } from "@/lib/site";
+import CommentSection from "@/components/CommentSection";
 
 // Server Component, dữ liệu hoàn toàn tĩnh (không gọi API). Bố cục theo
 // ../mockup/BlogPost.dc.html (desktop) và BlogPostMobile.dc.html (mobile).
@@ -379,6 +380,13 @@ export default async function PostPage({
           </div>
         </section>
       ) : null}
+
+      <CommentSection
+        threadKey={`bai-viet/${post.slug}`}
+        title="Bình luận"
+        subtitle="Bình luận về bài viết này. Không cần đăng nhập. Bình luận là ý kiến cá nhân, không phải số liệu đã kiểm chứng."
+        className="max-w-3xl"
+      />
     </main>
   );
 }
