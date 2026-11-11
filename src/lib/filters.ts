@@ -135,6 +135,9 @@ export interface SchoolFilters {
   maxMillions: number | null;
   /** Tracks the min/median/max range is computed over ("cơ sở tính khoảng"). */
   basisTracks: Track[];
+  /** Ô "Tìm nhanh" trên /truong — chỉ khớp tên trường + tên viết tắt (bỏ dấu),
+   * KHÔNG khớp tên ngành. `null` = ô trống. */
+  q: string | null;
   sort: SchoolSortKey;
   dir: SortDir;
 }
@@ -197,6 +200,7 @@ export function parseSchoolFilters(sp: ParamsInput): SchoolFilters {
     categories: clean(getAll(sp, "cat"), CATEGORIES),
     maxMillions: parseMax(getOne(sp, "max")),
     basisTracks: getOne(sp, "basis") === "all" ? BASIS_ALL_TRACKS : ["dai_tra"],
+    q: (getOne(sp, "q") ?? "").trim() || null,
     sort: clean([getOne(sp, "sort") ?? ""], SCHOOL_SORT_KEYS)[0] ?? "min",
     dir: getOne(sp, "dir") === "desc" ? "desc" : "asc",
   };
@@ -227,6 +231,7 @@ export function serializeSchoolFilters(f: SchoolFilters): URLSearchParams {
   f.categories.forEach((v) => p.append("cat", v));
   if (f.maxMillions != null) p.set("max", String(f.maxMillions));
   if (f.basisTracks.length > 1) p.set("basis", "all");
+  if (f.q) p.set("q", f.q);
   if (f.sort !== "min") p.set("sort", f.sort);
   if (f.dir !== "asc") p.set("dir", f.dir);
   return p;
@@ -305,11 +310,19 @@ export function deriveSchoolRows(
   return out;
 }
 
+/** Khớp tên trường + tên viết tắt (HUST, NEU…). `needle` đã normalize(). */
+function matchesSchoolQuery(school: SchoolRow["school"], needle: string) {
+  return normalize(`${school.name} ${school.shortName ?? ""}`).includes(needle);
+}
+
 export function filterSchoolRows(
   schoolRows: SchoolRow[],
   allMajorRows: MajorRow[],
   f: SchoolFilters,
 ): SchoolRow[] {
+  // Chuẩn hoá từ khoá 1 lần ngoài vòng lặp (giống filterMajorRows).
+  const needle = f.q ? normalize(f.q) : "";
+
   // Which schools teach at least one program in the selected fields.
   const fieldsBySchool = new Map<string, Set<string>>();
   if (f.fields.length) {
@@ -326,6 +339,7 @@ export function filterSchoolRows(
       return false;
     if (f.maxMillions != null && stats.minAmount > f.maxMillions * MILLION)
       return false;
+    if (needle && !matchesSchoolQuery(school, needle)) return false;
     if (f.fields.length) {
       const taught = fieldsBySchool.get(school.slug);
       if (!taught || !f.fields.some((c) => taught.has(c))) return false;
@@ -491,6 +505,7 @@ export function describeSchoolFilters(
   if (f.maxMillions != null)
     parts.push(`Học phí thấp nhất ≤ ${f.maxMillions} tr/năm`);
   if (f.basisTracks.length > 1) parts.push("khoảng gồm cả CLC – tiên tiến");
+  if (f.q) parts.push(`tìm "${f.q}"`);
   return parts.length ? parts.join(" · ") : "Bộ lọc: tất cả";
 }
 
@@ -564,6 +579,7 @@ export function schoolFilterChips(
     chips.push({ label: `≤ ${f.maxMillions} tr`, param: "max" });
   if (f.basisTracks.length > 1)
     chips.push({ label: "Gồm CLC – tiên tiến", param: "basis" });
+  if (f.q) chips.push({ label: `Tìm: ${f.q}`, param: "q" });
   return chips;
 }
 
@@ -578,6 +594,7 @@ export function majorParamsToSchool(sp: ParamsInput): URLSearchParams {
     categories: f.categories,
     maxMillions: f.maxMillions,
     basisTracks: ["dai_tra"],
+    q: null, // q không mang qua lại giữa /nganh và /truong (khớp khác nhau)
     sort: f.sort === "name" ? "name" : "min",
     dir: f.sort === "name" ? f.dir : "asc",
   };
