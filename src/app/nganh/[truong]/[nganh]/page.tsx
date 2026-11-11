@@ -18,6 +18,7 @@ import SchoolLogo from "@/components/SchoolLogo";
 import PostGradCostBlock from "@/components/PostGradCostBlock";
 import RelatedMajors from "@/components/RelatedMajors";
 import TuitionDisclosureBlock from "@/components/TuitionDisclosureBlock";
+import CommentSection from "@/components/CommentSection";
 
 // `fetchProgramDetail` is wrapped in React `cache`, so this and the page below
 // share one API call per request. A bad slug pair makes it call `notFound()` here.
@@ -166,6 +167,12 @@ export default async function ProgramDetailPage({
 
         <RelatedMajors major={detail.major} related={detail.relatedMajors} />
       </div>
+
+      <CommentSection
+        threadKey={`nganh/${detail.school.slug}/${detail.major.slug}`}
+        title={`Bình luận về ngành ${detail.major.name} — ${detail.school.shortName ?? detail.school.name}`}
+        subtitle="Hỏi đáp về ngành này tại trường: khoản phát sinh, học bổng, đóng theo kỳ hay theo năm… Bình luận là ý kiến cá nhân, số liệu chính thức xem ở phía trên."
+      />
     </main>
   );
 }
