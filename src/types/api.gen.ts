@@ -428,6 +428,51 @@ export interface components {
       increase: components["schemas"]["ProgramIncreaseOut"] | null;
     };
     /**
+     * PostGradOut
+     * @description Chi phi hanh nghe sau tot nghiep cua nganh (F10) — 1 lan / trang, KHONG lap
+     *     theo tung he dao tao (khac `total_course`). `steps` rong = nganh can cap phep
+     *     nhung chua co so lieu (FE chi hien canh bao, khong hien tong).
+     */
+    PostGradOut: {
+      /** Profession */
+      profession: string;
+      /** Steps */
+      steps: components["schemas"]["PostGradStepOut"][];
+      /** Totalcostmin */
+      totalCostMin: number;
+      /** Totalcostmax */
+      totalCostMax: number;
+      /** Totalmonths */
+      totalMonths: number;
+      /** Hasunknownduration */
+      hasUnknownDuration: boolean;
+      /** Checkedat */
+      checkedAt: string | null;
+    };
+    /**
+     * PostGradStepOut
+     * @description 1 buoc trong lo trinh TOI THIEU de duoc hanh nghe (F10) — gan theo NGANH,
+     *     du lieu tu seeds/009 (scripts/seed_post_grad.py).
+     */
+    PostGradStepOut: {
+      /** Steporder */
+      stepOrder: number;
+      /** Stepname */
+      stepName: string;
+      /** Provider */
+      provider: string | null;
+      /** Durationmonths */
+      durationMonths: number | null;
+      /** Costmin */
+      costMin: number;
+      /** Costmax */
+      costMax: number;
+      confidence: components["schemas"]["ConfidenceLevel"];
+      /** Note */
+      note: string | null;
+      source: components["schemas"]["SourceOut"] | null;
+    };
+    /**
      * ProgramDetailOut
      * @description 1 he dao tao (track/language/campus) trong trang chi tiet nganh-truong (S3).
      */
@@ -454,6 +499,7 @@ export interface components {
       programs: components["schemas"]["ProgramDetailOut"][];
       /** Relatedmajors */
       relatedMajors: components["schemas"]["RelatedMajorOut"][];
+      postGrad: components["schemas"]["PostGradOut"] | null;
     };
     /**
      * ProgramIncreaseOut
@@ -628,6 +674,8 @@ export interface components {
       docType: components["schemas"]["SourceDocType"];
       /** Publisheddate */
       publishedDate: string | null;
+      /** Checkedat */
+      checkedAt: string | null;
     };
     /**
      * TaxonomyChildOut

@@ -18,9 +18,10 @@
 - Nguồn mỗi con số là đề án tuyển sinh hoặc thông báo học phí chính thức của
   trường, có ngày đối chiếu. AI chỉ trích xuất; luôn có người kiểm tra trước khi
   ghi vào cơ sở dữ liệu.
-- **Không** bao gồm sinh hoạt phí, giáo trình, học lại, hay chi phí lấy chứng chỉ
-  hành nghề sau tốt nghiệp (Luật, Y–Dược, Kiểm toán, Kiến trúc… — nêu riêng ở
-  trang chi tiết).
+- **Không** bao gồm sinh hoạt phí, giáo trình, học lại, hay chi phí để được cấp
+  phép hành nghề sau tốt nghiệp (Luật, Y–Dược, Kiến trúc…). Khoản này nêu riêng
+  ở trang chi tiết ngành: lộ trình tối thiểu bắt buộc, khoảng chi phí thấp–cao
+  và thời gian thêm (vd luật sư: khoảng 2 năm sau tốt nghiệp).
 
 ## Trang chính
 

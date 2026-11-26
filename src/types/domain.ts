@@ -56,6 +56,12 @@ export type YearlyAmount = Schemas["YearlyAmountOut"];
 /** 1 hệ đào tạo (track/language) trong trang chi tiết ngành-trường (F6). */
 export type ProgramDetail = Schemas["ProgramDetailOut"];
 export type ProgramDetailResponse = Schemas["ProgramDetailResponseOut"];
+/** Chi phí hành nghề sau tốt nghiệp (F10) — 1 lần / trang, không lặp theo hệ.
+ * `ProgramDetailResponse.postGrad` null = ngành không cần cấp phép hành nghề;
+ * `steps` rỗng = cần cấp phép nhưng chưa có số liệu (chỉ hiện cảnh báo). */
+export type PostGrad = Schemas["PostGradOut"];
+/** 1 bước trong lộ trình tối thiểu để được hành nghề (đào tạo nghề, tập sự, thi…). */
+export type PostGradStep = Schemas["PostGradStepOut"];
 /** 1 hàng / hệ đào tạo trong trang chi tiết trường (F7). */
 export type SchoolTrackStat = Schemas["SchoolTrackStatOut"];
 export type SchoolProgramRow = Schemas["SchoolProgramRowOut"];

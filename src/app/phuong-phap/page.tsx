@@ -599,15 +599,46 @@ Tổng   = Σ (Năm 1 … Năm N)              N = số năm chuẩn của ngàn
                 </span>
               ))}
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-ink-2">
-              <strong className="text-ink">
-                Chi phí sau tốt nghiệp để hành nghề
-              </strong>{" "}
-              — với các ngành như Luật, Y – Dược, Kiểm toán, Kiến trúc — được
-              nêu <strong className="text-ink">riêng</strong> ở trang chi tiết
-              ngành, đánh dấu “chưa xác minh từng trường” vì tổng hợp từ quy
-              định chung của ngành, không phải từ đề án tuyển sinh.
-            </p>
+            <div
+              id="chi-phi-hanh-nghe"
+              className="mt-4 scroll-mt-6 space-y-2 text-sm leading-relaxed text-ink-2"
+            >
+              <p>
+                <strong className="text-ink">
+                  Chi phí sau tốt nghiệp để hành nghề
+                </strong>{" "}
+                — với các ngành dẫn tới một nghề cần cấp phép như Luật (luật
+                sư), Y – Dược (bác sĩ, dược sĩ, điều dưỡng…), Kiến trúc — được
+                nêu <strong className="text-ink">riêng</strong> ở trang chi tiết
+                ngành, không cộng gộp vào tổng học phí:
+              </p>
+              <ul className="list-disc space-y-1 pl-5">
+                <li>
+                  Chỉ tính{" "}
+                  <strong className="text-ink">
+                    lộ trình tối thiểu bắt buộc
+                  </strong>{" "}
+                  để đủ điều kiện hành nghề (đào tạo nghề, tập sự hoặc thực
+                  hành, kỳ thi, phí cấp phép). Không tính lộ trình nâng cao (nội
+                  trú, chuyên khoa…) và chi phí cơ hội.
+                </li>
+                <li>
+                  Chi phí hiện dạng{" "}
+                  <strong className="text-ink">khoảng thấp–cao</strong> vì khác
+                  nhau theo lớp học và địa phương. Phí định kỳ sau khi đã hành
+                  nghề (đoàn phí, hội phí) không cộng vào tổng.
+                </li>
+                <li>
+                  Số liệu tổng hợp từ quy định chung của nghề, áp dụng cho mọi
+                  trường — không phải từ đề án tuyển sinh. Khoản chưa có biểu
+                  phí chính thức được ghi rõ là “ước lượng” kèm cách ước lượng.
+                </li>
+                <li>
+                  Ngành đã biết cần cấp phép nhưng chưa có số liệu thì chỉ hiện
+                  cảnh báo, không hiện con số.
+                </li>
+              </ul>
+            </div>
           </section>
 
           {/* 9 */}

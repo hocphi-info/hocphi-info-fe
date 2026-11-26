@@ -15,7 +15,10 @@ import JsonLd from "@/components/JsonLd";
 import TuitionTrendChart from "@/components/TuitionTrendChart";
 import SourceBlock from "@/components/SourceBlock";
 import SchoolLogo from "@/components/SchoolLogo";
-import PostGradCostBlock from "@/components/PostGradCostBlock";
+import PostGradCostBlock, {
+  LicenseTotalLine,
+} from "@/components/PostGradCostBlock";
+import PracticeLicenseBadge from "@/components/PracticeLicenseBadge";
 import RelatedMajors from "@/components/RelatedMajors";
 import TuitionDisclosureBlock from "@/components/TuitionDisclosureBlock";
 import CommentSection from "@/components/CommentSection";
@@ -77,6 +80,11 @@ export default async function ProgramDetailPage({
       <h1 className="text-2xl font-bold tracking-tight text-ink">
         {detail.major.name}
       </h1>
+      {detail.postGrad && (
+        <div className="mt-2">
+          <PracticeLicenseBadge profession={detail.postGrad.profession} />
+        </div>
+      )}
       {/* Câu trả lời ngắn dưới H1: cùng nguồn với meta description và JSON-LD. */}
       <p className="mt-2 text-ink-2">{lead}</p>
 
@@ -158,12 +166,16 @@ export default async function ProgramDetailPage({
               Tổng học phí cả khoá (ước lượng):{" "}
               <b className="tabular-nums">{formatMillions(p.totalCourse)}</b>
             </p>
+            <LicenseTotalLine
+              postGrad={detail.postGrad}
+              totalCourse={p.totalCourse}
+            />
 
             <SourceBlock source={p.year1.source} />
           </section>
         ))}
 
-        <PostGradCostBlock major={detail.major} />
+        <PostGradCostBlock postGrad={detail.postGrad} />
 
         <RelatedMajors major={detail.major} related={detail.relatedMajors} />
       </div>
