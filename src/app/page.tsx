@@ -91,7 +91,7 @@ const FEATURES = [
     points: [
       "Biểu đồ đã công bố vs dự phóng theo lộ trình tăng từng trường",
       "Bảng học phí từng năm học × hệ đào tạo, mỗi dòng kèm link nguồn",
-      "Chi phí sau tốt nghiệp để hành nghề (Luật, Y – Dược, Kiểm toán, Kiến trúc…)",
+      "Chi phí sau tốt nghiệp để hành nghề (Luật, Y – Dược, Kiến trúc…)",
       "Trạng thái dữ liệu: đã xác minh / chưa xác minh / ước lượng",
     ],
     img: "/screenshots/major-detail.png",

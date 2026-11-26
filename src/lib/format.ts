@@ -42,10 +42,39 @@ export function formatMillions(
   return `${opts.approx ? "≈ " : ""}${text} tr`;
 }
 
+/** Số triệu theo đúng độ chính xác `formatMillions` chọn cho `ref` (không kèm "tr"). */
+function millionsText(dong: number, ref: number): string {
+  const millions = dong / 1_000_000;
+  return ref / 1_000_000 < 100
+    ? millions.toLocaleString("vi-VN", {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      })
+    : Math.round(millions).toLocaleString("vi-VN");
+}
+
+/**
+ * Khoảng tiền (F10 — chi phí hành nghề):
+ * (37_480_000, 71_900_000) -> "37,5–71,9 tr"; min = max -> "3,0 tr".
+ * Hai đầu dùng chung độ chính xác của số lớn hơn để không ra "95,0–120 tr".
+ */
+export function formatMillionsRange(min: number, max: number): string {
+  if (min === max) return formatMillions(min);
+  return `${millionsText(min, max)}–${millionsText(max, max)} tr`;
+}
+
+/** Số tháng -> số năm làm tròn 0,5: 24 -> "2 năm", 30 -> "2,5 năm", 6 -> "0,5 năm". */
+export function formatYearsFromMonths(months: number): string {
+  const years = Math.round(months / 6) / 2;
+  return `${years.toLocaleString("vi-VN")} năm`;
+}
+
 /** "2026-10-16" (date ISO từ API) -> "16/10/2026". Cắt chuỗi thay vì `new Date()`
  * để không lệch ngày theo múi giờ của server/trình duyệt. */
 export function formatDateVi(isoDate: string): string {
-  const [y, m, d] = isoDate.split("-");
+  // Cũng nhận datetime ISO ("2026-11-27T12:00:00Z" — `sources.checkedAt`): BE
+  // ghi giờ trưa UTC nên phần ngày đúng ở cả giờ VN lẫn UTC.
+  const [y, m, d] = isoDate.slice(0, 10).split("-");
   return `${d}/${m}/${y}`;
 }
 
