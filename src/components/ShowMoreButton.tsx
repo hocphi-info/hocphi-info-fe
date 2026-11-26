@@ -23,6 +23,8 @@ export default function ShowMoreButton({
     <button
       type="button"
       onClick={onClick}
+      data-umami-event="show-more"
+      data-umami-event-noun={noun}
       className="mt-4 w-full rounded-lg border border-border py-2 text-sm text-ink-2 hover:bg-surface-2"
     >
       Xem thêm {remaining} {noun}

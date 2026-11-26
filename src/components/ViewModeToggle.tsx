@@ -37,6 +37,9 @@ function Tab({
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
+      // Chỉ tính lần bấm sang tab khác (bấm lại tab đang mở không phải chuyển chế độ).
+      data-umami-event={active ? undefined : "view-mode"}
+      data-umami-event-to={active ? undefined : label}
       className={`rounded-full px-4 py-1.5 font-medium transition-colors ${
         active ? "bg-accent text-on-accent" : "text-ink-2 hover:text-ink"
       }`}

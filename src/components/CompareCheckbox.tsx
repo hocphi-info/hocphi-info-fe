@@ -6,6 +6,7 @@
 // with an explanatory tooltip.
 
 import { useCompareSelection } from "@/hooks/useCompareSelection";
+import { track } from "@/lib/track";
 
 export default function CompareCheckbox({
   id,
@@ -23,7 +24,12 @@ export default function CompareCheckbox({
       type="checkbox"
       checked={checked}
       disabled={disabled}
-      onChange={() => toggle(id)}
+      onChange={() => {
+        toggle(id);
+        track(checked ? "compare-remove" : "compare-add", {
+          count: checked ? count - 1 : count + 1,
+        });
+      }}
       aria-label={`Chọn để so sánh: ${label}`}
       title={disabled ? `Chỉ so sánh tối đa ${max} mục` : undefined}
       className="size-4 accent-accent disabled:opacity-40"

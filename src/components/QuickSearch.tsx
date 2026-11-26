@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 
 import { setOne, writeParams } from "@/lib/url";
+import { trackDebounced } from "@/lib/track";
 
 // Client Component — the "Tìm nhanh" box, used on both screens. On /nganh it
 // matches school + major names; on /truong it matches school name (+ short
@@ -35,6 +36,11 @@ export default function QuickSearch({
       setOne(new URLSearchParams(sp.toString()), "q", next || null),
       "replace",
     );
+    // Đo lường: gửi từ khoá sau khi ngừng gõ (cắt 40 ký tự) — để biết người ta tìm trường/ngành
+    // nào. Xoá trắng ô thì không gửi.
+    const q = next.trim().toLowerCase().slice(0, 40);
+    if (q)
+      trackDebounced("quick-search", { path: window.location.pathname, q });
   }
 
   return (

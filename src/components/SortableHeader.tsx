@@ -87,6 +87,8 @@ export default function SortableHeader<K extends string>({
     <button
       type="button"
       onClick={onClick}
+      data-umami-event="sort"
+      data-umami-event-key={sortKey}
       aria-label={`Sắp xếp theo ${label}; ${hint}`}
       className={`group flex w-full items-center gap-1 font-medium text-ink-3 ${justify}`}
     >

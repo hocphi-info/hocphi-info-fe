@@ -17,6 +17,7 @@ import { useSearchParams } from "next/navigation";
 import type { CityCode, SchoolCategory, Track } from "@/types/domain";
 import type { FieldOption } from "@/lib/filters";
 import { setOne, toggleMulti, writeParams } from "@/lib/url";
+import { track, trackDebounced } from "@/lib/track";
 
 const CITY_OPTIONS: { value: CityCode; label: string }[] = [
   { value: "HCM", label: "TP.HCM" },
@@ -75,25 +76,38 @@ function PanelBody({
     maxRaw != null && Number(maxRaw) > 0 ? Number(maxRaw) : MAX_SLIDER;
 
   // --- writers ---
-  const toggle = (key: string, value: string) =>
+  // Đo lường: mỗi lần bật/tắt 1 lựa chọn = 1 sự kiện `filter` (key, value, on/off).
+  const toggle = (key: string, value: string) => {
+    const on = !sp.getAll(key).includes(value);
     writeParams(
       toggleMulti(new URLSearchParams(sp.toString()), key, value),
       "push",
     );
+    track("filter", { screen, key, value, on });
+  };
 
-  const setRoadmap = (on: boolean) =>
+  const setRoadmap = (on: boolean) => {
     writeParams(
       setOne(new URLSearchParams(sp.toString()), "roadmap", on ? "1" : null),
       "push",
     );
+    track("filter", { screen, key: "roadmap", value: "1", on });
+  };
 
-  const setBasis = (all: boolean) =>
+  const setBasis = (all: boolean) => {
     writeParams(
       setOne(new URLSearchParams(sp.toString()), "basis", all ? "all" : null),
       "push",
     );
+    track("filter", {
+      screen,
+      key: "basis",
+      value: all ? "all" : "dai_tra",
+      on: true,
+    });
+  };
 
-  const setMax = (value: number) =>
+  const setMax = (value: number) => {
     writeParams(
       setOne(
         new URLSearchParams(sp.toString()),
@@ -103,6 +117,9 @@ function PanelBody({
       // replaceState: dragging the slider must not spam browser history
       "replace",
     );
+    // Kéo thanh trượt sinh hàng chục onChange → chỉ gửi giá trị cuối cùng.
+    trackDebounced("filter-max", { screen, value });
+  };
 
   function MultiRow({
     checked,
@@ -251,7 +268,7 @@ function PanelBody({
   );
 }
 
-function ResetButton() {
+function ResetButton({ screen }: { screen: "nganh" | "truong" }) {
   const sp = useSearchParams();
   const hasAny = sp.toString().length > 0;
   return (
@@ -259,6 +276,8 @@ function ResetButton() {
       type="button"
       disabled={!hasAny}
       onClick={() => writeParams(new URLSearchParams(), "push")}
+      data-umami-event="filter-reset"
+      data-umami-event-screen={screen}
       className="text-sm text-accent-ink disabled:opacity-40"
     >
       Đặt lại
@@ -283,7 +302,7 @@ export default function FilterPanel({
       <aside className="sticky top-4 hidden h-fit rounded-lg border border-border bg-surface p-4 lg:block">
         <div className="mb-2 flex items-center justify-between">
           <p className="text-base font-semibold text-ink">Bộ lọc</p>
-          <ResetButton />
+          <ResetButton screen={screen} />
         </div>
         <PanelBody screen={screen} fieldOptions={fieldOptions} />
       </aside>
@@ -301,7 +320,7 @@ export default function FilterPanel({
         {mobileOpen && (
           <div className="mt-2 rounded-lg border border-border bg-surface p-4">
             <div className="mb-2 flex justify-end">
-              <ResetButton />
+              <ResetButton screen={screen} />
             </div>
             <PanelBody screen={screen} fieldOptions={fieldOptions} />
           </div>

@@ -121,6 +121,23 @@ Sự kiện đang được ghi nhận (thuộc tính `data-umami-event` trên th
 | `post-cta-lookup` | Bấm "Tra cứu…" trong bài (khối liên quan hoặc cột phải) |
 | `share-facebook`, `share-threads`, `share-copy-link` | Bấm nút chia sẻ |
 | `follow-facebook`, `follow-threads` | Bấm nút theo dõi ở trang danh sách |
+| `comment-submit`, `comment-reply` | Gửi bình luận / trả lời |
+| `filter` (`screen`, `key`, `value`, `on`) | Bật/tắt 1 lựa chọn trong bộ lọc ở /nganh, /truong |
+| `filter-max` (`screen`, `value`) | Thả thanh trượt học phí (gửi giá trị cuối, sau 1,2 giây) |
+| `filter-reset` (`screen`) | Bấm "Đặt lại" bộ lọc |
+| `quick-search` (`path`, `q`) | Gõ vào ô "Tìm nhanh" (gửi từ khoá sau khi ngừng gõ 1,2 giây, tối đa 40 ký tự) |
+| `sort` (`key`) | Bấm tiêu đề cột để sắp xếp |
+| `view-mode` (`to`) | Chuyển "Theo ngành" ↔ "Theo trường" |
+| `show-more` (`noun`) | Bấm "Xem thêm …" dưới bảng kết quả |
+| `compare-add`, `compare-remove` (`count`) | Tích / bỏ tích ô so sánh |
+| `compare-open` (`count`) | Bấm "So sánh (n)" để mở /so-sanh |
+
+Sự kiện bấm nút/link gắn bằng `data-umami-event`; sự kiện từ ô nhập (checkbox, ô tìm, thanh
+trượt) gửi bằng `track()` / `trackDebounced()` trong `src/lib/track.ts`.
+
+**"Người tra cứu thật"** (chỉ số chính để báo cáo, đã loại bot): khách từ Việt Nam có ít nhất 1
+sự kiện `filter`, `quick-search`, `sort`, `compare-*`, `show-more` hoặc `view-mode`, hoặc xem ≥2
+trang. Bot hầu như không tạo các sự kiện này. Đối chiếu thêm với số click trong Search Console.
 
 Xem theo bài: lọc theo đường dẫn `/bai-viet/<slug>`. Xem theo nguồn: báo cáo UTM / Referrer.
 Tỷ lệ chuyển sang tra cứu = số lần `post-cta-lookup` ÷ số lượt xem bài đó. Ngưỡng "đạt" do bạn
