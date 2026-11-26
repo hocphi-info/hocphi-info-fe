@@ -37,6 +37,8 @@ function CompareTrayInner() {
       ) : (
         <Link
           href={`/so-sanh?${compareParamsFrom(selectedIds)}`}
+          data-umami-event="compare-open"
+          data-umami-event-count={String(count)}
           className="ml-auto rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-on-accent"
         >
           So sánh ({count})
