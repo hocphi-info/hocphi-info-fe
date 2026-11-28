@@ -171,12 +171,12 @@ export default function PostGradCostBlock({
       ) : (
         <>
           <Callout tone="warn">
-            Bằng cử nhân chưa đủ để hành nghề {profession}. Các khoản dưới đây{" "}
-            <b>không thuộc học phí nhà trường</b> và thường không có trong đề án
-            tuyển sinh. Đây là lộ trình tối thiểu bắt buộc, tổng hợp từ quy định
-            chung của nghề (áp dụng cho mọi trường), tính đến khi đủ điều kiện
-            hành nghề. Nếu bạn làm công việc khác của ngành không cần cấp phép
-            thì không phải trả các khoản này.
+            Bằng tốt nghiệp đại học chưa đủ để hành nghề {profession}. Các khoản
+            dưới đây <b>không thuộc học phí nhà trường</b> và thường không có
+            trong đề án tuyển sinh. Đây là lộ trình tối thiểu bắt buộc, tổng hợp
+            từ quy định chung của nghề (áp dụng cho mọi trường), tính đến khi đủ
+            điều kiện hành nghề. Nếu bạn làm công việc khác của ngành không cần
+            cấp phép thì không phải trả các khoản này.
           </Callout>
 
           <div className="overflow-hidden rounded-xl border border-border bg-surface">
