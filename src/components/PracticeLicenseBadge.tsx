@@ -1,6 +1,6 @@
 // Server Component — pill dưới H1 trang chi tiết ngành-trường (F6/F10): ngành này
 // dẫn tới một nghề cần cấp phép sau tốt nghiệp (luật sư, bác sĩ…). Câu chữ có
-// điều kiện "Muốn hành nghề…" vì bằng cử nhân vẫn dùng được cho việc khác của
+// điều kiện "Muốn hành nghề…" vì bằng đại học vẫn dùng được cho việc khác của
 // ngành (vd pháp chế doanh nghiệp). Bấm để nhảy xuống khối chi tiết bên dưới.
 // Tone cảnh báo (warn) như Callout — khác TuitionDisclosureBadge (good/bad).
 

@@ -51,7 +51,8 @@ export function LicenseTotalLine({
         {formatMillions(totalCourse)} +{" "}
         {formatMillionsRange(postGrad.totalCostMin, postGrad.totalCostMax)}
       </b>
-      , {extraTime(postGrad)} sau tốt nghiệp.{" "}
+      {postGrad.hasUnknownCost && " (chưa gồm khoản chưa công bố)"},{" "}
+      {extraTime(postGrad)} sau tốt nghiệp.{" "}
       <a href="#chi-phi-hanh-nghe" className="text-accent hover:underline">
         Xem các bước
       </a>
@@ -66,6 +67,10 @@ function durationText(step: PostGradStep): string {
 }
 
 function Cost({ step }: { step: PostGradStep }) {
+  // null = cơ quan có thẩm quyền chưa ban hành mức thu (≠ 0 = miễn phí).
+  if (step.costMin == null || step.costMax == null) {
+    return <span className="font-normal text-ink-3">Chưa công bố</span>;
+  }
   return (
     <>
       {formatMillionsRange(step.costMin, step.costMax)}
@@ -154,6 +159,11 @@ export default function PostGradCostBlock({
     postGrad.totalCostMin,
     postGrad.totalCostMax,
   );
+  const unknownNote = postGrad.hasUnknownCost && (
+    <span className="block text-xs font-normal text-ink-3">
+      chưa gồm khoản chưa công bố
+    </span>
+  );
 
   return (
     <section id="chi-phi-hanh-nghe" className="scroll-mt-6 space-y-3">
@@ -171,12 +181,12 @@ export default function PostGradCostBlock({
       ) : (
         <>
           <Callout tone="warn">
-            Bằng cử nhân chưa đủ để hành nghề {profession}. Các khoản dưới đây{" "}
-            <b>không thuộc học phí nhà trường</b> và thường không có trong đề án
-            tuyển sinh. Đây là lộ trình tối thiểu bắt buộc, tổng hợp từ quy định
-            chung của nghề (áp dụng cho mọi trường), tính đến khi đủ điều kiện
-            hành nghề. Nếu bạn làm công việc khác của ngành không cần cấp phép
-            thì không phải trả các khoản này.
+            Bằng tốt nghiệp đại học chưa đủ để hành nghề {profession}. Các khoản
+            dưới đây <b>không thuộc học phí nhà trường</b> và thường không có
+            trong đề án tuyển sinh. Đây là lộ trình tối thiểu bắt buộc, tổng hợp
+            từ quy định chung của nghề (áp dụng cho mọi trường), tính đến khi đủ
+            điều kiện hành nghề. Nếu bạn làm công việc khác của ngành không cần
+            cấp phép thì không phải trả các khoản này.
           </Callout>
 
           <div className="overflow-hidden rounded-xl border border-border bg-surface">
@@ -221,6 +231,7 @@ export default function PostGradCostBlock({
                     Tổng thêm
                     <span className="block font-normal tabular-nums sm:hidden">
                       {totalTime} · <b>{totalCost}</b>
+                      {unknownNote}
                     </span>
                   </th>
                   <td className="hidden whitespace-nowrap px-3 py-2 text-right tabular-nums sm:table-cell">
@@ -228,6 +239,7 @@ export default function PostGradCostBlock({
                   </td>
                   <td className="hidden whitespace-nowrap px-3 py-2 text-right tabular-nums sm:table-cell">
                     {totalCost}
+                    {unknownNote}
                   </td>
                   <td className="hidden sm:table-cell" />
                 </tr>
@@ -238,8 +250,10 @@ export default function PostGradCostBlock({
           <p className="text-xs leading-relaxed text-ink-3">
             Thời gian chưa tính thời gian chờ giữa các đợt tuyển sinh và đợt
             thi. Khoảng chi phí đi từ mức thấp nhất tới cao nhất đã ghi nhận
-            (khác nhau theo lớp học và địa phương), không gồm sinh hoạt phí và
-            các phí định kỳ sau khi đã hành nghề.
+            (khác nhau theo nơi học, nơi thực hành và địa phương), không gồm
+            sinh hoạt phí và các phí định kỳ sau khi đã hành nghề.
+            {postGrad.hasUnknownCost &&
+              " Khoản ghi “Chưa công bố” chưa có mức thu chính thức nên chưa cộng vào tổng."}
             {steps.some((s) => s.confidence === "estimated") &&
               " Mức phí ghi “ước lượng” là của bước chưa có biểu phí chính thức — cách ước lượng ghi ngay dưới bước đó."}
             {postGrad.checkedAt &&

@@ -632,6 +632,9 @@ Tổng   = Σ (Năm 1 … Năm N)              N = số năm chuẩn của ngàn
                   Số liệu tổng hợp từ quy định chung của nghề, áp dụng cho mọi
                   trường — không phải từ đề án tuyển sinh. Khoản chưa có biểu
                   phí chính thức được ghi rõ là “ước lượng” kèm cách ước lượng.
+                  Khoản cơ quan có thẩm quyền chưa ban hành mức thu (vd phí kỳ
+                  kiểm tra đánh giá năng lực của bác sĩ) ghi “Chưa công bố” và
+                  không cộng vào tổng.
                 </li>
                 <li>
                   Ngành đã biết cần cấp phép nhưng chưa có số liệu thì chỉ hiện

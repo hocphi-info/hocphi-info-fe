@@ -442,6 +442,8 @@ export interface components {
       totalCostMin: number;
       /** Totalcostmax */
       totalCostMax: number;
+      /** Hasunknowncost */
+      hasUnknownCost: boolean;
       /** Totalmonths */
       totalMonths: number;
       /** Hasunknownduration */
@@ -464,9 +466,9 @@ export interface components {
       /** Durationmonths */
       durationMonths: number | null;
       /** Costmin */
-      costMin: number;
+      costMin: number | null;
       /** Costmax */
-      costMax: number;
+      costMax: number | null;
       confidence: components["schemas"]["ConfidenceLevel"];
       /** Note */
       note: string | null;

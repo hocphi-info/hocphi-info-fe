@@ -44,6 +44,7 @@ export function formatMillions(
 
 /** Số triệu theo đúng độ chính xác `formatMillions` chọn cho `ref` (không kèm "tr"). */
 function millionsText(dong: number, ref: number): string {
+  if (dong === 0) return "0"; // "0–48,0 tr" dễ đọc hơn "0,0–48,0 tr"
   const millions = dong / 1_000_000;
   return ref / 1_000_000 < 100
     ? millions.toLocaleString("vi-VN", {
@@ -55,10 +56,12 @@ function millionsText(dong: number, ref: number): string {
 
 /**
  * Khoảng tiền (F10 — chi phí hành nghề):
- * (37_480_000, 71_900_000) -> "37,5–71,9 tr"; min = max -> "3,0 tr".
+ * (37_480_000, 71_900_000) -> "37,5–71,9 tr"; min = max -> "3,0 tr";
+ * (0, 48_000_000) -> "0–48,0 tr"; (0, 0) -> "Miễn phí".
  * Hai đầu dùng chung độ chính xác của số lớn hơn để không ra "95,0–120 tr".
  */
 export function formatMillionsRange(min: number, max: number): string {
+  if (max === 0) return "Miễn phí";
   if (min === max) return formatMillions(min);
   return `${millionsText(min, max)}–${millionsText(max, max)} tr`;
 }
